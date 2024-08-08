@@ -27,10 +27,12 @@ import {
   TabsModule,
   UtilitiesModule,
 } from '@coreui/angular';
+import { DefaultLayoutComponent } from './containers/default-layout/default-layout.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DefaultLayoutComponent
   ],
   imports: [
     BrowserModule,
