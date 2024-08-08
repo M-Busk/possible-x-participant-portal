@@ -1,0 +1,21 @@
+<c-navbar colorScheme="light" expand="lg" class="bg-light">
+  <c-container fluid>
+    <a cNavbarBrand href="https://www.possible-gaia-x.eu/" target="_blank">
+      <img [src]="'assets/images/brand/possible_blue.svg'" [alt]="'POSSIBLE-X Logo'" [width]="130" [height]="30">
+    </a>
+    <button [cNavbarToggler]="collapseRef"></button>
+    <div #collapseRef="cCollapse" navbar cCollapse>
+      <c-navbar-nav class="me-auto mb-2 mb-lg-0">
+        <c-nav-item>
+          <a cNavLink>Home</a>
+        </c-nav-item>
+        <c-nav-item>
+          <a cNavLink>Provide Service Offer</a>
+        </c-nav-item>
+        <c-nav-item>
+          <a cNavLink>Consume Service Offer</a>
+        </c-nav-item>
+      </c-navbar-nav>
+    </div>
+  </c-container>
+</c-navbar>
