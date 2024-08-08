@@ -1,3 +1,3 @@
-rootProject.name = "possible-x-offer-management"
+rootProject.name = "possible-x-edc-management"
 
 include("edc-orchestrator", "edc-gui")
