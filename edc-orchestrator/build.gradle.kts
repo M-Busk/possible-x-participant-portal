@@ -1,11 +1,13 @@
+
 plugins {
-	java
+	`java-library`
 	id("org.springframework.boot") version "3.3.2"
 	id("io.spring.dependency-management") version "1.1.6"
+
 }
 
 group = "eu.possible-x"
-version = "0.0.1"
+version = ""
 
 java {
 	toolchain {
@@ -35,4 +37,13 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.bootJar {
+	mainClass.set("eu.possible_x.edc_orchestrator.EdcOrchestratorApplication")
+	archiveBaseName.set("edc_orchestrator")
+}
+
+tasks.getByName<Jar>("jar") {
+	enabled = false
 }
