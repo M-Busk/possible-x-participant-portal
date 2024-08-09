@@ -36,3 +36,18 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks.register<Copy>("copyWebApp") {
+  description = "Copies the GUI into the resources of the Spring project."
+  group = "Application"
+  from("$rootDir/edc-gui/build/resources/browser")
+  into(layout.buildDirectory.dir("resources/main/static/."))
+}
+
+tasks.named("compileJava") {
+  dependsOn(":edc-gui:npmBuild")
+}
+
+tasks.named("processResources") {
+  dependsOn("copyWebApp")
+}
