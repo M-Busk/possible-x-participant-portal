@@ -1,32 +1,49 @@
-<c-navbar colorScheme="light" expand="lg" class="bg-light">
-    <c-container fluid>
-      <a cNavbarBrand> <!-- href="https://www.possible-gaia-x.eu/" target="_blank"  rel="noopener"-->
-        <img [src]="'assets/images/brand/possible_blue.svg'" [alt]="'POSSIBLE-X Logo'" [width]="130" [height]="30">
-      </a>
-      <button [cNavbarToggler]="collapseRef"></button>
-      <div #collapseRef="cCollapse" navbar cCollapse>
-        <c-navbar-nav class="me-auto mb-2 mb-lg-0">
-          <c-nav-item>
-            <a [routerLink]="['/home']" cNavLink>Home</a>
-          </c-nav-item>
-          <c-nav-item>
-            <a cNavLink>Provide Service Offer</a>
-          </c-nav-item>
-          <c-nav-item>
-            <a cNavLink>Consume Service Offer</a>
-          </c-nav-item>
-        </c-navbar-nav>
-      </div>
-    </c-container>
-  </c-navbar>
-  <div class="body flex-grow-1 px-3">
-    <c-container breakpoint="lg" class="h-auto">
-        <router-outlet></router-outlet>
-    </c-container>
-  </div>
-  <c-footer>
-    <div>
-      <span><img [src]="'assets/images/brand/possible_blue.svg'" [alt]="'POSSIBLE-X Logo'" [width]="130" [height]="30"> &copy; 2024 POSSIBLE</span>
+<c-navbar expand="lg" class="headerWrapper">
+  <c-container fluid class="header">
+    <a cNavbarBrand class="logo" [routerLink]="['/home']"> <!-- href="https://www.possible-gaia-x.eu/" target="_blank"  rel="noopener"-->
+      <img [src]="'assets/images/brand/possible_blue.svg'" [alt]="'POSSIBLE-X Logo'" [width]="142" [height]="36">
+    </a>
+    <button [cNavbarToggler]="collapseRef"></button>
+    <div #collapseRef="cCollapse" navbar cCollapse>
+      <c-navbar-nav class="navbar-nav">
+        <c-nav-item>
+          <a [routerLink]="['/home']" cNavLink>Home</a>
+        </c-nav-item>
+        <c-nav-item>
+          <a cNavLink>Provide Service Offer</a>
+        </c-nav-item>
+        <c-nav-item>
+          <a cNavLink>Consume Service Offer</a>
+        </c-nav-item>
+      </c-navbar-nav>
     </div>
-  </c-footer>
-  
+  </c-container>
+</c-navbar>
+<div class="body flex-grow-1 px-3 page-container">
+  <c-container breakpoint="lg" class="h-auto">
+    <router-outlet></router-outlet>
+  </c-container>
+</div>
+<c-footer class="footerWrapper">
+  <div class="logo">
+    <div class="circleVisual"></div>
+    <img src="assets/images/brand/possible_white.svg" width="190" height="49" alt="POSSIBLE-X Logo" />
+  </div>
+  <div>
+    <div class="mb-8">
+      <div class="mb-2 text-2xl">POSSIBLE-X</div>
+      <div class="text-sm">Phoenix Open software stack for interoperable engagement in Dataspaces</div>
+    </div>
+    <div class="text-sm">© 2024 POSSIBLE Consortium</div>
+  </div>
+  <div>
+    <div class="mb-2 text-2xl">Information</div>
+    <div class="text-sm">
+      <ul>
+        <li><a [routerLink]="['/home']">POSSIBLE Project</a></li>
+        <li><a [routerLink]="['/home']">Impressum</a></li>
+        <li><a [routerLink]="['/home']">Datenschutz</a></li>
+      </ul>
+    </div>
+  </div>
+</c-footer>
