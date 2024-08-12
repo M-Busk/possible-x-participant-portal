@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import "@coreui/coreui/scss/coreui";
 
 @font-face {
@@ -109,6 +113,19 @@
     font-display: swap;
 }
 
-.my-component {
-    font-family: 'Acumin Pro';
+html,
+body {
+    @apply h-full;
+    /* Ensure html and body take full height */
+    @apply font-acumin-pro;
+}
+
+.page-container {
+    @apply flex flex-col min-h-screen;
+    /* Full height with Flexbox */
+}
+
+.content {
+    @apply flex-grow;
+    /* Allows content to expand and push footer down */
 }

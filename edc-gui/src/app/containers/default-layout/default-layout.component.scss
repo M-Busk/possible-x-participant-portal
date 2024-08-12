@@ -1,0 +1,33 @@
+.headerWrapper {
+    @apply bg-white;
+  }
+  
+  .header {
+    @apply flex items-end justify-between;
+    @apply container max-w-screen-2xl px-8 py-4 text-brand-700 xl:px-20;
+  
+    .logo {
+      @apply flex flex-shrink-0 items-baseline;
+    }
+  }
+
+.footerWrapper {
+    @apply overflow-hidden bg-brand-700 text-white;
+    @apply w-full;
+}
+
+.footer {
+    @apply grid grid-cols-1 flex-wrap gap-8 md:grid-cols-3;
+    @apply mx-auto max-w-screen-3xl px-8 py-10 xl:px-20;
+
+    .circleVisual {
+        @apply absolute;
+        @apply rounded-full border border-white;
+        @apply h-[435px] w-[436px];
+        @apply -left-[264px] -top-[60px];
+    }
+
+    .logo {
+        @apply relative flex-shrink-0 self-end;
+    }
+}
