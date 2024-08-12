@@ -35,9 +35,9 @@ import { DefaultLayoutComponent } from './containers/default-layout/default-layo
     DefaultLayoutComponent
   ],
   imports: [
-    BrowserModule,
-    AppRoutingModule,
-    AvatarModule,
+  BrowserModule,
+  AppRoutingModule,
+  AvatarModule,
   BadgeModule,
   BreadcrumbModule,
   ButtonGroupModule,

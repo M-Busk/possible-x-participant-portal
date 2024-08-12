@@ -3,6 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
+$primary:   #1e2e4d;
+
 @import "@coreui/coreui/scss/coreui";
 
 @font-face {
@@ -118,6 +120,7 @@ body {
     @apply h-full;
     /* Ensure html and body take full height */
     @apply font-acumin-pro;
+    @apply bg-brand-50;
 }
 
 .page-container {

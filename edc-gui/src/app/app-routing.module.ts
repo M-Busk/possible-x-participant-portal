@@ -6,7 +6,7 @@ import { DefaultLayoutComponent } from './containers';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'offer/provide',
     pathMatch: 'full'
   },
   {
@@ -17,9 +17,9 @@ const routes: Routes = [
     },
     children: [
       {
-        path: 'home',
+        path: 'offer',
         loadChildren: () =>
-          import('./views/home/home.module').then((m) => m.HomeModule)
+          import('./views/offer/offer.module').then((m) => m.OfferModule)
       }]
   }
 ];
