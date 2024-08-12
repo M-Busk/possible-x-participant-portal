@@ -1,5 +1,6 @@
+
 plugins {
-	java
+	`java`
 	id("org.springframework.boot") version "3.3.2"
 	id("io.spring.dependency-management") version "1.1.6"
 }
@@ -37,6 +38,16 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+
+tasks.bootJar {
+	mainClass.set("eu.possible_x.edc_orchestrator.EdcOrchestratorApplication")
+	archiveBaseName.set("edc_orchestrator")
+}
+
+tasks.getByName<Jar>("jar") {
+	enabled = false
+}
+
 tasks.register<Copy>("copyWebApp") {
   description = "Copies the GUI into the resources of the Spring project."
   group = "Application"
@@ -50,4 +61,5 @@ tasks.named("compileJava") {
 
 tasks.named("processResources") {
   dependsOn("copyWebApp")
+
 }
