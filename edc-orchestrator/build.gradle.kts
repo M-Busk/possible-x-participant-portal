@@ -46,6 +46,7 @@ tasks.bootJar {
 
 tasks.getByName<Jar>("jar") {
 	enabled = false
+}
 
 tasks.register<Copy>("copyWebApp") {
   description = "Copies the GUI into the resources of the Spring project."
