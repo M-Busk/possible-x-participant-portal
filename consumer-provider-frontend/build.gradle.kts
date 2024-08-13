@@ -1,19 +1,22 @@
-import com.github.gradle.node.npm.task.NpxTask
+import com.github.gradle.node.npm.task.NpmTask
 
 plugins {
-  id("com.github.node-gradle.node") version "7.0.2"
+    id("com.github.node-gradle.node") version "7.0.2"
 }
 
-// Configure the plugin to download and use specific Node version
 node {
-  download = true
-  version = "20.16.0"
+    version.set("20.16.0") // Specify the Node.js version
+    npmVersion.set("10.8.2") // Optionally specify the npm version
+    download.set(true) // Automatically download and install the specified Node.js version
 }
 
-// Register NpmTask that will do what "npm run build" command does.
-tasks.register<NpxTask>("npmBuild") {
-  description = "Builds the Angular WebApp."
-  group = "Application"
-  command.set("npm")
-  args.set(listOf( "run", "build"))
+tasks {
+    val npmInstalll by registering(NpmTask::class) {
+        args.set(listOf("clean-install"))
+    }
+
+    val npmBuild by registering(NpmTask::class) {
+        dependsOn(npmInstalll)
+        args.set(listOf("run", "build"))
+    }
 }
