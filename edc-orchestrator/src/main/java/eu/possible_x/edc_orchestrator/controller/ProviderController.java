@@ -1,0 +1,27 @@
+package eu.possible_x.edc_orchestrator.controller;
+
+import eu.possible_x.edc_orchestrator.entities.AssetRequest;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/provider")
+public class ProviderController {
+
+  public ProviderController() { /*placeholder*/ }
+
+  /**
+   * POST endpoint to create an asset
+   *
+   * @param assetRequest: request to create an asset
+   * @return success message
+   */
+  @PostMapping(value = "/asset", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> createAsset(@RequestBody AssetRequest assetRequest) {
+   return ResponseEntity.ok("Success: create the asset with name: " + assetRequest.getAssetName());
+  }
+}
