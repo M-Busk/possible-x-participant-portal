@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrl: './provide.component.scss'
 })
 export class ProvideComponent {
+  offerType: string = "";
+  offerName: string = "";
 
 }
