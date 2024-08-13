@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "edc-gui": {
+    "consumer-provider-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "edc-gui:build:production"
+              "buildTarget": "consumer-provider-frontend:build:production"
             },
             "development": {
-              "buildTarget": "edc-gui:build:development"
+              "buildTarget": "consumer-provider-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -9,12 +9,12 @@ The repository is structured as a Gradle multi-project build.
 
 ```
 (...)
-├── settings.gradle.kts     # root project settings
-├── buildSrc/               # shared build configuration
-├── edc-gui/                # Angular frontend code for the GUI
-│   └── build.gradle.kts    # build file for the Angular frontend
-├── edc-orchestrator/       # Spring backend code for EDC communication orchestration
-│   └── build.gradle.kts    # build file for the Spring backend
+├── settings.gradle.kts         # root project settings
+├── buildSrc/                   # shared build configuration
+├── consumer-provider-frontend/ # Angular frontend code for the GUI
+│   └── build.gradle.kts        # build file for the Angular frontend
+├── edc-orchestrator/           # Spring backend code for EDC communication orchestration
+│   └── build.gradle.kts        # build file for the Spring backend
 ```
 
 ## Build

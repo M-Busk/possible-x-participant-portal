@@ -1,6 +1,6 @@
 {
-  "name": "edc-gui",
-  "version": "0.0.0",
+  "name": "consumer-provider-frontend",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
