@@ -51,12 +51,12 @@ tasks.getByName<Jar>("jar") {
 tasks.register<Copy>("copyWebApp") {
   description = "Copies the GUI into the resources of the Spring project."
   group = "Application"
-  from("$rootDir/edc-gui/build/resources/browser")
+  from("$rootDir/consumer-provider-frontend/build/resources/browser")
   into(layout.buildDirectory.dir("resources/main/static/."))
 }
 
 tasks.named("compileJava") {
-  dependsOn(":edc-gui:npmBuild")
+  dependsOn(":consumer-provider-frontend:npmBuild")
 }
 
 tasks.named("processResources") {
