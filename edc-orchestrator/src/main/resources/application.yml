@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: default
   application:
     name: edc-orchestrator
 
@@ -10,3 +12,7 @@ management:
   endpoint:
     health:
       enabled: true
+
+edc:
+  x-api-key: 5678
+  mgmt-base-url: http://localhost:19193/management

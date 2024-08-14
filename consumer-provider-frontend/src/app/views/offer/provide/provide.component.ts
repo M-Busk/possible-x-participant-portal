@@ -17,4 +17,10 @@ export class ProvideComponent {
       console.log(response);
     });
   }
+
+  createOffer(): void {
+    this.apiService.createOffer().subscribe(response => {
+      console.log(response);
+    });
+  }
 }

@@ -15,4 +15,8 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/health`);
   }
 
+  createOffer(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/provider/offer`, null);
+  }
+
 }
