@@ -59,10 +59,10 @@ if [ -z "$VALUE_FILE" ]; then
   exit 1
 fi
 kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
-
-if [ -n "$GITHUB_AUTH_SECRET" ] && ! [ -f "$BASEDIR/$NAMESPACE-github-auth-sealed-secret.yaml" ]; then
-  kubeseal -f "$GITHUB_AUTH_SECRET" -w "$BASEDIR/$NAMESPACE-github-auth-sealed-secret.yaml" -n "$NAMESPACE"
-  kubectl apply -f "$BASEDIR/$NAMESPACE-github-auth-sealed-secret.yaml"
+GITHUB_SEALED_SECRET_FILE="$BASEDIR/sealed-secrets/$NAMESPACE-github-auth-sealed-secret.yaml"
+if [ -n "$GITHUB_AUTH_SECRET" ] && ! [ -f "$GITHUB_SEALED_SECRET_FILE" ]; then
+  kubeseal -f "$GITHUB_AUTH_SECRET" -w "$GITHUB_SEALED_SECRET_FILE" -n "$NAMESPACE"
+  kubectl apply -f "$GITHUB_SEALED_SECRET_FILE"
 fi
 
 helm $HELM_OPERATION -n "$NAMESPACE" edc-management "$BASEDIR/helm" -f "$VALUE_FILE"

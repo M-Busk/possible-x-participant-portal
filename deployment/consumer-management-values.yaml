@@ -22,3 +22,11 @@ service:
   type: NodePort
   port: 80
   targetPort: 8080
+
+application:
+  variables:
+    - name: management-variables
+      data:
+        SPRING_PROFILES_ACTIVE: dev 
+  secrets:
+    - management-secrets
