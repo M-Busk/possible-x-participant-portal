@@ -11,12 +11,12 @@ node {
 }
 
 tasks {
-    val npmInstall by registering(NpmTask::class) {
+    val npmInstalll by registering(NpmTask::class) {
         args.set(listOf("clean-install"))
     }
 
     val npmBuild by registering(NpmTask::class) {
-        dependsOn(npmInstall)
+        dependsOn(npmInstalll)
         args.set(listOf("run", "build"))
     }
 }
