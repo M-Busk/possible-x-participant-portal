@@ -13,11 +13,12 @@ The script has some parameters:
 -g, --github-auth-secret - (optional) the path to the secret that is used to retrieve the data
 -f, --value-file - the path to the value file for the helm deployment
 -h, --help - prints this message
+-u, --upgrade - upgrade the helm installation instead of installing it
 "
 NAMESPACE=
 DELETE_NAMESPACE=
 GITHUB_AUTH_SECRET=
-
+HELM_OPERATION=install
 while [[ "$#" -gt 0 ]]; do
   case "${1}" in
     (-n | --namespace)
@@ -35,6 +36,10 @@ while [[ "$#" -gt 0 ]]; do
     (-h | --help)
       echo "${HELP_TEXT}"
       exit 0
+    ;;
+    (-u | --upgrade)
+      HELM_OPERATION=upgrade
+      shift
     ;;
     (*)
         echo "Unknown parameter '${1}'"
@@ -60,4 +65,4 @@ if [ -n "$GITHUB_AUTH_SECRET" ]; then
   kubectl apply -f "$BASEDIR/$NAMESPACE-github-auth-sealed-secret.yaml"
 fi
 
-helm install -n "$NAMESPACE" edc-management "$BASEDIR/helm" -f "$VALUE_FILE"
+helm $HELM_OPERATION -n "$NAMESPACE" edc-management "$BASEDIR/helm" -f "$VALUE_FILE"
