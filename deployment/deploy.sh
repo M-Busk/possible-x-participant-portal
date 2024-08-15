@@ -1,0 +1,63 @@
+#! /bin/bash
+
+BASEDIR=$(dirname $0)
+HELP_TEXT="
+This is a small script to help with deployment.
+This script will create a namespace (if it does not already exist), 
+create and install a sealed secret from a local secret file if you provide the parameter
+and deploy the helm chart.
+
+The script has some parameters:
+
+-n, --namespace - the namespace where the management console should be deployed to
+-g, --github-auth-secret - (optional) the path to the secret that is used to retrieve the data
+-f, --value-file - the path to the value file for the helm deployment
+-h, --help - prints this message
+"
+NAMESPACE=
+DELETE_NAMESPACE=
+GITHUB_AUTH_SECRET=
+
+while [[ "$#" -gt 0 ]]; do
+  case "${1}" in
+    (-n | --namespace)
+      NAMESPACE=${2}
+      shift 2
+    ;;
+    (-g | --github-auth-secret)
+      GITHUB_AUTH_SECRET=${2}
+      shift 2
+    ;;
+    (-f | --value-file)
+      VALUE_FILE=${2}
+      shift 2
+    ;;
+    (-h | --help)
+      echo "${HELP_TEXT}"
+      exit 0
+    ;;
+    (*)
+        echo "Unknown parameter '${1}'"
+        exit 1    # error
+    ;;
+  esac
+done
+
+
+if [ -z "$NAMESPACE" ]; then
+  echo "Error: please specify a namespace"
+  exit 1
+fi
+
+if [ -z "$VALUE_FILE" ]; then
+  echo "Error: please specify a value file"
+  exit 1
+fi
+kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
+
+if [ -n "$GITHUB_AUTH_SECRET" ]; then
+  kubeseal -f "$GITHUB_AUTH_SECRET" -w "$BASEDIR/$NAMESPACE-github-auth-sealed-secret.yaml" -n "$NAMESPACE"
+  kubectl apply -f "$BASEDIR/$NAMESPACE-github-auth-sealed-secret.yaml"
+fi
+
+helm install -n "$NAMESPACE" edc-management "$BASEDIR/helm" -f "$VALUE_FILE"

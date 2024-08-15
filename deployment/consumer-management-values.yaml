@@ -1,0 +1,24 @@
+image:
+  pullPolicy: Always
+  tag: "latest-develop"
+
+imagePullSecrets:
+  - name: edc-dev-management-github-registry-auth
+
+ingress:
+  enabled: true
+  hosts:
+    - host: management.consumer.edc.dev.possible-x.de
+      paths:
+        - path: /
+          portNumber: 80
+          pathType: Prefix
+  tls:
+    - secretName: dev-consumer-edc-management-tls
+      hosts:
+      - management.consumer.edc.dev.possible-x.de
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
