@@ -32,8 +32,7 @@ public class ProviderService {
         DataAddress dataAddress = IonosS3DataSource.builder()
                 .bucketName("dev-provider-edc-bucket-possible-31952746")
                 .blobName("ssss.txt")
-                .name("device1-data.csv")
-                .container("company1")
+                .keyName("device1-data.csv")
                 .storage("s3-eu-central-2.ionoscloud.com")
                 .build();
 

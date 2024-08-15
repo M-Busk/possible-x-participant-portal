@@ -12,6 +12,9 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
+ * Modifications:
+ * - Dataport (part of the POSSIBLE project) - 14 August, 2024 - Adjust package names and imports
  */
 
 package eu.possible_x.edc_orchestrator.entities.edc.asset.ionoss3extension;
