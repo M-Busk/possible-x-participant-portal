@@ -79,3 +79,5 @@ out/
 ### VS Code ###
 .vscode/
 
+### Kubernetes Secrets ###
+deployment/edc-dev-management-github-registry-auth-secret.yaml
