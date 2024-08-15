@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { ProvideComponent } from './provide.component';
 import { ApiService } from '../../../services/mgmt/api/api.service';
+import { GridModule } from '@coreui/angular';
+import { FormsModule } from '@angular/forms';
 
 describe('ProvideComponent', () => {
   let component: ProvideComponent;
@@ -15,7 +17,8 @@ describe('ProvideComponent', () => {
       declarations: [ProvideComponent],
       providers: [
         { provide: ApiService, useValue: apiServiceSpy }
-      ]
+      ],
+      imports: [ FormsModule, GridModule ],
     })
     .compileComponents();
 
