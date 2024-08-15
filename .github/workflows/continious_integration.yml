@@ -71,4 +71,4 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
-          args: "set image deployment/edc-management-possible-x-edc-management -n edc-dev-consumer-management possible-x-edc-management=${{ env.REGISTRY }}/possible-x/management:${{ github.sha }}"
+          args: "set image deployment/edc-management-possible-x-edc-management -n edc-dev-provider-management possible-x-edc-management=${{ env.REGISTRY }}/possible-x/management:${{ github.sha }}"
