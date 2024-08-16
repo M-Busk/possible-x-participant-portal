@@ -6,10 +6,7 @@ import eu.possible_x.edc_orchestrator.service.ProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/provider")
@@ -42,5 +39,16 @@ public class ProviderController {
   public String createOffer() {
     IdResponse response = providerService.createOffer();
     return "{\"id\": \"" + response.getId() + "\"}";
+  }
+
+  /**
+   * POST endpoint to add Dataset to Fraunhofer Catalog
+   *
+   * @return unknown
+   */
+  @PostMapping(value = "/catalogues/{cat_name}/dataset", produces = MediaType.ALL_VALUE)
+  public String addDatasetToCatalog(@PathVariable String cat_name) {
+    String response = providerService.createDatasetEntryInFhCatalog(cat_name);
+    return response;
   }
 }

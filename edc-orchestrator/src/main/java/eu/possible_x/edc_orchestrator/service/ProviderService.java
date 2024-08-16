@@ -9,6 +9,10 @@ import eu.possible_x.edc_orchestrator.entities.edc.contractdefinition.ContractDe
 import eu.possible_x.edc_orchestrator.entities.edc.contractdefinition.Criterion;
 import eu.possible_x.edc_orchestrator.entities.edc.policy.Policy;
 import eu.possible_x.edc_orchestrator.entities.edc.policy.PolicyCreateRequest;
+import eu.possible_x.edc_orchestrator.entities.fh.catalog.DatasetToCatalogRequest;
+import eu.possible_x.edc_orchestrator.entities.fh.catalog.DctDescription;
+import eu.possible_x.edc_orchestrator.entities.fh.catalog.DctTitle;
+import eu.possible_x.edc_orchestrator.entities.fh.catalog.Graph;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +26,11 @@ import java.util.UUID;
 public class ProviderService {
 
     private final EdcClient edcClient;
+    private final FhCatalogClient fhCatalogClient;
 
-    public ProviderService(@Autowired EdcClient edcClient) {
+    public ProviderService(@Autowired EdcClient edcClient, FhCatalogClient fhCatalogClient) {
         this.edcClient = edcClient;
+        this.fhCatalogClient = fhCatalogClient;
     }
 
     public IdResponse createOffer() {
@@ -80,5 +86,24 @@ public class ProviderService {
                 .build();
         log.info("Creating Contract Definition {}", contractDefinitionCreateRequest);
         return edcClient.createContractDefinition(contractDefinitionCreateRequest);
+    }
+
+    public String createDatasetEntryInFhCatalog(String cat_name) {
+        DatasetToCatalogRequest datasetToCatalogRequest = DatasetToCatalogRequest.builder()
+                .graph(Graph.builder()
+                        .description(DctDescription.builder()
+                                .language("en")
+                                .value("asdfgh")
+                                .build())
+                        .title(DctTitle.builder()
+                                .language("en")
+                                .value("testtitle124")
+                                .build())
+                        .build())
+                .build();
+        String valueType = "identifiers";
+        log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequest);
+        String response = fhCatalogClient.addDatasetToFhCatalog(datasetToCatalogRequest, cat_name, valueType);
+        return response;
     }
 }
