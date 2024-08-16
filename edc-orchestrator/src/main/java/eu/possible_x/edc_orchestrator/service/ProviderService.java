@@ -28,7 +28,7 @@ public class ProviderService {
     private final EdcClient edcClient;
     private final FhCatalogClient fhCatalogClient;
 
-    public ProviderService(@Autowired EdcClient edcClient, FhCatalogClient fhCatalogClient) {
+    public ProviderService(@Autowired EdcClient edcClient, @Autowired FhCatalogClient fhCatalogClient) {
         this.edcClient = edcClient;
         this.fhCatalogClient = fhCatalogClient;
     }
