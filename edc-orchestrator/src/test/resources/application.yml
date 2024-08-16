@@ -1,0 +1,7 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+edc:
+  x-api-key: test
+  mgmt-base-url: test

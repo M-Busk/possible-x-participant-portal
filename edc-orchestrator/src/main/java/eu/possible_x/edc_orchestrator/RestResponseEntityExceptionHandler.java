@@ -24,7 +24,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         ExceptionTO exceptionTo = new ExceptionTO(httpStatusCode.value(), body);
         try {
             String exceptionToJson = om.writeValueAsString(exceptionTo);
-            log.info("exceptionHandler");
             log.info(exceptionToJson);
             return new ResponseEntity<>(exceptionToJson,httpStatusCode);
         } catch (JsonProcessingException e) {

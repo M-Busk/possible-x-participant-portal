@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule , FormsModule } from '@angular/forms';
 
 import {
   AvatarModule,
@@ -37,6 +37,7 @@ import { ConsumeComponent } from './consume/consume.component';
     ButtonGroupModule,
     AvatarModule,
     TableModule,
+    FormsModule, 
   ],
   declarations: [ProvideComponent, ConsumeComponent],
 })

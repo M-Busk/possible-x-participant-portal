@@ -45,7 +45,7 @@
             "scripts": []
           },
           "configurations": {
-            "production": {
+            "dev": {
               "budgets": [
                 {
                   "type": "initial",
@@ -58,27 +58,33 @@
                   "maximumError": "4kB"
                 }
               ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
               "outputHashing": "all"
             },
-            "development": {
+            "local": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "local"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": {
-              "buildTarget": "consumer-provider-frontend:build:production"
+            "dev": {
+              "buildTarget": "consumer-provider-frontend:build:dev"
             },
-            "development": {
-              "buildTarget": "consumer-provider-frontend:build:development"
+            "local": {
+              "buildTarget": "consumer-provider-frontend:build:local"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "local"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
