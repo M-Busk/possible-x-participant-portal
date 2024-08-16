@@ -39,8 +39,8 @@ public class ProviderController {
    * @return success message
    */
   @PostMapping(value = "/offer", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<String> createOffer() {
+  public String createOffer() {
     IdResponse response = providerService.createOffer();
-    return ResponseEntity.ok("{\"id\": \"" + response.getId() + "\"}");
+    return "{\"id\": \"" + response.getId() + "\"}";
   }
 }
