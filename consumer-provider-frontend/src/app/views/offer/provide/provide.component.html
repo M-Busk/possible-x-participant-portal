@@ -22,6 +22,10 @@
                     Create Offer
                 </button>
             </div>
+            <app-status-message [successMessage]="'Offer creation successful.'"
+                [errorMessage]="'Offer creation failed.'"
+                [infoMessage]="'Offer creation ongoing'" #offerCreationStatusMessage>
+            </app-status-message>
         </c-container>
     </div>
 </div>
