@@ -13,6 +13,7 @@ import eu.possible_x.edc_orchestrator.entities.edc.policy.PolicyCreateRequest;
 import eu.possible_x.edc_orchestrator.entities.fh.catalog.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,12 +27,17 @@ public class ProviderService {
     private final EdcClient edcClient;
     private final FhCatalogClient fhCatalogClient;
 
+    @Value("${fh.catalog-secret-key}")
+    private String fhCatalogSecretKey;
+
     public ProviderService(@Autowired EdcClient edcClient, @Autowired FhCatalogClient fhCatalogClient) {
         this.edcClient = edcClient;
         this.fhCatalogClient = fhCatalogClient;
     }
 
     public IdResponse createOffer() {
+
+        createDatasetEntryInFhCatalog("test-provider");
 
         DataAddress dataAddress = IonosS3DataSource.builder()
                 .bucketName("dev-provider-edc-bucket-possible-31952746")
@@ -116,11 +122,11 @@ public class ProviderService {
                                 .legal("Legal Stuff")
                                 .build()))
                 .build();
-        String secret = System.getenv("CATALOG_SECRET_KEY");
+
         String value_type = "identifiers";
         Map<String, String> auth = Map.of(
                 "Content-Type", "application/json",
-                "Authorization", secret);
+                "Authorization", fhCatalogSecretKey);
         log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequest);
         String response = fhCatalogClient.addDatasetToFhCatalog(auth, datasetToCatalogRequest, cat_name, value_type);
         log.info("Response: {}", response);
