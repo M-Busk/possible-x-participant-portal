@@ -1,5 +1,6 @@
 package eu.possible_x.edc_orchestrator.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.possible_x.edc_orchestrator.entities.edc.asset.AssetCreateRequest;
 import eu.possible_x.edc_orchestrator.entities.edc.asset.AssetProperties;
 import eu.possible_x.edc_orchestrator.entities.edc.asset.DataAddress;
@@ -17,9 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -88,7 +92,8 @@ public class ProviderService {
         return edcClient.createContractDefinition(contractDefinitionCreateRequest);
     }
 
-    public String createDatasetEntryInFhCatalog(String cat_name) {
+    public String createDatasetEntryInFhCatalog() {
+        ObjectMapper om = new ObjectMapper();
         DatasetToCatalogRequest datasetToCatalogRequest = DatasetToCatalogRequest.builder()
                 .graph(Graph.builder()
                         .description(DctDescription.builder()
@@ -97,13 +102,22 @@ public class ProviderService {
                                 .build())
                         .title(DctTitle.builder()
                                 .language("en")
-                                .value("testtitle124")
+                                .value("cengizTestTitle")
                                 .build())
                         .build())
                 .build();
-        String valueType = "identifiers";
-        log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequest);
-        String response = fhCatalogClient.addDatasetToFhCatalog(datasetToCatalogRequest, cat_name, valueType);
+        String datasetToCatalogRequestJson;
+        try {
+            datasetToCatalogRequestJson = om.writeValueAsString(datasetToCatalogRequest);
+        } catch (JsonProcessingException e) {
+            datasetToCatalogRequestJson = "";
+        }
+        Map<String, String> auth = Map.of(
+                "Content-Type", "application/json"
+                );
+        log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequestJson);
+        String response = fhCatalogClient.addDatasetToFhCatalog(auth, "{}");
+        log.info("Response: {}", response);
         return response;
     }
 }

@@ -46,9 +46,9 @@ public class ProviderController {
    *
    * @return unknown
    */
-  @PostMapping(value = "/catalogues/{cat_name}/dataset", produces = MediaType.ALL_VALUE)
-  public String createDatasetEntryInFhCatalog(@PathVariable String cat_name) {
-    String response = providerService.createDatasetEntryInFhCatalog(cat_name);
+  @PostMapping(value = "/catalogues", produces = MediaType.ALL_VALUE)
+  public String createDatasetEntryInFhCatalog() {
+    String response = providerService.createDatasetEntryInFhCatalog();
     return response;
   }
 }

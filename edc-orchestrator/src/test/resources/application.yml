@@ -5,3 +5,6 @@ spring:
 edc:
   x-api-key: test
   mgmt-base-url: test
+
+fh:
+  catalog-url: https://possible.fokus.fraunhofer.de/api/hub/repo
