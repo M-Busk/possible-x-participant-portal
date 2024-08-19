@@ -19,4 +19,8 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/provider/offer`, null);
   }
 
+  acceptContractOffer(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/consumer/acceptContractOffer`, null);
+  }
+
 }
