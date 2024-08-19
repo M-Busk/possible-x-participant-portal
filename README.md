@@ -37,3 +37,5 @@ java -jar edc-orchestrator/build/libs/edc-orchestrator-x.y.z.jar
 ```
 
 Once the service is running, you can access it at http://localhost:8080/ .
+
+The OpenAPI documentation can be found at http://localhost:8080/swagger-ui.html .
