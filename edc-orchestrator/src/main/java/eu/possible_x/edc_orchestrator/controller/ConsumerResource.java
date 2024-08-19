@@ -1,7 +1,7 @@
 package eu.possible_x.edc_orchestrator.controller;
 
 
-import eu.possible_x.edc_orchestrator.entities.edc.common.IdResponse;
+import eu.possible_x.edc_orchestrator.entities.edc.asset.ionoss3extension.IonosS3DataAddress;
 import eu.possible_x.edc_orchestrator.service.ConsumerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,13 +20,13 @@ public class ConsumerResource {
   }
 
   /**
-   * POST endpoint to accept a contract offer
+   * POST endpoint to accept a Contract Offer
    *
-   * @return ID of the Response from the EDC
+   * @return Data Address of the transferred data
    */
   @PostMapping(value = "/acceptContractOffer", produces = MediaType.APPLICATION_JSON_VALUE)
   public String acceptContractOffer() {
-    IdResponse response = consumerService.acceptContractOffer();
-    return "{\"id\": \"" + response.getId() + "\"}";
+    IonosS3DataAddress dataAddress = consumerService.acceptContractOffer();
+    return "{\"dataAddress\": \"" + dataAddress + "\"}";
   }
 }
