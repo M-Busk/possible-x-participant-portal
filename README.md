@@ -9,6 +9,7 @@ The repository is structured as a Gradle multi-project build.
 
 ```
 (...)
+├── libs.versions.toml          # configuration file of version catalog for dependencies
 ├── settings.gradle.kts         # root project settings
 ├── buildSrc/                   # shared build configuration
 ├── consumer-provider-frontend/ # Angular frontend code for the GUI
