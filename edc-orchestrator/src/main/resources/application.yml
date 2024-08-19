@@ -16,4 +16,4 @@ edc:
   mgmt-base-url: http://localhost:19193/management
 
 fh:
-  catalog-url: https://possible.fokus.fraunhofer.de/api/hub/repo/catalogues/test-provider/datasets?valueType=identifiers
+  catalog-url: https://possible.fokus.fraunhofer.de/api/hub/repo

@@ -29,8 +29,8 @@ import org.springframework.web.service.annotation.PostExchange;
 import java.util.Map;
 
 public interface FhCatalogClient {
-    @PostExchange("")
-    String addDatasetToFhCatalog(@RequestHeader Map<String, String> auth, @RequestBody String datasetToCatalogRequest);
+    @PostExchange("/catalogues/{cat_name}/datasets")
+    String addDatasetToFhCatalog(@RequestHeader Map<String, String> auth, @RequestBody DatasetToCatalogRequest datasetToCatalogRequest, @PathVariable String cat_name, @RequestParam String value_type);
 
 }
 

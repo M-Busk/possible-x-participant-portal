@@ -10,20 +10,14 @@ import eu.possible_x.edc_orchestrator.entities.edc.contractdefinition.ContractDe
 import eu.possible_x.edc_orchestrator.entities.edc.contractdefinition.Criterion;
 import eu.possible_x.edc_orchestrator.entities.edc.policy.Policy;
 import eu.possible_x.edc_orchestrator.entities.edc.policy.PolicyCreateRequest;
-import eu.possible_x.edc_orchestrator.entities.fh.catalog.DatasetToCatalogRequest;
-import eu.possible_x.edc_orchestrator.entities.fh.catalog.DctDescription;
-import eu.possible_x.edc_orchestrator.entities.fh.catalog.DctTitle;
-import eu.possible_x.edc_orchestrator.entities.fh.catalog.Graph;
+import eu.possible_x.edc_orchestrator.entities.fh.catalog.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -92,31 +86,43 @@ public class ProviderService {
         return edcClient.createContractDefinition(contractDefinitionCreateRequest);
     }
 
-    public String createDatasetEntryInFhCatalog() {
+    public String createDatasetEntryInFhCatalog(String cat_name) {
         ObjectMapper om = new ObjectMapper();
         DatasetToCatalogRequest datasetToCatalogRequest = DatasetToCatalogRequest.builder()
-                .graph(Graph.builder()
-                        .description(DctDescription.builder()
-                                .language("en")
-                                .value("asdfgh")
-                                .build())
-                        .title(DctTitle.builder()
-                                .language("en")
-                                .value("cengizTestTitle")
-                                .build())
-                        .build())
+                .graphElements(List.of(
+                        GraphFirstElement.builder()
+                                .id("https://piveau.io/set/distribution/6c2122e6-59d6-4342-ada9-a2f336450add")
+                                .type("dcat:Distribution")
+                                .title("my_file.pdf")
+                                .accessURL(AccessURL.builder()
+                                        .id("http://85.215.193.145:9192/my_access_url")
+                                        .build())
+                                .build(),
+                        GraphSecondElement.builder()
+                                .framework(GaxTrustFramework.builder()
+                                        .id("https://provider-edc-url")
+                                        .build())
+                                .title(DctTitle.builder()
+                                        .language("en")
+                                        .value("cengizTestTitle")
+                                        .build())
+                                .distribution(DcatDistribution.builder()
+                                        .id("https://piveau.io/set/distribution/6c2122e6-59d6-4342-ada9-a2f336450add")
+                                        .build())
+                                .description(DctDescription.builder()
+                                        .language("en")
+                                        .value("asdfgh")
+                                        .build())
+                                .legal("Legal Stuff")
+                                .build()))
                 .build();
-        String datasetToCatalogRequestJson;
-        try {
-            datasetToCatalogRequestJson = om.writeValueAsString(datasetToCatalogRequest);
-        } catch (JsonProcessingException e) {
-            datasetToCatalogRequestJson = "";
-        }
+        String secret = System.getenv("CATALOG_SECRET_KEY");
+        String value_type = "identifiers";
         Map<String, String> auth = Map.of(
-                "Content-Type", "application/json"
-                );
-        log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequestJson);
-        String response = fhCatalogClient.addDatasetToFhCatalog(auth, "{}");
+                "Content-Type", "application/json",
+                "Authorization", secret);
+        log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequest);
+        String response = fhCatalogClient.addDatasetToFhCatalog(auth, datasetToCatalogRequest, cat_name, value_type);
         log.info("Response: {}", response);
         return response;
     }

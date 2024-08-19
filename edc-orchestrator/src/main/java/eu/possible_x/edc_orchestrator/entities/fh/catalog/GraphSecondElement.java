@@ -13,15 +13,25 @@ import java.util.ArrayList;
 @Setter
 @ToString
 @Builder
-public class Graph {
+public class GraphSecondElement {
     private static final ArrayList<String> TYPE = FhConstants.FH_TYPE_DATASET;
+
+    @JsonProperty("http://w3id.org/gaia-x/gax-trust-framework#exposedThrough")
+    private GaxTrustFramework framework;
 
     @JsonProperty("@type")
     public ArrayList<String> getType() {
         return TYPE;
     }
-    @JsonProperty("dct:description")
-    private DctDescription description;
+
     @JsonProperty("dct:title")
     private DctTitle title;
+
+    @JsonProperty("dcat:distribution")
+    private DcatDistribution distribution;
+    @JsonProperty("dct:description")
+    private DctDescription description;
+
+    @JsonProperty("http://w3id.org/gaia-x/gax-trust-framework#legalBasis")
+    private String legal;
 }

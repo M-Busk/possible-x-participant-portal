@@ -36,8 +36,9 @@ public class AppConfigurer {
 
     @Bean
     public FhCatalogClient fhCatalogClient() {
+        String fhURL = System.getenv("CATALOG_URL");
         WebClient webClient = WebClient.builder()
-                .baseUrl(fhCatalogUrl)
+                .baseUrl(fhURL)
                 .build();
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
                 .builder()
