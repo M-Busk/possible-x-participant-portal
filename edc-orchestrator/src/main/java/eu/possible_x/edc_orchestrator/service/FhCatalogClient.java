@@ -19,7 +19,6 @@
 
 package eu.possible_x.edc_orchestrator.service;
 
-import eu.possible_x.edc_orchestrator.entities.edc.common.IdResponse;
 import eu.possible_x.edc_orchestrator.entities.fh.catalog.DatasetToCatalogRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.PostExchange;
 
 public interface FhCatalogClient {
-    @PostExchange("api/hub/repo/catalogues/{cat_name}/datasets")
+    @PostExchange("/catalogues/{cat_name}/datasets")
     String addDatasetToFhCatalog(@RequestBody DatasetToCatalogRequest datasetToCatalogRequest, @PathVariable String cat_name, @RequestParam String valueType);
 
 }

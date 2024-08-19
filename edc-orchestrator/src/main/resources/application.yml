@@ -14,3 +14,6 @@ management:
 edc:
   x-api-key: 5678
   mgmt-base-url: http://localhost:19193/management
+
+fh:
+  catalog-url: https://possible.fokus.fraunhofer.de/api/hub/repo
