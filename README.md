@@ -25,10 +25,15 @@ If you only want to build the project, you can run
 ```
 after which the built jar can be found at `edc-orchestrator/build/libs/edc-orchestrator-x.y.z.jar`
 
-## Run
+## Run EDC Orchestrator
 Through gradle:
 ```
 ./gradlew bootRun
+```
+
+Running a specific configuration (e.g. for local consumer)
+```
+./gradlew bootRun --args='--spring.profiles.active=consumer-local'
 ```
 
 Alternatively running the jar directly (if built previously):
@@ -36,4 +41,19 @@ Alternatively running the jar directly (if built previously):
 java -jar edc-orchestrator/build/libs/edc-orchestrator-x.y.z.jar
 ```
 
-Once the service is running, you can access it at http://localhost:8080/ .
+Once the service is running, you can access it at e.g. http://localhost:8080/ (depending on the used configuration).
+
+## Run Consumer/Provider Frontend
+Consumer (local testing):
+```
+cd consumer-provider-frontend/
+npm run ng -- serve --configuration consumer-local --port 4201
+```
+
+Provider (local testing):
+```
+cd consumer-provider-frontend/
+npm run ng -- serve --configuration provider-local --port 4200
+```
+
+Once the service is running, you can access it at e.g. http://localhost:4200/  (depending on the used configuration).
