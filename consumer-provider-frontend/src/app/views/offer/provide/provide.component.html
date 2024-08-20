@@ -1,7 +1,6 @@
 <div class="flex items-center justify-center min-h-screen"> <!-- Full-page flex container -->
     <div class="p-6 w-full max-w-3xl"> <!-- Centered form container with fixed max width -->
-        <c-container fluid class="justify-content-center">
-
+        <c-container fluid class="flex justify-center">
             <div class="flex flex-wrap gap-4">
                 <div class="mb-3 flex-1">
                     <label class="form-label">Offer Type</label>
@@ -21,6 +20,15 @@
                 <button type="submit" cButton shape="rounded-0" color="primary" (click)="createOffer(); createCatalogEntry()">
                     Create Offer
                 </button>
+            </div>
+
+            <div class="flex justify-center mt-3">
+                <app-status-message
+                    [successMessage]="'Offer creation successful.'"
+                    [errorMessage]="'Offer creation failed.'"
+                    [infoMessage]="'Offer creation ongoing.'"
+                    #offerCreationStatusMessage>
+                </app-status-message>
             </div>
         </c-container>
     </div>

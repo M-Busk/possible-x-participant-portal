@@ -9,6 +9,7 @@ The repository is structured as a Gradle multi-project build.
 
 ```
 (...)
+├── libs.versions.toml          # configuration file of version catalog for dependencies
 ├── settings.gradle.kts         # root project settings
 ├── buildSrc/                   # shared build configuration
 ├── consumer-provider-frontend/ # Angular frontend code for the GUI
@@ -37,3 +38,5 @@ java -jar edc-orchestrator/build/libs/edc-orchestrator-x.y.z.jar
 ```
 
 Once the service is running, you can access it at http://localhost:8080/ .
+
+The OpenAPI documentation can be found at http://localhost:8080/swagger-ui.html .
