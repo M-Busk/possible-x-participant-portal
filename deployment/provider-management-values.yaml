@@ -28,5 +28,6 @@ application:
     - name: management-variables
       data:
         SPRING_PROFILES_ACTIVE: dev 
+        CATALOG_URL: https://possible.fokus.fraunhofer.de/api/hub/repo/catalogues/test-provider/datasets?valueType=identifiers
   secrets:
     - management-secrets
