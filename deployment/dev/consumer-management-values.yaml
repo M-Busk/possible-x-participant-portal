@@ -8,15 +8,15 @@ imagePullSecrets:
 ingress:
   enabled: true
   hosts:
-    - host: management.provider.edc.dev.possible-x.de
+    - host: management.consumer.edc.dev.possible-x.de
       paths:
         - path: /
           portNumber: 80
           pathType: Prefix
   tls:
-    - secretName: dev-provider-edc-management-tls
+    - secretName: dev-consumer-edc-management-tls
       hosts:
-      - management.provider.edc.dev.possible-x.de
+      - management.consumer.edc.dev.possible-x.de
 
 service:
   type: NodePort
@@ -28,6 +28,6 @@ application:
     - name: management-variables
       data:
         SPRING_PROFILES_ACTIVE: dev 
-        CATALOG_URL: https://possible.fokus.fraunhofer.de/api/hub/repo/catalogues/test-provider/datasets?valueType=identifiers
+        FH_CATALOG_URL: https://possible.fokus.fraunhofer.de/api/hub/repo/catalogues/test-provider/datasets?valueType=identifiers
   secrets:
     - management-secrets
