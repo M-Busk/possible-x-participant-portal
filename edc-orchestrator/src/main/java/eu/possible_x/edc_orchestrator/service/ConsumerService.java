@@ -56,13 +56,13 @@ public class ConsumerService {
 
     // wait until FINALIZED
     ContractNegotiation contractNegotiation;
-    int negotiationAttempts = 0;
+    int negotiationCheckAttempts = 0;
     do {
       delayOneSecond();
       contractNegotiation = edcClient.checkOfferStatus(negotiation.getId());
       log.info("Negotiation {}", contractNegotiation);
-      negotiationAttempts += 1;
-      if (negotiationAttempts >= 15) {
+      negotiationCheckAttempts += 1;
+      if (negotiationCheckAttempts >= 15) {
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "failed to negotiate");
       }
     } while (!contractNegotiation.getState().equals("FINALIZED"));
