@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,12 +31,15 @@ class ProviderControllerTest {
 
   private static final String ASSET_NAME = "BestAsset3000";
   private static final String CREATE_OFFER_RESPONSE_ID = "abc123";
+  private static final String CREATE_DATASET_ENTRY_RESPONSE = "response";
 
   @BeforeEach
   public void beforeEach() {
     IdResponse createOfferResponse = new IdResponse();
     createOfferResponse.setId(CREATE_OFFER_RESPONSE_ID);
     lenient().when(providerService.createOffer()).thenReturn(createOfferResponse);
+
+    lenient().when(providerService.createDatasetEntryInFhCatalog(any())).thenReturn(CREATE_DATASET_ENTRY_RESPONSE);
   }
 
   @Test
@@ -62,6 +66,17 @@ class ProviderControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("{\"id\": \"" + CREATE_OFFER_RESPONSE_ID + "\"}")));
+  }
+
+  @Test
+  void shouldReturnMessageOnCreateDatasetEntryInFhCatalog() throws Exception {
+    //when
+    //then
+    this.mockMvc.perform(post("/provider/catalogues/test")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString(CREATE_DATASET_ENTRY_RESPONSE)));
   }
 
   public static String asJsonString(final Object obj) {
