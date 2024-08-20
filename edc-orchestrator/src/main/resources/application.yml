@@ -16,5 +16,6 @@ edc:
   mgmt-base-url: http://localhost:19193/management
 
 fh:
-  catalog-url: url
-  catalog-secret-key: key
+  catalog:
+    url: url
+    secret-key: secret

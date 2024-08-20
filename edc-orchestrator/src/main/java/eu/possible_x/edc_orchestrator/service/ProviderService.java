@@ -1,6 +1,5 @@
 package eu.possible_x.edc_orchestrator.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import eu.possible_x.edc_orchestrator.entities.edc.asset.AssetCreateRequest;
 import eu.possible_x.edc_orchestrator.entities.edc.asset.AssetProperties;
 import eu.possible_x.edc_orchestrator.entities.edc.asset.DataAddress;
@@ -16,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.*;
 
 @Service
@@ -27,7 +24,7 @@ public class ProviderService {
     private final EdcClient edcClient;
     private final FhCatalogClient fhCatalogClient;
 
-    @Value("${fh.catalog-secret-key}")
+    @Value("${fh.catalog.secret-key}")
     private String fhCatalogSecretKey;
 
     public ProviderService(@Autowired EdcClient edcClient, @Autowired FhCatalogClient fhCatalogClient) {
@@ -36,9 +33,6 @@ public class ProviderService {
     }
 
     public IdResponse createOffer() {
-
-        createDatasetEntryInFhCatalog("test-provider");
-
         DataAddress dataAddress = IonosS3DataSource.builder()
                 .bucketName("dev-provider-edc-bucket-possible-31952746")
                 .blobName("ssss.txt")
@@ -93,7 +87,6 @@ public class ProviderService {
     }
 
     public String createDatasetEntryInFhCatalog(String cat_name) {
-        ObjectMapper om = new ObjectMapper();
         DatasetToCatalogRequest datasetToCatalogRequest = DatasetToCatalogRequest.builder()
                 .graphElements(List.of(
                         GraphFirstElement.builder()
@@ -109,15 +102,15 @@ public class ProviderService {
                                         .id("https://provider-edc-url")
                                         .build())
                                 .title(DctTitle.builder()
-                                        .language("en")
-                                        .value("cengizTestTitle")
+                                        .language("de")
+                                        .value("Schulstandorte Hamburg")
                                         .build())
                                 .distribution(DcatDistribution.builder()
                                         .id("https://piveau.io/set/distribution/6c2122e6-59d6-4342-ada9-a2f336450add")
                                         .build())
                                 .description(DctDescription.builder()
-                                        .language("en")
-                                        .value("asdfgh")
+                                        .language("de")
+                                        .value("Für jede Schule und ggf. ihre Zweigstellen werden dargestellt: - Geoposition und ggf. - Adresse (Straße, Hausnummer, PLZ, Ort) - Kontaktdaten (Telefon, E-Mail-Funktionspostfach, Fax, Homepage) - Schulmerkmale (Schulnummer, Zweigstelle ja/nein, Schulform nach Haushaltskapitel, Erwachsenenbildung ja/nein, Telefonnummer der Schulaufsicht, zugehöriger ReBBZ-Standort) - Zahl der Schüler")
                                         .build())
                                 .legal("Legal Stuff")
                                 .build()))

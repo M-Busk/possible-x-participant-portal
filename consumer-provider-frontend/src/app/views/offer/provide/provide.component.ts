@@ -23,4 +23,10 @@ export class ProvideComponent {
       console.log(response);
     });
   }
+
+  createCatalogEntry(): void {
+    this.apiService.createCatalogEntry().subscribe(response => {
+      console.log(response);
+    });
+  }
 }

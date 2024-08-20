@@ -13,7 +13,7 @@ describe('ProvideComponent', () => {
 
 
   beforeEach(async () => {
-    const apiServiceSpy = jasmine.createSpyObj('ApiService', ['getHealth', 'createOffer']);
+    const apiServiceSpy = jasmine.createSpyObj('ApiService', ['getHealth', 'createOffer', 'createCatalogEntry']);
 
 
     await TestBed.configureTestingModule({
@@ -49,5 +49,11 @@ describe('ProvideComponent', () => {
     apiService.createOffer.and.returnValue(of({ id: '123' }));
     component.createOffer();
     expect(apiService.createOffer).toHaveBeenCalled();
+  });
+
+  it('should call createCatalogEntry on apiService when createCatalogEntry is called', () => {
+    apiService.createCatalogEntry;
+    component.createCatalogEntry();
+    expect(apiService.createCatalogEntry).toHaveBeenCalled();
   });
 });

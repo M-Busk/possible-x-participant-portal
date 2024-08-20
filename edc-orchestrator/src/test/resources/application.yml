@@ -7,4 +7,6 @@ edc:
   mgmt-base-url: test
 
 fh:
-  catalog-url: https://possible.fokus.fraunhofer.de/api/hub/repo
+  catalog:
+    url: test
+    secret-key: test

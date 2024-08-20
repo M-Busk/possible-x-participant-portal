@@ -18,7 +18,7 @@ public class AppConfigurer {
     @Value("${edc.mgmt-base-url}")
     private String edcMgmtUrl;
 
-    @Value("${fh.catalog-url}")
+    @Value("${fh.catalog.url}")
     private String fhCatalogUrl;
 
     @Bean
