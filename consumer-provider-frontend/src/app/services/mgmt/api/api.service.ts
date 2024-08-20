@@ -22,7 +22,7 @@ export class ApiService {
 
   acceptContractOffer(): Observable<any> {
     let request: ConsumeOfferRequest = {
-      counterPartyAddress: "http://localhost:19194/protocol"
+      counterPartyAddress: environment.counter_party_address
     }
 
     return this.http.post(`${this.baseUrl}/consumer/acceptContractOffer`, request);
