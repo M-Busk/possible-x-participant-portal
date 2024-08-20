@@ -128,7 +128,7 @@ public class ProviderService {
                 "Authorization", fhCatalogSecretKey);
         log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequest);
         FhIdResponse response = fhCatalogClient.addDatasetToFhCatalog(auth, datasetToCatalogRequest, cat_name, value_type);
-        log.info("Response: {}", response.getId());
+        log.info("Response from FH Catalog: {}", response.getId());
         return response;
     }
 }

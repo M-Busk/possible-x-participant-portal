@@ -19,18 +19,16 @@
 
 package eu.possible_x.edc_orchestrator.entities.fh;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FhIdResponse {
 
     private String id;
-
-    public FhIdResponse(String id) {
-        this.id = id;
-    }
-    public FhIdResponse() {
-    }
 }
