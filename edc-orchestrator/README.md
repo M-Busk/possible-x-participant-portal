@@ -53,7 +53,8 @@ after which the built jar can be found at `edc-orchestrator/build/libs/edc-orche
 ```
 export EDC_XAPIKEY="EDC X-API-Key"
 export EDC_MGMTBASEURL="EDC management URL"
-export FH_CATALOGUEURL="Fraunhofer catalogue URL"
+export FH_CATALOG_URL="Fraunhofer catalogue URL"
+export FH_CATALOG_SECRETKEY="secret key"
 ```
 
 Through gradle:
