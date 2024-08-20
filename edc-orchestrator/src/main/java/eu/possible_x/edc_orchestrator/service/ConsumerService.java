@@ -31,6 +31,12 @@ public class ConsumerService {
     this.edcClient = edcClient;
   }
 
+  /**
+   * Given a request for consuming an offer, perform the necessary steps on the EDC to transfer the data.
+   *
+   * @param request request for consuming an offer
+   * @return data address in the transfer response (TBR)
+   */
   public IonosS3DataAddress acceptContractOffer(ConsumeOfferRequest request) {
 
     // query catalog (take first entry)
