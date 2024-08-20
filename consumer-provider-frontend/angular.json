@@ -70,6 +70,28 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "consumer-local": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.consumer-local.ts"
+                }
+              ],
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            },
+            "provider-local": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.provider-local.ts"
+                }
+              ],
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "dev"
@@ -82,6 +104,12 @@
             },
             "local": {
               "buildTarget": "consumer-provider-frontend:build:local"
+            },
+            "consumer-local": {
+              "buildTarget": "consumer-provider-frontend:build:consumer-local"
+            },
+            "provider-local": {
+              "buildTarget": "consumer-provider-frontend:build:provider-local"
             }
           },
           "defaultConfiguration": "local"

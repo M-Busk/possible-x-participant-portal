@@ -1,5 +1,6 @@
 package eu.possible_x.edc_orchestrator.service;
 
+import eu.possible_x.edc_orchestrator.entities.ConsumeOfferRequest;
 import eu.possible_x.edc_orchestrator.entities.edc.asset.ionoss3extension.IonosS3DataAddress;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,10 @@ class ConsumerServiceTest {
 
   @Test
   void shouldAcceptContractOffer() {
-    IonosS3DataAddress response = consumerService.acceptContractOffer();
+    IonosS3DataAddress response = consumerService.acceptContractOffer(ConsumeOfferRequest
+        .builder()
+        .counterPartyAddress("http://example.com")
+        .build());
 
     assertNotNull(response);
   }

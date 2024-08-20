@@ -22,12 +22,14 @@ package eu.possible_x.edc_orchestrator.entities.edc.negotiation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
+@ToString
 public class ContractNegotiation {
     @JsonProperty("@type")
     private String type;
