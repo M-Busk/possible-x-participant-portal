@@ -95,7 +95,7 @@ public class ConsumerService {
       if (transferCheckAttempts >= 15) {
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "failed to transfer");
       }
-    } while (!transferProcess.getState().equals("FINALIZED"));
+    } while (!transferProcess.getState().equals("COMPLETED"));
 
     return transferProcess.getDataDestination();
   }
