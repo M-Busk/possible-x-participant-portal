@@ -35,10 +35,4 @@ export class ProvideComponent {
       this.offerCreationStatusMessage.showErrorMessage(e.error.message);
     });
   }
-
-  createCatalogEntry(): void {
-    this.apiService.createCatalogEntry().subscribe(response => {
-      console.log(response);
-    });
-  }
 }

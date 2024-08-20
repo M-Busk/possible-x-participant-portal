@@ -9,6 +9,7 @@ import eu.possible_x.edc_orchestrator.entities.edc.contractdefinition.ContractDe
 import eu.possible_x.edc_orchestrator.entities.edc.contractdefinition.Criterion;
 import eu.possible_x.edc_orchestrator.entities.edc.policy.Policy;
 import eu.possible_x.edc_orchestrator.entities.edc.policy.PolicyCreateRequest;
+import eu.possible_x.edc_orchestrator.entities.fh.FhIdResponse;
 import eu.possible_x.edc_orchestrator.entities.fh.catalog.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,11 @@ public class ProviderService {
     }
 
     public IdResponse createOffer() {
+        createDatasetEntryInFhCatalog("test-provider");
+        return createEdcOffer();
+
+    }
+    private IdResponse createEdcOffer() {
         DataAddress dataAddress = IonosS3DataSource.builder()
                 .bucketName("dev-provider-edc-bucket-possible-31952746")
                 .blobName("ssss.txt")
@@ -86,7 +92,7 @@ public class ProviderService {
         return edcClient.createContractDefinition(contractDefinitionCreateRequest);
     }
 
-    public String createDatasetEntryInFhCatalog(String cat_name) {
+    private FhIdResponse createDatasetEntryInFhCatalog(String cat_name) {
         DatasetToCatalogRequest datasetToCatalogRequest = DatasetToCatalogRequest.builder()
                 .graphElements(List.of(
                         GraphFirstElement.builder()
@@ -121,8 +127,8 @@ public class ProviderService {
                 "Content-Type", "application/json",
                 "Authorization", fhCatalogSecretKey);
         log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequest);
-        String response = fhCatalogClient.addDatasetToFhCatalog(auth, datasetToCatalogRequest, cat_name, value_type);
-        log.info("Response: {}", response);
+        FhIdResponse response = fhCatalogClient.addDatasetToFhCatalog(auth, datasetToCatalogRequest, cat_name, value_type);
+        log.info("Response: {}", response.getId());
         return response;
     }
 }

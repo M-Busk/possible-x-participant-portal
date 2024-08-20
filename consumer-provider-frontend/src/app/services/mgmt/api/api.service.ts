@@ -19,8 +19,4 @@ export class ApiService {
     return await lastValueFrom(this.http.post(`${this.baseUrl}/provider/offer`, null));
   }
 
-  createCatalogEntry(): Observable<any> {
-    return this.http.post(`${this.baseUrl}/provider/catalogues/test-provider`, null);
-  }
-
 }

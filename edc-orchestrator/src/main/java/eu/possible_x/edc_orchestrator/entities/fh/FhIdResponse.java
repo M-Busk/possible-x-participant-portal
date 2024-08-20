@@ -17,21 +17,20 @@
  * - Dataport (part of the POSSIBLE project) - 14 August, 2024 - Adjust package names and imports
  */
 
-package eu.possible_x.edc_orchestrator.service;
+package eu.possible_x.edc_orchestrator.entities.fh;
 
-import eu.possible_x.edc_orchestrator.entities.fh.FhIdResponse;
-import eu.possible_x.edc_orchestrator.entities.fh.catalog.DatasetToCatalogRequest;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.service.annotation.PostExchange;
+import lombok.Getter;
 
 import java.util.Map;
 
-public interface FhCatalogClient {
-    @PostExchange("/catalogues/{cat_name}/datasets")
-    FhIdResponse addDatasetToFhCatalog(@RequestHeader Map<String, String> auth, @RequestBody DatasetToCatalogRequest datasetToCatalogRequest, @PathVariable String cat_name, @RequestParam String value_type);
+@Getter
+public class FhIdResponse {
 
+    private String id;
+
+    public FhIdResponse(String id) {
+        this.id = id;
+    }
+    public FhIdResponse() {
+    }
 }
-

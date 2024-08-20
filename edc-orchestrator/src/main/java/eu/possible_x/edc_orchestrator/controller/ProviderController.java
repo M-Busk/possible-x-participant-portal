@@ -41,14 +41,4 @@ public class ProviderController {
     return "{\"id\": \"" + response.getId() + "\"}";
   }
 
-  /**
-   * POST endpoint to add Dataset to Fraunhofer Catalog
-   *
-   * @return unknown
-   */
-  @PostMapping(value = "/catalogues/{cat_name}", produces = MediaType.ALL_VALUE)
-  public String createDatasetEntryInFhCatalog(@PathVariable String cat_name) {
-    String response = providerService.createDatasetEntryInFhCatalog(cat_name);
-    return response;
-  }
 }
