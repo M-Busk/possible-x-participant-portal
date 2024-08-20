@@ -30,7 +30,7 @@ export class ProvideComponent {
 
     this.apiService.createOffer().then(response => {
       console.log(response);
-      this.offerCreationStatusMessage.showSuccessMessage(`ID: ${response.id}`);
+      this.offerCreationStatusMessage.showSuccessMessage(`ID: ${response.id}`, 20000);
     }).catch((e: HttpErrorResponse) => {
       this.offerCreationStatusMessage.showErrorMessage(e.error.message);
     });
