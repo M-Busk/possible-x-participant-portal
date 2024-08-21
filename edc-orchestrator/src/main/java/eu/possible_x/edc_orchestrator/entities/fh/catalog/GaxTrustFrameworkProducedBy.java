@@ -6,15 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 @Getter
 @Setter
 @ToString
 @Builder
-public class GaxTrustFramework {
+public class GaxTrustFrameworkProducedBy {
     @JsonProperty("@id")
     private String id;
 }

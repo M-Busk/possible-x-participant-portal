@@ -10,17 +10,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class GraphFirstElement {
+public class DctPublisher {
+
     @JsonProperty("@id")
     private String id;
-
-    @JsonProperty("@type")
-    private String type;
-
-    @JsonProperty("foaf:name")
-    private String foafname;
-
-    @JsonProperty("foaf:mbox")
-    private FoafMbox foafmbox;
-
 }
