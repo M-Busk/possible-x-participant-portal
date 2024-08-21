@@ -9,25 +9,36 @@ import eu.possible_x.edc_orchestrator.entities.edc.contractdefinition.ContractDe
 import eu.possible_x.edc_orchestrator.entities.edc.contractdefinition.Criterion;
 import eu.possible_x.edc_orchestrator.entities.edc.policy.Policy;
 import eu.possible_x.edc_orchestrator.entities.edc.policy.PolicyCreateRequest;
+import eu.possible_x.edc_orchestrator.entities.fh.FhIdResponse;
+import eu.possible_x.edc_orchestrator.entities.fh.catalog.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
 public class ProviderService {
 
     private final EdcClient edcClient;
+    private final FhCatalogClient fhCatalogClient;
 
-    public ProviderService(@Autowired EdcClient edcClient) {
+    @Value("${fh.catalog.secret-key}")
+    private String fhCatalogSecretKey;
+
+    public ProviderService(@Autowired EdcClient edcClient, @Autowired FhCatalogClient fhCatalogClient) {
         this.edcClient = edcClient;
+        this.fhCatalogClient = fhCatalogClient;
     }
 
     public IdResponse createOffer() {
+        createDatasetEntryInFhCatalog("test-provider");
+        return createEdcOffer();
+    }
+  
+    private IdResponse createEdcOffer() {
         // create asset
         DataAddress dataAddress = IonosS3DataSource.builder()
             .bucketName("dev-provider-edc-bucket-possible-31952746")
@@ -77,5 +88,45 @@ public class ProviderService {
                 .build();
         log.info("Creating Contract Definition {}", contractDefinitionCreateRequest);
         return edcClient.createContractDefinition(contractDefinitionCreateRequest);
+    }
+
+    private FhIdResponse createDatasetEntryInFhCatalog(String cat_name) {
+        DatasetToCatalogRequest datasetToCatalogRequest = DatasetToCatalogRequest.builder()
+                .graphElements(List.of(
+                        GraphFirstElement.builder()
+                                .id("https://piveau.io/set/distribution/6c2122e6-59d6-4342-ada9-a2f336450add")
+                                .type("dcat:Distribution")
+                                .title("my_file.pdf")
+                                .accessURL(AccessURL.builder()
+                                        .id("http://85.215.193.145:9192/my_access_url")
+                                        .build())
+                                .build(),
+                        GraphSecondElement.builder()
+                                .framework(GaxTrustFramework.builder()
+                                        .id("https://provider-edc-url")
+                                        .build())
+                                .title(DctTitle.builder()
+                                        .language("de")
+                                        .value("Schulstandorte Hamburg")
+                                        .build())
+                                .distribution(DcatDistribution.builder()
+                                        .id("https://piveau.io/set/distribution/6c2122e6-59d6-4342-ada9-a2f336450add")
+                                        .build())
+                                .description(DctDescription.builder()
+                                        .language("de")
+                                        .value("Für jede Schule und ggf. ihre Zweigstellen werden dargestellt: - Geoposition und ggf. - Adresse (Straße, Hausnummer, PLZ, Ort) - Kontaktdaten (Telefon, E-Mail-Funktionspostfach, Fax, Homepage) - Schulmerkmale (Schulnummer, Zweigstelle ja/nein, Schulform nach Haushaltskapitel, Erwachsenenbildung ja/nein, Telefonnummer der Schulaufsicht, zugehöriger ReBBZ-Standort) - Zahl der Schüler")
+                                        .build())
+                                .legal("Legal Stuff")
+                                .build()))
+                .build();
+
+        String value_type = "identifiers";
+        Map<String, String> auth = Map.of(
+                "Content-Type", "application/json",
+                "Authorization", fhCatalogSecretKey);
+        log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequest);
+        FhIdResponse response = fhCatalogClient.addDatasetToFhCatalog(auth, datasetToCatalogRequest, cat_name, value_type);
+        log.info("Response from FH Catalog: {}", response.getId());
+        return response;
     }
 }

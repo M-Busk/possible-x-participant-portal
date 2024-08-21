@@ -17,3 +17,8 @@ edc:
 
 springdoc:
   show-actuator: true
+
+fh:
+  catalog:
+    url: url
+    secret-key: secret

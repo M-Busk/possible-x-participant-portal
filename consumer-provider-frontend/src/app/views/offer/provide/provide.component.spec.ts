@@ -50,4 +50,5 @@ describe('ProvideComponent', () => {
     component.createOffer();
     expect(apiService.createOffer).toHaveBeenCalled();
   });
+
 });

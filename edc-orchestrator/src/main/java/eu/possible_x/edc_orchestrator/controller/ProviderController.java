@@ -41,4 +41,5 @@ public class ProviderController {
     IdResponse response = providerService.createOffer();
     return "{\"id\": \"" + response.getId() + "\"}";
   }
+
 }

@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -36,6 +37,7 @@ class ProviderControllerTest {
     IdResponse createOfferResponse = new IdResponse();
     createOfferResponse.setId(CREATE_OFFER_RESPONSE_ID);
     lenient().when(providerService.createOffer()).thenReturn(createOfferResponse);
+
   }
 
   @Test
