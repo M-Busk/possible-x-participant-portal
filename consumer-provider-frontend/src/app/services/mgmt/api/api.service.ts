@@ -20,7 +20,7 @@ export class ApiService {
     return await lastValueFrom(this.http.post(`${this.baseUrl}/provider/offer`, null));
   }
 
-  public async acceptContractOffer() {
+  public async acceptContractOffer(): Promise<any> {
     let request: ConsumeOfferRequest = {
       counterPartyAddress: environment.counter_party_address
     }

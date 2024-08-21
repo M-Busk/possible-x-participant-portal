@@ -19,7 +19,7 @@ export class ConsumeComponent {
 
     this.apiService.acceptContractOffer().then(response => {
       console.log(response);
-      this.acceptOfferStatusMessage.showSuccessMessage(`dataAddress: ${response}`, 20000);
+      this.acceptOfferStatusMessage.showSuccessMessage();
     }).catch((e: HttpErrorResponse) => {
       this.acceptOfferStatusMessage.showErrorMessage(e.error.detail);
     });
