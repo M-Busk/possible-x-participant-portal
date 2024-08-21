@@ -20,6 +20,7 @@
 package eu.possible_x.edc_orchestrator.service;
 
 import eu.possible_x.edc_orchestrator.entities.edc.asset.AssetCreateRequest;
+import eu.possible_x.edc_orchestrator.entities.edc.asset.ionoss3extension.IonosS3DataDestination;
 import eu.possible_x.edc_orchestrator.entities.edc.catalog.CatalogRequest;
 import eu.possible_x.edc_orchestrator.entities.edc.catalog.DcatCatalog;
 import eu.possible_x.edc_orchestrator.entities.edc.catalog.DcatDataset;
@@ -84,6 +85,7 @@ public class EdcClientFake implements EdcClient {
         negotiation.setType("edc:ContractNegotiationDto");
         negotiation.setId(FAKE_ID);
         negotiation.setContractAgreementId(FAKE_ID + ":" + FAKE_ID + ":" + FAKE_ID);
+        negotiation.setState("FINALIZED");
         return negotiation;
     }
 
@@ -101,6 +103,8 @@ public class EdcClientFake implements EdcClient {
         process.setId(FAKE_ID);
         process.setType("edc:TransferProcessDto");
         process.setDataRequest(request);
+        process.setState("COMPLETED");
+        process.setDataDestination(new IonosS3DataDestination());
         return process;
     }
 

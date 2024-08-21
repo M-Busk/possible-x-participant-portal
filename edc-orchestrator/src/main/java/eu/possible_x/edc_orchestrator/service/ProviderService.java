@@ -28,18 +28,15 @@ public class ProviderService {
     }
 
     public IdResponse createOffer() {
-
-        DataAddress dataAddress = IonosS3DataSource.builder()
-                .bucketName("dev-provider-edc-bucket-possible-31952746")
-                .blobName("ssss.txt")
-                .keyName("ssss.txt")
-                .storage("s3-eu-central-2.ionoscloud.com")
-                .build();
-
         // create asset
-        String assetId = "assetId_" + UUID.randomUUID();
+        DataAddress dataAddress = IonosS3DataSource.builder()
+            .bucketName("dev-provider-edc-bucket-possible-31952746")
+            .blobName("ssss.txt")
+            .keyName("ssss.txt")
+            .storage("s3-eu-central-2.ionoscloud.com")
+            .build();
         AssetCreateRequest assetCreateRequest = AssetCreateRequest.builder()
-                .id(assetId)
+                .id("assetId_" + UUID.randomUUID())
                 .properties(AssetProperties.builder()
                         .name("assetName")
                         .description("assetDescription")
@@ -75,7 +72,7 @@ public class ProviderService {
                 .assetsSelector(List.of(Criterion.builder()
                         .operandLeft("https://w3id.org/edc/v0.0.1/ns/id")
                         .operator("=")
-                        .operandRight(assetId)
+                        .operandRight(assetIdResponse.getId())
                         .build()))
                 .build();
         log.info("Creating Contract Definition {}", contractDefinitionCreateRequest);
