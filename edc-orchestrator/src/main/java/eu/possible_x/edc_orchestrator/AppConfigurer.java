@@ -2,7 +2,6 @@ package eu.possible_x.edc_orchestrator;
 
 import eu.possible_x.edc_orchestrator.service.EdcClient;
 import eu.possible_x.edc_orchestrator.service.FhCatalogClient;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,6 @@ import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
-@Slf4j
 public class AppConfigurer {
 
     @Value("${edc.x-api-key}")
@@ -22,9 +20,6 @@ public class AppConfigurer {
 
     @Value("${fh.catalog.url}")
     private String fhCatalogUrl;
-
-    @Value("${fh.catalog.secret-key}")
-    private String fhCatalogSecretKey;
 
     @Bean
     public EdcClient edcClient() {
@@ -41,8 +36,6 @@ public class AppConfigurer {
 
     @Bean
     public FhCatalogClient fhCatalogClient() {
-        log.info("catalog url: {}", fhCatalogUrl);
-        log.info("catalog secret: {}", fhCatalogSecretKey);
         WebClient webClient = WebClient.builder()
                 .baseUrl(fhCatalogUrl)
                 .build();
