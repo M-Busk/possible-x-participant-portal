@@ -76,7 +76,7 @@ function add_secret() {
   VALUE=$3
   NAMESPACE=$5
   TMP_FILE=$(mktemp)
-  kubectl patch --dry-run=client -p '{"data":{"'"$KEY"'": "'"$(echo "$VALUE" | base64)"'"}}' -f $SECRET_FILE -o yaml > $TMP_FILE
+  kubectl patch --dry-run=client -p '{"data":{"'"$KEY"'": "'"$(echo -n "$VALUE" | base64)"'"}}' -f $SECRET_FILE -o yaml > $TMP_FILE
   cp $TMP_FILE $SECRET_FILE
   rm $TMP_FILE
   kubeseal -f "$SECRET_FILE" -w "$SEALED_SECRET_FILE" -n "$NAMESPACE"
