@@ -27,7 +27,7 @@ class ProviderServiceTest {
     @Autowired
     EdcClient edcClient;
 
-    @MockBean
+    @Autowired
     FhCatalogClient fhCatalogClient;
 
     // Test-specific configuration to provide a fake implementation of EdcClient
@@ -37,13 +37,11 @@ class ProviderServiceTest {
         public EdcClient edcClient() {
             return Mockito.spy(new EdcClientFake());
         }
-    }
 
-    @BeforeEach
-    public void beforeEach() {
-        FhIdResponse ADD_DATASET_TO_FH_CATALOG_RESPONSE = new FhIdResponse("id");
-        lenient().when(fhCatalogClient.addDatasetToFhCatalog(any(), any(), any(), any())).thenReturn(ADD_DATASET_TO_FH_CATALOG_RESPONSE);
-
+        @Bean
+        public FhCatalogClient fhCatalogClient() {
+            return Mockito.spy(new FhCatalogClientFake());
+        }
     }
 
     @Test
