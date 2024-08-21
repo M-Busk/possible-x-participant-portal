@@ -10,3 +10,15 @@ management:
   endpoint:
     health:
       enabled: true
+
+edc:
+  x-api-key: password
+  mgmt-base-url: http://localhost:19193/management
+
+springdoc:
+  show-actuator: true
+
+fh:
+  catalog:
+    url: url
+    secret-key: secret

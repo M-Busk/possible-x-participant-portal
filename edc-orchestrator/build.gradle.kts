@@ -1,8 +1,8 @@
 
 plugins {
-	`java`
-	id("org.springframework.boot") version "3.3.2"
-	id("io.spring.dependency-management") version "1.1.6"
+	java
+	alias(libs.plugins.springBoot)
+	alias(libs.plugins.springDependencyManagement)
 }
 
 group = "eu.possible-x"
@@ -25,13 +25,18 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	compileOnly("org.projectlombok:lombok")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation(libs.springBootStarterActuator)
+	implementation(libs.springBootStarterWeb)
+	implementation(libs.springBootStarterWebflux)
+	implementation(libs.openApi)
+	compileOnly(libs.lombok)
+	developmentOnly(libs.springBootDevtools)
+	runtimeOnly(libs.therApi)
+	annotationProcessor(libs.lombok)
+	annotationProcessor(libs.therApiScribe)
+	testImplementation(libs.springBootStarterTest)
+	testImplementation(libs.reactorTest)
+	testRuntimeOnly(libs.jUnit)
 }
 
 tasks.withType<Test> {
@@ -61,5 +66,4 @@ tasks.named("compileJava") {
 
 tasks.named("processResources") {
   dependsOn("copyWebApp")
-
 }
