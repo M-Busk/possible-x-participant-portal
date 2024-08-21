@@ -1,8 +1,12 @@
+import cz.habarta.typescript.generator.JsonLibrary
+import cz.habarta.typescript.generator.TypeScriptFileType
+import cz.habarta.typescript.generator.TypeScriptOutputKind
 
 plugins {
 	java
 	alias(libs.plugins.springBoot)
 	alias(libs.plugins.springDependencyManagement)
+	alias(libs.plugins.typescriptGenerator)
 }
 
 group = "eu.possible-x"
@@ -66,4 +70,26 @@ tasks.named("compileJava") {
 
 tasks.named("processResources") {
   dependsOn("copyWebApp")
+}
+
+tasks {
+	generateTypeScript {
+		jsonLibrary = JsonLibrary.jackson2
+		outputKind = TypeScriptOutputKind.module
+		outputFileType = TypeScriptFileType.implementationFile
+		scanSpringApplication = true
+		generateSpringApplicationClient = true
+		//generateSpringApplicationInterface = true
+		addTypeNamePrefix = "I"
+		/*classes = listOf(
+			"eu.possible_x.edc_orchestrator.EdcOrchestratorApplication"
+		)*/
+		classPatterns = listOf(
+			"eu.possible_x.edc_orchestrator.entities.*",
+			"eu.possible_x.edc_orchestrator.controller.*"
+		)
+		extensions = listOf(
+			"cz.habarta.typescript.generator.ext.AxiosClientExtension"
+		)
+	}
 }
