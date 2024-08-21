@@ -28,6 +28,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
+@ToString
 public class IonosS3DataAddress extends DataAddress {
 
     private static final String TYPE = "IonosS3";
