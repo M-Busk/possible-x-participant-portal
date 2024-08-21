@@ -19,7 +19,7 @@ export class ConsumeComponent {
 
     this.apiService.acceptContractOffer().then(response => {
       console.log(response);
-      this.acceptOfferStatusMessage.showSuccessMessage();
+      this.acceptOfferStatusMessage.showSuccessMessage("Check console for details.", 20000);
     }).catch((e: HttpErrorResponse) => {
       this.acceptOfferStatusMessage.showErrorMessage(e.error.detail);
     });
