@@ -123,7 +123,7 @@ public class ProviderService {
         String value_type = "identifiers";
         Map<String, String> auth = Map.of(
                 "Content-Type", "application/json",
-                "Authorization", fhCatalogSecretKey);
+                "Authorization", "Bearer " + fhCatalogSecretKey);
         log.info("Adding Dataset to Fraunhofer Catalog {}", datasetToCatalogRequest);
         FhIdResponse response = fhCatalogClient.addDatasetToFhCatalog(auth, datasetToCatalogRequest, cat_name, value_type);
         log.info("Response from FH Catalog: {}", response.getId());
