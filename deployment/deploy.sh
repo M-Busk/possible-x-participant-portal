@@ -14,6 +14,7 @@ The script has some parameters:
 -f, --value-file - the path to the value file for the helm deployment
 -h, --help - prints this message
 -u, --upgrade - upgrade the helm installation instead of installing it
+-e, --environment - the environment to deploy, e.g. dev/demo
 "
 NAMESPACE=
 DELETE_NAMESPACE=
@@ -31,6 +32,10 @@ while [[ "$#" -gt 0 ]]; do
     ;;
     (-f | --value-file)
       VALUE_FILE=${2}
+      shift 2
+    ;;
+    (-e | --environment)
+      ENVIRONMENT=${2}
       shift 2
     ;;
     (-h | --help)
@@ -59,7 +64,7 @@ if [ -z "$VALUE_FILE" ]; then
   exit 1
 fi
 kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
-GITHUB_SEALED_SECRET_FILE="$BASEDIR/sealed-secrets/$NAMESPACE-github-auth-sealed-secret.yaml"
+GITHUB_SEALED_SECRET_FILE="$BASEDIR/$ENVIRONMENT/sealed-secrets/$NAMESPACE-github-auth-sealed-secret.yaml"
 if [ -n "$GITHUB_AUTH_SECRET" ] && ! [ -f "$GITHUB_SEALED_SECRET_FILE" ]; then
   kubeseal -f "$GITHUB_AUTH_SECRET" -w "$GITHUB_SEALED_SECRET_FILE" -n "$NAMESPACE"
   kubectl apply -f "$GITHUB_SEALED_SECRET_FILE"

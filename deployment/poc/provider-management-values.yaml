@@ -1,0 +1,33 @@
+image:
+  pullPolicy: Always
+  tag: "latest-develop"
+
+imagePullSecrets:
+  - name: github-registry-auth
+
+ingress:
+  enabled: true
+  hosts:
+    - host: management.provider.edc.poc.possible-x.de
+      paths:
+        - path: /
+          portNumber: 80
+          pathType: Prefix
+  tls:
+    - secretName: demo-provider-edc-management-tls
+      hosts:
+      - management.provider.edc.poc.possible-x.de
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
+
+application:
+  variables:
+    - name: provider-management-variables
+      data:
+        SPRING_PROFILES_ACTIVE: dev 
+        FH_CATALOG_URL: https://possible.fokus.fraunhofer.de/api/hub/repo/catalogues/test-provider/datasets?valueType=identifiers
+  secrets:
+    - provider-management-secrets

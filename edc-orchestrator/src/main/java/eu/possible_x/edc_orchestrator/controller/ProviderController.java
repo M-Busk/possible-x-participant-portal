@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/provider")
+@CrossOrigin("*") // TODO replace this with proper CORS configuration
 public class ProviderController {
 
   private final ProviderService providerService;

@@ -10,14 +10,16 @@ and deploy the helm chart.
 The script has some parameters:
 
 -n, --namespace - the namespace where the management console should be deployed to
--g, --github-auth-secret - (optional) the path to the secret that is used to retrieve the data
--f, --value-file - the path to the value file for the helm deployment
+-k, --key - the key to add
+-v, --value - the value to add
 -h, --help - prints this message
--u, --upgrade - upgrade the helm installation instead of installing it
+-t, --target - the instance for with to upgrade the key/value (either provider, consumer or all)
+-e, --environment - the environment to install to (dev/demo)
 "
 TARGET=all
 KEY=
 VALUE=
+ENVIRONMENT=
 while [[ "$#" -gt 0 ]]; do
   case "${1}" in
     (-t | --target)
@@ -30,6 +32,14 @@ while [[ "$#" -gt 0 ]]; do
     ;;
     (-v | --value)
       VALUE=${2}
+      shift 2
+    ;;
+    (-e | --environment)
+      ENVIRONMENT=${2}
+      shift 2
+    ;;
+    (-n | --namespace)
+      NAMESPACE=${2}
       shift 2
     ;;
     (-h | --help)
@@ -54,12 +64,17 @@ if [ -z "$VALUE" ]; then
   exit 1
 fi
 
+if [ -z "$ENVIRONMENT" ]; then
+  echo "Error: please specify an environment"
+  exit 1
+fi
+
 function add_secret() {
-  SECRET_FILE="$BASEDIR/secrets/edc-dev-$1-management-application-secret.yaml"
-  SEALED_SECRET_FILE="$BASEDIR/sealed-secrets/edc-dev-$1-management-application-secret.yaml"
-  NAMESPACE="edc-dev-$1-management"
+  SECRET_FILE="$BASEDIR/$ENVIRONMENT/secrets/$1-management-application-secret.yaml"
+  SEALED_SECRET_FILE="$BASEDIR/$ENVIRONMENT/sealed-secrets/$1-management-application-secret.yaml"
   KEY=$2
   VALUE=$3
+  NAMESPACE=$5
   TMP_FILE=$(mktemp)
   kubectl patch --dry-run=client -p '{"data":{"'"$KEY"'": "'"$(echo "$VALUE" | base64)"'"}}' -f $SECRET_FILE -o yaml > $TMP_FILE
   cp $TMP_FILE $SECRET_FILE
@@ -68,9 +83,9 @@ function add_secret() {
 }
 
 if [ "$TARGET" = "provider" ] || [ "$TARGET" = "all" ]; then
-  add_secret "provider" "$KEY" "$VALUE"
+  add_secret "provider" "$KEY" "$VALUE" "$NAMESPACE"
 fi
 
 if [ "$TARGET" = "consumer" ] || [ "$TARGET" = "all" ]; then
-  add_secret "consumer" "$KEY" "$VALUE"
+  add_secret "consumer" "$KEY" "$VALUE" "$NAMESPACE"
 fi

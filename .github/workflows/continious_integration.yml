@@ -6,11 +6,12 @@ on:
 #      - reopened
 #      - review_requested
   push:
-    branches: ["develop"]
+    branches: ["develop", "main"]
   workflow_dispatch:
 env:
   REGISTRY: ghcr.io
-  NAMESPACE: possible-x
+  REGISTRY_NAMESPACE: possible-x
+  K8S_NAMESPACE: ${{ github.ref == 'refs/heads/main' && 'mvd-001-demo' || 'edc-dev' }}
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -38,9 +39,10 @@ jobs:
         id: management-meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/management
+          images: ${{ env.REGISTRY }}/${{ env.REGISTRY_NAMESPACE }}/management
           tags: |
-            latest-${{github.ref_name }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main'}}
+            type=raw,value=latest-${{github.ref_name }},enable=${{ github.ref != 'refs/heads/main'}}
             ${{ github.sha }}
       - name: Build and push "management"
         id: build_and_push_management
@@ -61,7 +63,7 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
-          args: "set image deployment/edc-management-possible-x-edc-management -n edc-dev-consumer-management possible-x-edc-management=${{ env.REGISTRY }}/possible-x/management:${{ github.sha }}"
+          args: "set image deployment/consumer-edc-management-possible-x-edc-management -n ${{ env.K8S_NAMESPACE }} possible-x-edc-management=${{ env.REGISTRY }}/${{ env.REGISTRY_NAMESPACE }}/management:${{ github.sha }}"
   deploy-provider:
     runs-on: 'ubuntu-latest'
     needs: build-and-push-image
@@ -71,4 +73,4 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
-          args: "set image deployment/edc-management-possible-x-edc-management -n edc-dev-provider-management possible-x-edc-management=${{ env.REGISTRY }}/possible-x/management:${{ github.sha }}"
+          args: "set image deployment/provider-edc-management-possible-x-edc-management -n ${{ env.K8S_NAMESPACE }} possible-x-edc-management=${{ env.REGISTRY }}/${{ env.REGISTRY_NAMESPACE }}/management:${{ github.sha }}"
