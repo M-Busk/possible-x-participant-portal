@@ -103,6 +103,8 @@ public class ConsumerService {
       }
     } while (!transferProcess.getState().equals("COMPLETED"));
 
+    edcClient.deprovisionTransfer(transferProcess.getId());
+
     return transferProcess.getDataDestination();
   }
 
