@@ -115,7 +115,7 @@
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "dev"
+          "defaultConfiguration": "consumer-dev"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",

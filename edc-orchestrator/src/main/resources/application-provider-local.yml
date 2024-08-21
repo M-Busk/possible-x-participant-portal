@@ -2,5 +2,5 @@ server:
   port: 8080
 
 edc:
-  x-api-key: 5678
+  x-api-key: password
   mgmt-base-url: http://localhost:19193/management

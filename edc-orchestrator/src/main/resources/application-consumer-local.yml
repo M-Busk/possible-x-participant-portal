@@ -2,5 +2,5 @@ server:
   port: 8081
 
 edc:
-  x-api-key: 1234
+  x-api-key: password
   mgmt-base-url: http://localhost:29193/management
