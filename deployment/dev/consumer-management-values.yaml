@@ -3,7 +3,7 @@ image:
   tag: "latest-develop"
 
 imagePullSecrets:
-  - name: edc-dev-management-github-registry-auth
+  - name: github-registry-auth
 
 ingress:
   enabled: true
@@ -25,9 +25,9 @@ service:
 
 application:
   variables:
-    - name: management-variables
+    - name: consumer-management-variables
       data:
         SPRING_PROFILES_ACTIVE: dev 
         FH_CATALOG_URL: https://possible.fokus.fraunhofer.de/api/hub/repo/catalogues/test-provider/datasets?valueType=identifiers
   secrets:
-    - management-secrets
+    - consumer-management-secrets
