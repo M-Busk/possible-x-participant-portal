@@ -11,7 +11,7 @@ on:
 env:
   REGISTRY: ghcr.io
   REGISTRY_NAMESPACE: possible-x
-  K8S_NAMESPACE: ${{ github.ref == 'refs/heads/main' && "mvd-001-demo" || "edc-dev" }}
+  K8S_NAMESPACE: ${{ github.ref == 'refs/heads/main' && 'mvd-001-demo' || 'edc-dev' }}
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
