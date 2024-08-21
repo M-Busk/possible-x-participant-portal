@@ -22,8 +22,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Test
-        run: echo "namespace $K8S_NAMESPACE" && exit 1
 
       - name: Log in to the Container registry
         uses: docker/login-action@v2
