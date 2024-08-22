@@ -1,45 +1,13 @@
-# POSSIBLE-X EDC Orchestrator
+# POSSIBLE-X Participant Portal
 
-The EDC orchestrator is a Java Spring backend which is responsible for EDC communication orchestration as well as the 
-communication with the Fraunhofer catalogue, e.g. for offer creation. The EDC orchestrator is supposed to be used in 
-conjunction with an [EDC Connector](https://github.com/eclipse-edc/Connector) in the version v0.4.1 and with the 
+The Participant Portal is the decentralized UI for the participants in the Portal-X dataspace who want to consume or provide offerings.
+
+It consists of an Angular frontend and a Spring-Boot backend.
+
+The backend manages the EDCs and the offerings in the Fraunhofer Catalog.
+The Participant Portal is supposed to be used in conjunction with an [EDC Connector](https://github.com/eclipse-edc/Connector) in the version v0.4.1 and with the 
 [IONOS S3 Extension](https://github.com/Digital-Ecosystems/edc-ionos-s3/) in version v2.2.0.
 
-Following flows are implemented (use [PlantText UML Editor](https://www.planttext.com/) to view): 
-
-Provider flow:
-```
-@startuml
-ConsumerProviderFrontend -> EdcOrchestrator: Create Offer
-EdcOrchestrator --> FraunhoferCatalog: Create Data Offer
-EdcOrchestrator --> EDC: Create Asset
-EdcOrchestrator --> EDC: Create Policy
-EdcOrchestrator --> EDC: Create Contract Definition
-@enduml
-```
-Consumer flow:
-```
-@startuml
-ConsumerProviderFrontend -> EdcOrchestrator: Consume Offer
-EdcOrchestrator --> EDC: Query Catalog (take first entry)
-EdcOrchestrator --> EDC: Initiate Negotiation
-EdcOrchestrator --> EDC: Get all Negotiations (wait until state is FINALIZED)
-EdcOrchestrator --> EDC: Initiate Transfer
-EdcOrchestrator --> EDC: Get Transfer by ID (wait unti state is COMPLETED)
-@enduml
-```
-
-## Structure
-The EDC orchestrator is structured as follows:
-
-```
-├── src/main/java/eu/possible_x/backend
-│   ├── controller          # external REST API controller
-│   ├── entities            # internal data models
-│      └── edc              # EDC-related data models
-│      └── fh               # Fraunhofer catalogue-related data models
-│   ├── service             # internal services for processing data from the controller layer
-```
 
 ## Build
 

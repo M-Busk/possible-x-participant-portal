@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 
-import eu.possible_x.backend.entities.edc.common.IdResponse;
-import eu.possible_x.backend.entities.fh.FhIdResponse;
-import eu.possible_x.backend.service.EdcClient;
-import eu.possible_x.backend.service.FhCatalogClient;
-import eu.possible_x.backend.service.ProviderService;
+import eu.possible_x.backend.application.entity.edc.common.IdResponse;
+import eu.possible_x.backend.application.entity.fh.FhIdResponse;
+import eu.possible_x.backend.business.control.EdcClient;
+import eu.possible_x.backend.business.control.FhCatalogClient;
+import eu.possible_x.backend.business.control.ProviderService;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

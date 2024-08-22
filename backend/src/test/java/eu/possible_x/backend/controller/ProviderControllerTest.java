@@ -2,10 +2,10 @@ package eu.possible_x.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.possible_x.backend.controller.ProviderController;
-import eu.possible_x.backend.entities.AssetRequest;
-import eu.possible_x.backend.entities.edc.common.IdResponse;
-import eu.possible_x.backend.service.ProviderService;
+import eu.possible_x.backend.application.boundary.ProviderRestApi;
+import eu.possible_x.backend.application.entity.AssetRequestTO;
+import eu.possible_x.backend.application.entity.edc.common.IdResponse;
+import eu.possible_x.backend.business.control.ProviderService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ProviderController.class)
+@WebMvcTest(ProviderRestApi.class)
 class ProviderControllerTest {
 
   @Autowired
@@ -46,7 +46,7 @@ class ProviderControllerTest {
   @Test
   void shouldReturnMessageOnCreateAsset() throws Exception {
     //given
-    AssetRequest assetRequest = AssetRequest.builder().assetName(ASSET_NAME).build();
+    AssetRequestTO assetRequest = AssetRequestTO.builder().assetName(ASSET_NAME).build();
 
     //when
     //then

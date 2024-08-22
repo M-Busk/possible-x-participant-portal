@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 
-import eu.possible_x.backend.entities.ConsumeOfferRequest;
-import eu.possible_x.backend.entities.edc.asset.ionoss3extension.IonosS3DataAddress;
-import eu.possible_x.backend.service.ConsumerService;
-import eu.possible_x.backend.service.EdcClient;
+import eu.possible_x.backend.application.entity.ConsumeOfferRequestTO;
+import eu.possible_x.backend.application.entity.edc.asset.ionoss3extension.IonosS3DataAddress;
+import eu.possible_x.backend.business.control.ConsumerService;
+import eu.possible_x.backend.business.control.EdcClient;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -36,7 +36,7 @@ class ConsumerServiceTest {
 
   @Test
   void shouldAcceptContractOffer() {
-    IonosS3DataAddress response = consumerService.acceptContractOffer(ConsumeOfferRequest
+    IonosS3DataAddress response = consumerService.acceptContractOffer(ConsumeOfferRequestTO
         .builder()
         .counterPartyAddress("http://example.com")
         .build());

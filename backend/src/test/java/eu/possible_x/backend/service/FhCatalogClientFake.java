@@ -2,9 +2,9 @@ package eu.possible_x.backend.service;
 
 import java.util.Map;
 
-import eu.possible_x.backend.entities.fh.FhIdResponse;
-import eu.possible_x.backend.entities.fh.catalog.DatasetToCatalogRequest;
-import eu.possible_x.backend.service.FhCatalogClient;
+import eu.possible_x.backend.application.entity.fh.FhIdResponse;
+import eu.possible_x.backend.application.entity.fh.catalog.DatasetToCatalogRequest;
+import eu.possible_x.backend.business.control.FhCatalogClient;
 
 public class FhCatalogClientFake implements FhCatalogClient {
   @Override

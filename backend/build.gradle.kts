@@ -49,7 +49,7 @@ tasks.withType<Test> {
 
 
 tasks.bootJar {
-	mainClass.set("eu.possible_x.backend.BackendApplication")
+	mainClass.set("eu.possible_x.backend.application.configuration.BackendApplication")
 	archiveBaseName.set("backend")
 }
 
