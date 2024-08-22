@@ -1,8 +1,12 @@
+import cz.habarta.typescript.generator.JsonLibrary
+import cz.habarta.typescript.generator.TypeScriptFileType
+import cz.habarta.typescript.generator.TypeScriptOutputKind
 
 plugins {
 	java
 	alias(libs.plugins.springBoot)
 	alias(libs.plugins.springDependencyManagement)
+	alias(libs.plugins.typescriptGenerator)
 }
 
 group = "eu.possible-x"
@@ -66,4 +70,21 @@ tasks.named("compileJava") {
 
 tasks.named("processResources") {
   dependsOn("copyWebApp")
+}
+
+tasks {
+	generateTypeScript {
+		jsonLibrary = JsonLibrary.jackson2
+		outputKind = TypeScriptOutputKind.module
+		outputFileType = TypeScriptFileType.implementationFile
+		scanSpringApplication = true
+		generateSpringApplicationClient = true
+		addTypeNamePrefix = "I"
+		classPatterns = listOf(
+			"eu.possible_x.edc_orchestrator.entities.*",
+			"eu.possible_x.edc_orchestrator.controller.*"
+		)
+		outputFile = "../consumer-provider-frontend/src/app/services/mgmt/api/edc-orchestrator.ts"
+		noFileComment = true
+	}
 }

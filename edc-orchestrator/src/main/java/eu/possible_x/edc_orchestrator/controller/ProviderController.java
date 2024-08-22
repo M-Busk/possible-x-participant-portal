@@ -1,5 +1,8 @@
 package eu.possible_x.edc_orchestrator.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.possible_x.edc_orchestrator.entities.AssetRequest;
 import eu.possible_x.edc_orchestrator.entities.edc.common.IdResponse;
 import eu.possible_x.edc_orchestrator.service.ProviderService;
@@ -14,10 +17,15 @@ import org.springframework.web.bind.annotation.*;
 public class ProviderController {
 
   private final ProviderService providerService;
+  private final ObjectMapper objectMapper;
 
-  public ProviderController(@Autowired ProviderService providerService) {
+  public ProviderController(
+      @Autowired ProviderService providerService,
+      @Autowired ObjectMapper objectMapper
+  ) {
 
       this.providerService = providerService;
+      this.objectMapper = objectMapper;
   }
 
   /**
@@ -37,9 +45,11 @@ public class ProviderController {
    * @return success message
    */
   @PostMapping(value = "/offer", produces = MediaType.APPLICATION_JSON_VALUE)
-  public String createOffer() {
+  public JsonNode createOffer() {
     IdResponse response = providerService.createOffer();
-    return "{\"id\": \"" + response.getId() + "\"}";
+    ObjectNode node = objectMapper.createObjectNode();
+    node.put("id", response.getId());
+    return node;
   }
 
 }
