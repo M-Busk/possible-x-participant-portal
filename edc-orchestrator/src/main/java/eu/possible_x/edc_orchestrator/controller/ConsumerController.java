@@ -1,6 +1,9 @@
 package eu.possible_x.edc_orchestrator.controller;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.possible_x.edc_orchestrator.entities.ConsumeOfferRequest;
 import eu.possible_x.edc_orchestrator.entities.edc.asset.ionoss3extension.IonosS3DataAddress;
 import eu.possible_x.edc_orchestrator.service.ConsumerService;
@@ -14,9 +17,14 @@ import org.springframework.web.bind.annotation.*;
 public class ConsumerController {
 
   private final ConsumerService consumerService;
+  private final ObjectMapper objectMapper;
 
-  public ConsumerController(@Autowired ConsumerService consumerService) {
+  public ConsumerController(
+      @Autowired ConsumerService consumerService,
+      @Autowired ObjectMapper objectMapper
+  ) {
     this.consumerService = consumerService;
+    this.objectMapper = objectMapper;
   }
 
   /**
@@ -25,8 +33,10 @@ public class ConsumerController {
    * @return Data Address of the transferred data
    */
   @PostMapping(value = "/acceptContractOffer", produces = MediaType.APPLICATION_JSON_VALUE)
-  public String acceptContractOffer(@RequestBody ConsumeOfferRequest request) {
+  public JsonNode acceptContractOffer(@RequestBody ConsumeOfferRequest request) {
     IonosS3DataAddress dataAddress = consumerService.acceptContractOffer(request);
-    return "{\"dataAddress\": \"" + dataAddress + "\"}";
+    ObjectNode node = objectMapper.createObjectNode();
+    node.put("dataAddress", dataAddress.toString());
+    return node;
   }
 }
