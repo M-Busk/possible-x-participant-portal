@@ -79,17 +79,13 @@ tasks {
 		outputFileType = TypeScriptFileType.implementationFile
 		scanSpringApplication = true
 		generateSpringApplicationClient = true
-		//generateSpringApplicationInterface = true
 		addTypeNamePrefix = "I"
-		/*classes = listOf(
-			"eu.possible_x.edc_orchestrator.EdcOrchestratorApplication"
-		)*/
 		classPatterns = listOf(
 			"eu.possible_x.edc_orchestrator.entities.*",
 			"eu.possible_x.edc_orchestrator.controller.*"
 		)
-		extensions = listOf(
+		/*extensions = listOf(
 			"cz.habarta.typescript.generator.ext.AxiosClientExtension"
-		)
+		)*/
 	}
 }
