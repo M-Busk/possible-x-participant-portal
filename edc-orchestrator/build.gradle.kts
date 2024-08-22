@@ -84,8 +84,6 @@ tasks {
 			"eu.possible_x.edc_orchestrator.entities.*",
 			"eu.possible_x.edc_orchestrator.controller.*"
 		)
-		/*extensions = listOf(
-			"cz.habarta.typescript.generator.ext.AxiosClientExtension"
-		)*/
+		outputFile = "../consumer-provider-frontend/src/app/services/mgmt/api/edc-orchestrator.ts"
 	}
 }
