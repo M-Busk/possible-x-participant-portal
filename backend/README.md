@@ -15,7 +15,7 @@ If you only want to build the project, you can go to the root of the repository 
 ```
 ./gradlew build
 ```
-after which the built jar can be found at `backend/build/libs/backend-x.y.z.jar`
+after which the built jar can be found at `backend/build/libs/backend-x.y.z.jar`.
 
 ## Run
 ```
