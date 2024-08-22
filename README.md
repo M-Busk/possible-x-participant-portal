@@ -18,17 +18,6 @@ The repository is structured as a Gradle multi-project build.
 │   └── build.gradle.kts        # build file for the Spring backend
 ```
 
-## (Re-)Generate Typescript API interfaces and REST client
-The typescript API interfaces and the corresponding REST client are auto-generated from the Spring backend entity and controller classes using the following command:
-```
-./gradlew generateTypeScript
-```
-
-Afterwards they can be found at 
-```
-consumer-provider-frontend/src/app/services/mgnt/api/edc-orchestrator.ts
-```
-
 ## Build
 
 If you only want to build the project, you can run
