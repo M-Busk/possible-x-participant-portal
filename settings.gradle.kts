@@ -7,4 +7,4 @@ dependencyResolutionManagement {
   }
 }
 
-include("edc-orchestrator", "consumer-provider-frontend")
+include("backend", "frontend")
