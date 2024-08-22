@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.mockito.Mockito.lenient;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -63,7 +63,7 @@ class ProviderControllerTest {
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("{\"id\": \"" + CREATE_OFFER_RESPONSE_ID + "\"}")));
+            .andExpect(jsonPath("$.id").value(CREATE_OFFER_RESPONSE_ID));
   }
 
   public static String asJsonString(final Object obj) {
