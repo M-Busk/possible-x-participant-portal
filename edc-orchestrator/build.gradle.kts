@@ -85,5 +85,6 @@ tasks {
 			"eu.possible_x.edc_orchestrator.controller.*"
 		)
 		outputFile = "../consumer-provider-frontend/src/app/services/mgmt/api/edc-orchestrator.ts"
+		noFileComment = true
 	}
 }
