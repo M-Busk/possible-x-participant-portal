@@ -49,7 +49,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./edc-orchestrator/Dockerfile
+          file: ./backend/Dockerfile
           push: true
           tags: ${{ steps.management-meta.outputs.tags }}
           labels: ${{ steps.management-meta.outputs.labels }}
