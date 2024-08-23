@@ -2,7 +2,7 @@ package eu.possible_x.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.possible_x.backend.application.boundary.ProviderRestApi;
-import eu.possible_x.backend.application.entity.AssetRequestTO;
+import eu.possible_x.backend.application.entity.CreateOfferRequestTO;
 import eu.possible_x.backend.business.entity.edc.common.IdResponse;
 import eu.possible_x.backend.business.control.ProviderService;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,23 +51,11 @@ class ProviderControllerTest {
     }
 
     @Test
-    void shouldReturnMessageOnCreateAsset() throws Exception {
-        //given
-        AssetRequestTO assetRequest = AssetRequestTO.builder().assetName(ASSET_NAME).build();
-
-        //when
-        //then
-        this.mockMvc.perform(
-                post("/provider/asset").content(asJsonString(assetRequest)).contentType(MediaType.APPLICATION_JSON))
-            .andDo(print()).andExpect(status().isOk())
-            .andExpect(content().string(containsString(assetRequest.getAssetName())));
-    }
-
-    @Test
     void shouldReturnMessageOnCreateOffer() throws Exception {
         //when
         //then
-        this.mockMvc.perform(post("/provider/offer").contentType(MediaType.APPLICATION_JSON)).andDo(print())
+        this.mockMvc.perform(post("/provider/offer").content(asJsonString(new CreateOfferRequestTO()))
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print())
             .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(CREATE_OFFER_RESPONSE_ID));
     }
 }
