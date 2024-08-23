@@ -28,7 +28,13 @@ export class ProvideComponent {
   protected async createOffer() {
     this.offerCreationStatusMessage.showInfoMessage();
 
-    this.apiService.createOffer().then(response => {
+    this.apiService.createOffer({
+      offerType: '',
+      offerName: '',
+      offerDescription: '',
+      fileName: '',
+      policy: undefined
+    }).then(response => {
       console.log(response);
       this.offerCreationStatusMessage.showSuccessMessage(`ID: ${response.id}`, 20000);
     }).catch((e: HttpErrorResponse) => {

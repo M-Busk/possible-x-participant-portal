@@ -1,13 +1,16 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export interface IAssetRequest {
-    id: number;
-    assetName: string;
+export interface IConsumeOfferRequestTO {
+    counterPartyAddress: string;
 }
 
-export interface IConsumeOfferRequest {
-    counterPartyAddress: string;
+export interface ICreateOfferRequestTO {
+    offerType: string;
+    offerName: string;
+    offerDescription: string;
+    fileName: string;
+    policy: any;
 }
 
 export interface IExceptionTO {
@@ -27,26 +30,18 @@ export class RestApplicationClient {
 
     /**
      * HTTP POST /consumer/acceptContractOffer
-     * Java method: eu.possible_x.backend.controller.ConsumerController.acceptContractOffer
+     * Java method: eu.possible_x.backend.application.boundary.ConsumerRestApi.acceptContractOffer
      */
-    acceptContractOffer(request: IConsumeOfferRequest): RestResponse<any> {
+    acceptContractOffer(request: IConsumeOfferRequestTO): RestResponse<any> {
         return this.httpClient.request({ method: "POST", url: uriEncoding`consumer/acceptContractOffer`, data: request });
     }
 
     /**
-     * HTTP POST /provider/asset
-     * Java method: eu.possible_x.backend.controller.ProviderController.createAsset
-     */
-    createAsset(assetRequest: IAssetRequest): RestResponse<string> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`provider/asset`, data: assetRequest });
-    }
-
-    /**
      * HTTP POST /provider/offer
-     * Java method: eu.possible_x.backend.controller.ProviderController.createOffer
+     * Java method: eu.possible_x.backend.application.boundary.ProviderRestApi.createOffer
      */
-    createOffer(): RestResponse<any> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`provider/offer` });
+    createOffer(assetRequest: ICreateOfferRequestTO): RestResponse<any> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`provider/offer`, data: assetRequest });
     }
 }
 
