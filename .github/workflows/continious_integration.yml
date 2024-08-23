@@ -1,12 +1,12 @@
 name: Build and Deploy EDC to Cluster
 on:
-#  pull_request:
-#    types:
-#      - opened
-#      - reopened
-#      - review_requested
+  #  pull_request:
+  #    types:
+  #      - opened
+  #      - reopened
+  #      - review_requested
   push:
-    branches: ["develop", "main"]
+    branches: [ "develop", "main" ]
   workflow_dispatch:
 env:
   REGISTRY: ghcr.io
