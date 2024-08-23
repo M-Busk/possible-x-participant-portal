@@ -71,7 +71,7 @@ Once the service is running, you can access it at e.g. http://localhost:8080/ (d
 
 The OpenAPI documentation can be found at http://localhost:8080/swagger-ui.html .
 
-## Participant Portal Frontend
+## Run Participant Portal Frontend
 
 Consumer (local testing):
 
