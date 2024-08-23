@@ -1,6 +1,6 @@
 package eu.possible_x.backend.service;
 
-import eu.possible_x.backend.application.entity.edc.common.IdResponse;
+import eu.possible_x.backend.business.entity.edc.common.IdResponse;
 import eu.possible_x.backend.business.control.EdcClient;
 import eu.possible_x.backend.business.control.FhCatalogClient;
 import eu.possible_x.backend.business.control.ProviderService;

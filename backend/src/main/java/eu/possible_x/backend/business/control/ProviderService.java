@@ -1,16 +1,16 @@
 package eu.possible_x.backend.business.control;
 
-import eu.possible_x.backend.application.entity.edc.asset.AssetCreateRequest;
-import eu.possible_x.backend.application.entity.edc.asset.AssetProperties;
-import eu.possible_x.backend.application.entity.edc.asset.DataAddress;
-import eu.possible_x.backend.application.entity.edc.asset.ionoss3extension.IonosS3DataSource;
-import eu.possible_x.backend.application.entity.edc.common.IdResponse;
-import eu.possible_x.backend.application.entity.edc.contractdefinition.ContractDefinitionCreateRequest;
-import eu.possible_x.backend.application.entity.edc.contractdefinition.Criterion;
-import eu.possible_x.backend.application.entity.edc.policy.Policy;
-import eu.possible_x.backend.application.entity.edc.policy.PolicyCreateRequest;
-import eu.possible_x.backend.application.entity.fh.FhIdResponse;
-import eu.possible_x.backend.application.entity.fh.catalog.*;
+import eu.possible_x.backend.business.entity.edc.asset.AssetCreateRequest;
+import eu.possible_x.backend.business.entity.edc.asset.AssetProperties;
+import eu.possible_x.backend.business.entity.edc.asset.DataAddress;
+import eu.possible_x.backend.business.entity.edc.asset.ionoss3extension.IonosS3DataSource;
+import eu.possible_x.backend.business.entity.edc.common.IdResponse;
+import eu.possible_x.backend.business.entity.edc.contractdefinition.ContractDefinitionCreateRequest;
+import eu.possible_x.backend.business.entity.edc.contractdefinition.Criterion;
+import eu.possible_x.backend.business.entity.edc.policy.Policy;
+import eu.possible_x.backend.business.entity.edc.policy.PolicyCreateRequest;
+import eu.possible_x.backend.business.entity.fh.FhIdResponse;
+import eu.possible_x.backend.business.entity.fh.catalog.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

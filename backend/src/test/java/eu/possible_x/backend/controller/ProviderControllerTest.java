@@ -3,7 +3,7 @@ package eu.possible_x.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.possible_x.backend.application.boundary.ProviderRestApi;
 import eu.possible_x.backend.application.entity.AssetRequestTO;
-import eu.possible_x.backend.application.entity.edc.common.IdResponse;
+import eu.possible_x.backend.business.entity.edc.common.IdResponse;
 import eu.possible_x.backend.business.control.ProviderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

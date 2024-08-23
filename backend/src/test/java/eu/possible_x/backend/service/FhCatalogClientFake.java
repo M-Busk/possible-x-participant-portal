@@ -1,7 +1,7 @@
 package eu.possible_x.backend.service;
 
-import eu.possible_x.backend.application.entity.fh.FhIdResponse;
-import eu.possible_x.backend.application.entity.fh.catalog.DatasetToCatalogRequest;
+import eu.possible_x.backend.business.entity.fh.FhIdResponse;
+import eu.possible_x.backend.business.entity.fh.catalog.DatasetToCatalogRequest;
 import eu.possible_x.backend.business.control.FhCatalogClient;
 
 import java.util.Map;

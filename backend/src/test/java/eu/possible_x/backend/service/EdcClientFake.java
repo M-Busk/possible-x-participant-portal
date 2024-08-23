@@ -19,20 +19,20 @@
 
 package eu.possible_x.backend.service;
 
-import eu.possible_x.backend.application.entity.edc.asset.AssetCreateRequest;
-import eu.possible_x.backend.application.entity.edc.asset.ionoss3extension.IonosS3DataDestination;
-import eu.possible_x.backend.application.entity.edc.catalog.CatalogRequest;
-import eu.possible_x.backend.application.entity.edc.catalog.DcatCatalog;
-import eu.possible_x.backend.application.entity.edc.catalog.DcatDataset;
-import eu.possible_x.backend.application.entity.edc.common.IdResponse;
-import eu.possible_x.backend.application.entity.edc.contractdefinition.ContractDefinitionCreateRequest;
-import eu.possible_x.backend.application.entity.edc.negotiation.ContractNegotiation;
-import eu.possible_x.backend.application.entity.edc.negotiation.NegotiationInitiateRequest;
-import eu.possible_x.backend.application.entity.edc.policy.Policy;
-import eu.possible_x.backend.application.entity.edc.policy.PolicyCreateRequest;
-import eu.possible_x.backend.application.entity.edc.transfer.DataRequest;
-import eu.possible_x.backend.application.entity.edc.transfer.IonosS3TransferProcess;
-import eu.possible_x.backend.application.entity.edc.transfer.TransferRequest;
+import eu.possible_x.backend.business.entity.edc.asset.AssetCreateRequest;
+import eu.possible_x.backend.business.entity.edc.asset.ionoss3extension.IonosS3DataDestination;
+import eu.possible_x.backend.business.entity.edc.catalog.CatalogRequest;
+import eu.possible_x.backend.business.entity.edc.catalog.DcatCatalog;
+import eu.possible_x.backend.business.entity.edc.catalog.DcatDataset;
+import eu.possible_x.backend.business.entity.edc.common.IdResponse;
+import eu.possible_x.backend.business.entity.edc.contractdefinition.ContractDefinitionCreateRequest;
+import eu.possible_x.backend.business.entity.edc.negotiation.ContractNegotiation;
+import eu.possible_x.backend.business.entity.edc.negotiation.NegotiationInitiateRequest;
+import eu.possible_x.backend.business.entity.edc.policy.Policy;
+import eu.possible_x.backend.business.entity.edc.policy.PolicyCreateRequest;
+import eu.possible_x.backend.business.entity.edc.transfer.DataRequest;
+import eu.possible_x.backend.business.entity.edc.transfer.IonosS3TransferProcess;
+import eu.possible_x.backend.business.entity.edc.transfer.TransferRequest;
 import eu.possible_x.backend.business.control.EdcClient;
 
 import java.util.List;

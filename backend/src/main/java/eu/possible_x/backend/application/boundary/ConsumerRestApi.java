@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.possible_x.backend.application.entity.ConsumeOfferRequestTO;
-import eu.possible_x.backend.application.entity.edc.asset.ionoss3extension.IonosS3DataAddress;
+import eu.possible_x.backend.business.entity.edc.asset.ionoss3extension.IonosS3DataAddress;
 import eu.possible_x.backend.business.control.ConsumerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

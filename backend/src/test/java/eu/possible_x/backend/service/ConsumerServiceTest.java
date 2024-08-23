@@ -1,7 +1,7 @@
 package eu.possible_x.backend.service;
 
 import eu.possible_x.backend.application.entity.ConsumeOfferRequestTO;
-import eu.possible_x.backend.application.entity.edc.asset.ionoss3extension.IonosS3DataAddress;
+import eu.possible_x.backend.business.entity.edc.asset.ionoss3extension.IonosS3DataAddress;
 import eu.possible_x.backend.business.control.ConsumerService;
 import eu.possible_x.backend.business.control.EdcClient;
 import org.junit.jupiter.api.Test;

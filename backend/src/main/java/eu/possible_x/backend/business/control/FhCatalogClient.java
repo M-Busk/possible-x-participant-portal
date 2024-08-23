@@ -19,8 +19,8 @@
 
 package eu.possible_x.backend.business.control;
 
-import eu.possible_x.backend.application.entity.fh.FhIdResponse;
-import eu.possible_x.backend.application.entity.fh.catalog.DatasetToCatalogRequest;
+import eu.possible_x.backend.business.entity.fh.FhIdResponse;
+import eu.possible_x.backend.business.entity.fh.catalog.DatasetToCatalogRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
