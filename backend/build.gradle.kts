@@ -49,7 +49,7 @@ tasks.withType<Test> {
 
 
 tasks.bootJar {
-  mainClass.set("eu.possible_x.backend.BackendApplication")
+  mainClass.set("eu.possiblex.participantportal.ParticipantPortalApplication")
   archiveBaseName.set("backend")
 }
 
@@ -81,8 +81,8 @@ tasks {
     generateSpringApplicationClient = true
     addTypeNamePrefix = "I"
     classPatterns = listOf(
-      "eu.possible_x.backend.application.entity.*",
-      "eu.possible_x.backend.application.boundary.*"
+      "eu.possiblex.participantportal.application.entity.*",
+      "eu.possiblex.participantportal.application.boundary.*"
     )
     outputFile = "../frontend/src/app/services/mgmt/api/backend.ts"
     noFileComment = true
