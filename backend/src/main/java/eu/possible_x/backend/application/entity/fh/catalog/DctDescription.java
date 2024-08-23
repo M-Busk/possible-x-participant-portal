@@ -13,6 +13,7 @@ import lombok.ToString;
 public class DctDescription {
     @JsonProperty("@language")
     private String language;
+
     @JsonProperty("@value")
     private String value;
 }

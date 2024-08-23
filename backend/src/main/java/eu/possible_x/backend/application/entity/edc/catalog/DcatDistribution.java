@@ -20,7 +20,6 @@
 package eu.possible_x.backend.application.entity.edc.catalog;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.edc.EdcConstants;
 import lombok.Getter;
 import lombok.Setter;

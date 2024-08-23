@@ -19,7 +19,10 @@
 
 package eu.possible_x.backend.application.entity.edc.asset.ionoss3extension;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -29,6 +32,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class IonosS3DataSource extends IonosS3DataAddress {
     private String blobName;
+
     private String filterIncludes;
+
     private String filterExcludes;
 }

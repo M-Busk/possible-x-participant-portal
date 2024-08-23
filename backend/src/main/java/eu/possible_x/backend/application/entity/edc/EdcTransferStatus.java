@@ -30,6 +30,7 @@ public class EdcTransferStatus {
     private final String state;
 
     public EdcTransferStatus(IonosS3TransferProcess transferProcess) {
+
         this.id = transferProcess.getId();
         this.state = transferProcess.getState();
     }

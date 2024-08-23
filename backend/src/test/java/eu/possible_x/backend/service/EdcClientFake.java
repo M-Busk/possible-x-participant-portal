@@ -19,8 +19,6 @@
 
 package eu.possible_x.backend.service;
 
-import java.util.List;
-
 import eu.possible_x.backend.application.entity.edc.asset.AssetCreateRequest;
 import eu.possible_x.backend.application.entity.edc.asset.ionoss3extension.IonosS3DataDestination;
 import eu.possible_x.backend.application.entity.edc.catalog.CatalogRequest;
@@ -37,6 +35,8 @@ import eu.possible_x.backend.application.entity.edc.transfer.IonosS3TransferProc
 import eu.possible_x.backend.application.entity.edc.transfer.TransferRequest;
 import eu.possible_x.backend.business.control.EdcClient;
 
+import java.util.List;
+
 public class EdcClientFake implements EdcClient {
 
     public static final String FAKE_ID = "myId";
@@ -44,29 +44,35 @@ public class EdcClientFake implements EdcClient {
     public static final long FAKE_TIMESTAMP = 1234L;
 
     private IdResponse generateFakeIdResponse() {
+
         IdResponse response = new IdResponse();
         response.setId(FAKE_ID);
         response.setCreatedAt(FAKE_TIMESTAMP);
         response.setType("edc:IdResponseDto");
         return response;
     }
+
     @Override
     public IdResponse createAsset(AssetCreateRequest assetCreateRequest) {
+
         return generateFakeIdResponse();
     }
 
     @Override
     public IdResponse createPolicy(PolicyCreateRequest policyCreateRequest) {
+
         return generateFakeIdResponse();
     }
 
     @Override
     public IdResponse createContractDefinition(ContractDefinitionCreateRequest contractDefinitionCreateRequest) {
+
         return generateFakeIdResponse();
     }
 
     @Override
     public DcatCatalog queryCatalog(CatalogRequest catalogRequest) {
+
         DcatDataset dataset = new DcatDataset();
         dataset.setAssetId(FAKE_ID);
         dataset.setHasPolicy(List.of(Policy.builder().id("myId").build()));
@@ -77,11 +83,13 @@ public class EdcClientFake implements EdcClient {
 
     @Override
     public IdResponse negotiateOffer(NegotiationInitiateRequest negotiationInitiateRequest) {
+
         return generateFakeIdResponse();
     }
 
     @Override
     public ContractNegotiation checkOfferStatus(String negotiationId) {
+
         ContractNegotiation negotiation = new ContractNegotiation();
         negotiation.setType("edc:ContractNegotiationDto");
         negotiation.setId(FAKE_ID);
@@ -92,11 +100,13 @@ public class EdcClientFake implements EdcClient {
 
     @Override
     public IdResponse initiateTransfer(TransferRequest transferRequest) {
+
         return generateFakeIdResponse();
     }
 
     @Override
     public IonosS3TransferProcess checkTransferStatus(String transferId) {
+
         DataRequest request = new DataRequest();
         request.setAssetId(FAKE_ID);
         request.setType("edc:DataRequestDto");
@@ -111,9 +121,11 @@ public class EdcClientFake implements EdcClient {
 
     @Override
     public void deprovisionTransfer(String transferId) {
+
     }
 
     @Override
     public void revokeContractDefinition(String contractDefinitionId) {
+
     }
 }

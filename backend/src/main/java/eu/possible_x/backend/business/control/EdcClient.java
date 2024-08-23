@@ -19,12 +19,6 @@
 
 package eu.possible_x.backend.business.control;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.service.annotation.DeleteExchange;
-import org.springframework.web.service.annotation.GetExchange;
-import org.springframework.web.service.annotation.PostExchange;
-
 import eu.possible_x.backend.application.entity.edc.asset.AssetCreateRequest;
 import eu.possible_x.backend.application.entity.edc.catalog.CatalogRequest;
 import eu.possible_x.backend.application.entity.edc.catalog.DcatCatalog;
@@ -35,6 +29,11 @@ import eu.possible_x.backend.application.entity.edc.negotiation.NegotiationIniti
 import eu.possible_x.backend.application.entity.edc.policy.PolicyCreateRequest;
 import eu.possible_x.backend.application.entity.edc.transfer.IonosS3TransferProcess;
 import eu.possible_x.backend.application.entity.edc.transfer.TransferRequest;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.service.annotation.DeleteExchange;
+import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.service.annotation.PostExchange;
 
 public interface EdcClient {
     @PostExchange("/v3/assets")

@@ -31,7 +31,10 @@ public class DataRequest {
 
     @JsonProperty("@id")
     private String id;
+
     private String assetId;
+
     private String contractId;
+
     private String connectorId;
 }

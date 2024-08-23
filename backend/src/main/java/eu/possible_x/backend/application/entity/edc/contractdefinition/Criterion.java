@@ -33,14 +33,15 @@ public class Criterion {
     private String type = "CriterionDto";
 
     private Object operandLeft;
+
     private String operator;
+
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private Object operandRight;
 
     @Builder
-    public Criterion(Object operandLeft,
-                     String operator,
-                     Object operandRight) {
+    public Criterion(Object operandLeft, String operator, Object operandRight) {
+
         this.operandLeft = operandLeft;
         this.operator = operator;
         this.operandRight = operandRight;

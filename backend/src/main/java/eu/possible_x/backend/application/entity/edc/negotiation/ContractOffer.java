@@ -20,7 +20,6 @@
 package eu.possible_x.backend.application.entity.edc.negotiation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.edc.policy.Policy;
 import lombok.*;
 
@@ -34,11 +33,14 @@ public class ContractOffer {
     private static final String TYPE = "ContractOfferDescription";
 
     private String offerId;
+
     private String assetId;
+
     private Policy policy;
 
     @JsonProperty("@type")
     public String getType() {
+
         return TYPE;
     }
 }

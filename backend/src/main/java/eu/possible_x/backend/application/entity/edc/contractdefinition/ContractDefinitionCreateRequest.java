@@ -20,7 +20,6 @@
 package eu.possible_x.backend.application.entity.edc.contractdefinition;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.edc.EdcConstants;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,11 +49,13 @@ public class ContractDefinitionCreateRequest {
 
     @JsonProperty("@context")
     public Map<String, String> getContext() {
+
         return CONTEXT;
     }
 
     @JsonProperty("@type")
     public String getType() {
+
         return TYPE;
     }
 }

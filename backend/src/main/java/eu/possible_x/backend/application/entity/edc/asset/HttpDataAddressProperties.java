@@ -30,6 +30,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class HttpDataAddressProperties {
     private String name;
+
     private String baseUrl;
+
     private String type;
 }

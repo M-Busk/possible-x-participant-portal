@@ -1,11 +1,11 @@
 <div class="headerWrapper">
-  <c-navbar expand="lg" class="header border-0">
+  <c-navbar class="header border-0" expand="lg">
     <c-container fluid>
-      <a cNavbarBrand class="logo" [routerLink]="['/']">
-        <img [src]="'assets/images/brand/possible_blue.svg'" [alt]="'POSSIBLE-X Logo'" [width]="142" [height]="36" />
+      <a [routerLink]="['/']" cNavbarBrand class="logo">
+        <img [alt]="'POSSIBLE-X Logo'" [height]="36" [src]="'assets/images/brand/possible_blue.svg'" [width]="142"/>
       </a>
       <button [cNavbarToggler]="collapseRef"></button>
-      <div #collapseRef="cCollapse" navbar cCollapse>
+      <div #collapseRef="cCollapse" cCollapse navbar>
         <c-navbar-nav class="navbar-nav">
           <c-nav-item>
             <a [routerLink]="['/offer/provide']" cNavLink>Provide Offer</a>
@@ -24,12 +24,12 @@
   </c-container>
 </div>
 <div>
-  <img src="assets/images/brand/bottom-blue.svg" width="500" alt="" style="margin-left: auto;" />
+  <img alt="" src="assets/images/brand/bottom-blue.svg" style="margin-left: auto;" width="500"/>
   <div class="footerWrapper ">
     <c-footer class="footer border-0">
       <div class="logo">
         <div class="circleVisual"></div>
-        <img src="assets/images/brand/possible_white.svg" width="190" height="49" alt="POSSIBLE-X Logo" />
+        <img alt="POSSIBLE-X Logo" height="49" src="assets/images/brand/possible_white.svg" width="190"/>
       </div>
       <div>
         <div class="mb-8">

@@ -42,10 +42,13 @@ public abstract class TransferProcess {
     private String type;
 
     private String state;
+
     private String stateTimestamp;
 
     @JsonProperty("type")
     private String edcType;
+
     private List<String> callbackAddresses;
+
     private DataRequest dataRequest;
 }

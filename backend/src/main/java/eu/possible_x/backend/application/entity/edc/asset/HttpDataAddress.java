@@ -30,10 +30,12 @@ import lombok.experimental.SuperBuilder;
 public class HttpDataAddress extends DataAddress {
 
     private static final String TYPE = "HttpData";
+
     private HttpDataAddressProperties properties;
 
     @JsonProperty("type")
     public String getDataType() {
+
         return TYPE;
     }
 }

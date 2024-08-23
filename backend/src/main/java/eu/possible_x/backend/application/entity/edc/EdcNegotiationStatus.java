@@ -32,6 +32,7 @@ public class EdcNegotiationStatus {
     private final String contractAgreementId;
 
     public EdcNegotiationStatus(ContractNegotiation negotiation) {
+
         this.id = negotiation.getId();
         this.state = negotiation.getState();
         this.contractAgreementId = negotiation.getContractAgreementId();

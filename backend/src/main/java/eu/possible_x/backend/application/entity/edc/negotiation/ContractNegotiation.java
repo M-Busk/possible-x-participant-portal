@@ -39,10 +39,15 @@ public class ContractNegotiation {
 
     @JsonProperty("type")
     private String edcType;
+
     private String protocol;
+
     private String state;
+
     private String counterPartyAddress;
+
     private List<String> callbackAddresses;
+
     private String contractAgreementId;
 
     @JsonProperty("@context")

@@ -20,7 +20,6 @@
 package eu.possible_x.backend.application.entity.edc.transfer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.edc.EdcConstants;
 import eu.possible_x.backend.application.entity.edc.asset.DataAddress;
 import lombok.Builder;
@@ -44,28 +43,36 @@ public class TransferRequest {
     private static final String PROTOCOL = "dataspace-protocol-http";
 
     private String connectorId;
+
     private String counterPartyAddress;
+
     private String contractId;
+
     private String assetId;
+
     private DataAddress dataDestination;
 
     @JsonProperty("@type")
     public String getType() {
+
         return TYPE;
     }
 
     @JsonProperty("protocol")
     public String getProtocol() {
+
         return PROTOCOL;
     }
 
     @JsonProperty("@context")
     public Map<String, String> getContext() {
+
         return CONTEXT;
     }
 
     @JsonProperty("managedResources")
     public boolean isManagedResources() {
+
         return MANAGED_RESOURCES;
     }
 }

@@ -20,7 +20,6 @@
 package eu.possible_x.backend.application.entity.edc.policy;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.edc.EdcConstants;
 import lombok.*;
 
@@ -53,6 +52,7 @@ public class Policy {
 
     @JsonProperty("@type")
     public String getType() {
+
         return TYPE;
     }
 }

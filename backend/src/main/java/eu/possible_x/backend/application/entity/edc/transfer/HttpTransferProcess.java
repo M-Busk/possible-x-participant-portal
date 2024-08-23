@@ -25,6 +25,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HttpTransferProcess extends TransferProcess{
+public class HttpTransferProcess extends TransferProcess {
     private HttpDataAddress dataDestination;
 }

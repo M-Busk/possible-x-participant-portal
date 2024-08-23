@@ -20,7 +20,6 @@
 package eu.possible_x.backend.application.entity.edc.policy;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.edc.EdcConstants;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,10 +37,12 @@ public class PolicyCreateRequest {
 
     @JsonProperty("@id")
     private String id;
+
     private Policy policy;
 
     @JsonProperty("@context")
     public Map<String, String> getContext() {
+
         return CONTEXT;
     }
 }

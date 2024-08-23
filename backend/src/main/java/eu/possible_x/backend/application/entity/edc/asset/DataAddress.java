@@ -38,6 +38,7 @@ public abstract class DataAddress {
 
     @JsonProperty("@type")
     public String getType() {
+
         return TYPE;
     }
 }

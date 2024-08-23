@@ -19,20 +19,21 @@
 
 package eu.possible_x.backend.business.control;
 
+import eu.possible_x.backend.application.entity.fh.FhIdResponse;
+import eu.possible_x.backend.application.entity.fh.catalog.DatasetToCatalogRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.PostExchange;
 
-import eu.possible_x.backend.application.entity.fh.FhIdResponse;
-import eu.possible_x.backend.application.entity.fh.catalog.DatasetToCatalogRequest;
-
 import java.util.Map;
 
 public interface FhCatalogClient {
     @PostExchange("/catalogues/{cat_name}/datasets")
-    FhIdResponse addDatasetToFhCatalog(@RequestHeader Map<String, String> auth, @RequestBody DatasetToCatalogRequest datasetToCatalogRequest, @PathVariable String cat_name, @RequestParam String value_type);
+    FhIdResponse addDatasetToFhCatalog(@RequestHeader Map<String, String> auth,
+        @RequestBody DatasetToCatalogRequest datasetToCatalogRequest, @PathVariable String cat_name,
+        @RequestParam String value_type);
 
 }
 

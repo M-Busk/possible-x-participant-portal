@@ -20,7 +20,6 @@
 package eu.possible_x.backend.application.entity.edc.negotiation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.edc.EdcConstants;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,23 +40,30 @@ public class NegotiationInitiateRequest {
     private static final String PROTOCOL = "dataspace-protocol-http";
 
     private String connectorId;
+
     private String consumerId;
+
     private String providerId;
+
     private String counterPartyAddress;
+
     private ContractOffer offer; // deprecated for policy?
 
     @JsonProperty("@context")
     public Map<String, String> getContext() {
+
         return CONTEXT;
     }
 
     @JsonProperty("@type")
     public String getType() {
+
         return TYPE;
     }
 
     @JsonProperty("protocol")
     public String getProtocol() {
+
         return PROTOCOL;
     }
 }

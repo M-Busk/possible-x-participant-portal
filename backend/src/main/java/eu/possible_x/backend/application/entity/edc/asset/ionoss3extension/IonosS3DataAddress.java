@@ -20,9 +20,11 @@
 package eu.possible_x.backend.application.entity.edc.asset.ionoss3extension;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.edc.asset.DataAddress;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -35,10 +37,12 @@ public class IonosS3DataAddress extends DataAddress {
     private static final String TYPE = "IonosS3";
 
     private String bucketName;
+
     private String storage;
 
     @JsonProperty("type")
     public String getDataType() {
+
         return TYPE;
     }
 }

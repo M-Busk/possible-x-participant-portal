@@ -28,6 +28,7 @@ public class EdcIdResponse {
     private final String id;
 
     public EdcIdResponse(IdResponse response) {
+
         this.id = response.getId();
     }
 }

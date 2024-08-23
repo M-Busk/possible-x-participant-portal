@@ -1,7 +1,6 @@
 package eu.possible_x.backend.application.entity.fh.catalog;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.fh.FhConstants;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,20 +25,22 @@ public class GraphThirdElement {
     @JsonProperty("http://w3id.org/gaia-x/gax-trust-framework#producedBy")
     private GaxTrustFrameworkProducedBy producedBy;
 
-    @JsonProperty("@type")
-    public ArrayList<String> getType() {
-        return TYPE;
-    }
-
     @JsonProperty("dct:title")
     private DctTitle title;
 
     @JsonProperty("dcat:distribution")
     private DcatDistribution distribution;
+
     @JsonProperty("dct:description")
     private DctDescription description;
 
     @JsonProperty("dct:publisher")
     private DctPublisher publisher;
+
+    @JsonProperty("@type")
+    public ArrayList<String> getType() {
+
+        return TYPE;
+    }
 
 }

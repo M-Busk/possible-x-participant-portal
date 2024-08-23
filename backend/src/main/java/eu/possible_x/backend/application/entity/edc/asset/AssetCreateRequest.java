@@ -20,7 +20,6 @@
 package eu.possible_x.backend.application.entity.edc.asset;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eu.possible_x.backend.application.entity.edc.EdcConstants;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,6 +44,7 @@ public class AssetCreateRequest {
 
     @JsonProperty("@context")
     public Map<String, String> getContext() {
+
         return CONTEXT;
     }
 }
