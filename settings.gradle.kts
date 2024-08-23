@@ -1,4 +1,4 @@
-rootProject.name = "possible-x-edc-management"
+rootProject.name = "possible-x-participant-portal"
 
 dependencyResolutionManagement {
   versionCatalogs {

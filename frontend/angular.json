@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "frontend": {
+    "participant-portal": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -121,19 +121,19 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "consumer-dev": {
-              "buildTarget": "frontend:build:consumer-dev"
+              "buildTarget": "participant-portal:build:consumer-dev"
             },
             "provider-dev": {
-              "buildTarget": "frontend:build:provider-dev"
+              "buildTarget": "participant-portal:build:provider-dev"
             },
             "local": {
-              "buildTarget": "frontend:build:local"
+              "buildTarget": "participant-portal:build:local"
             },
             "consumer-local": {
-              "buildTarget": "frontend:build:consumer-local"
+              "buildTarget": "participant-portal:build:consumer-local"
             },
             "provider-local": {
-              "buildTarget": "frontend:build:provider-local"
+              "buildTarget": "participant-portal:build:provider-local"
             }
           },
           "defaultConfiguration": "local"

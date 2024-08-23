@@ -30,7 +30,7 @@ export class RestApplicationClient {
 
     /**
      * HTTP POST /consumer/acceptContractOffer
-     * Java method: eu.possible_x.backend.application.boundary.ConsumerRestApi.acceptContractOffer
+     * Java method: eu.possiblex.participantportal.application.boundary.ConsumerRestApi.acceptContractOffer
      */
     acceptContractOffer(request: IConsumeOfferRequestTO): RestResponse<any> {
         return this.httpClient.request({ method: "POST", url: uriEncoding`consumer/acceptContractOffer`, data: request });
@@ -38,7 +38,7 @@ export class RestApplicationClient {
 
     /**
      * HTTP POST /provider/offer
-     * Java method: eu.possible_x.backend.application.boundary.ProviderRestApi.createOffer
+     * Java method: eu.possiblex.participantportal.application.boundary.ProviderRestApi.createOffer
      */
     createOffer(assetRequest: ICreateOfferRequestTO): RestResponse<any> {
         return this.httpClient.request({ method: "POST", url: uriEncoding`provider/offer`, data: assetRequest });
