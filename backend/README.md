@@ -1,4 +1,4 @@
-# POSSIBLE-X Participant Portal
+# Participant Portal Backend
 
 The Participant Portal is the decentralized UI for the participants in the Portal-X dataspace who want to consume or
 provide offerings.

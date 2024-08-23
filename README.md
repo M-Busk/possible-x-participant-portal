@@ -1,4 +1,4 @@
-# POSSIBLE-X EDC Management GUI
+# POSSIBLE-X Participant Portal
 
 This repository contains a graphical user interface that is supposed to be used in conjunction with
 an [EDC Connector](https://github.com/eclipse-edc/Connector) in the version v0.4.1 and with
@@ -16,9 +16,9 @@ The repository is structured as a Gradle multi-project build.
 ├── libs.versions.toml          # configuration file of version catalog for dependencies
 ├── settings.gradle.kts         # root project settings
 ├── buildSrc/                   # shared build configuration
-├── frontend/ # Angular frontend code for the GUI
+├── frontend/                   # Angular frontend code for the GUI
 │   └── build.gradle.kts        # build file for the Angular frontend
-├── backend/           # Spring backend code for EDC communication orchestration
+├── backend/                    # Spring backend code for EDC communication
 │   └── build.gradle.kts        # build file for the Spring backend
 ```
 
@@ -47,7 +47,7 @@ If you only want to build the project, you can run
 
 after which the built jar can be found at `backend/build/libs/backend-x.y.z.jar`
 
-## Run EDC Orchestrator
+## Run Participant Portal Backend
 
 Through gradle:
 
@@ -71,7 +71,7 @@ Once the service is running, you can access it at e.g. http://localhost:8080/ (d
 
 The OpenAPI documentation can be found at http://localhost:8080/swagger-ui.html .
 
-## Run Consumer/Provider Frontend
+## Participant Portal Frontend
 
 Consumer (local testing):
 

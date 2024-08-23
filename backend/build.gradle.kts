@@ -9,7 +9,7 @@ plugins {
   alias(libs.plugins.typescriptGenerator)
 }
 
-group = "eu.possible-x"
+group = "eu.possiblex"
 version = "0.0.1"
 
 java {
