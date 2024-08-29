@@ -14,6 +14,8 @@ export class ProvideComponent {
   offerType: string = "";
   offerName: string = "";
   policy: string = "";
+  offerDescription: string = "";
+  fileName: string = "";
 
   policyMap = POLICY_MAP;
 
@@ -29,8 +31,8 @@ export class ProvideComponent {
     this.apiService.createOffer({
       offerType: this.offerType,
       offerName: this.offerName,
-      offerDescription: 'PLACEHOLDER',
-      fileName: 'PLACEHOLDER',
+      offerDescription: this.offerDescription,
+      fileName: this.fileName,
       policy: this.policyMap[this.policy]
     }).then(response => {
       console.log(response);

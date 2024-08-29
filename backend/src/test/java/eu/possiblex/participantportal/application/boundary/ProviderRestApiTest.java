@@ -8,7 +8,7 @@ import eu.possiblex.participantportal.application.entity.CreateOfferRequestTO;
 import eu.possiblex.participantportal.business.control.ProviderService;
 import eu.possiblex.participantportal.business.control.ProviderServiceFake;
 import eu.possiblex.participantportal.business.entity.edc.CreateEdcOfferBE;
-import eu.possiblex.participantportal.business.entity.fh.CreateDatasetEntryBE;
+import eu.possiblex.participantportal.business.entity.fh.CreateFhOfferBE;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
@@ -50,15 +50,16 @@ class ProviderRestApiTest {
         //then
         this.mockMvc.perform(post("/provider/offer").content(RestApiHelper.asJsonString(request))
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(ProviderServiceFake.CREATE_OFFER_RESPONSE_ID));
+            .andExpect(jsonPath("$.EDC-ID").value(ProviderServiceFake.CREATE_OFFER_RESPONSE_ID))
+                .andExpect(jsonPath("$.FH-ID").value(ProviderServiceFake.CREATE_OFFER_RESPONSE_ID));
 
-        ArgumentCaptor<CreateDatasetEntryBE> createDatasetEntryCaptor = ArgumentCaptor.forClass(
-            CreateDatasetEntryBE.class);
+        ArgumentCaptor<CreateFhOfferBE> createDatasetEntryCaptor = ArgumentCaptor.forClass(
+                CreateFhOfferBE.class);
         ArgumentCaptor<CreateEdcOfferBE> createEdcOfferCaptor = ArgumentCaptor.forClass(CreateEdcOfferBE.class);
 
         verify(providerService).createOffer(createDatasetEntryCaptor.capture(), createEdcOfferCaptor.capture());
 
-        CreateDatasetEntryBE createDatasetEntry = createDatasetEntryCaptor.getValue();
+        CreateFhOfferBE createDatasetEntry = createDatasetEntryCaptor.getValue();
         CreateEdcOfferBE createEdcOfferBE = createEdcOfferCaptor.getValue();
         //check if request is mapped correctly
         assertEquals(request.getPolicy(), createDatasetEntry.getPolicy());
