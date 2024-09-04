@@ -34,7 +34,7 @@ export class ProvideComponent {
       console.log(response);
       this.offerCreationStatusMessage.showSuccessMessage("", 20000);
     }).catch((e: HttpErrorResponse) => {
-      this.offerCreationStatusMessage.showErrorMessage(e.error.message);
+      this.offerCreationStatusMessage.showErrorMessage(e.error.detail);
     });
   }
 
