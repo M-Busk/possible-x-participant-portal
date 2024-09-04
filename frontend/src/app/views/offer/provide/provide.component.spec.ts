@@ -1,9 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ProvideComponent } from './provide.component';
-import { ApiService } from '../../../services/mgmt/api/api.service';
-import { GridModule } from '@coreui/angular';
-import { FormsModule } from '@angular/forms';
-import { CommonViewsModule } from '../../common-views/common-views.module';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ProvideComponent} from './provide.component';
+import {ApiService} from '../../../services/mgmt/api/api.service';
+import {GridModule} from '@coreui/angular';
+import {FormsModule} from '@angular/forms';
+import {CommonViewsModule} from '../../common-views/common-views.module';
+import {ICreateOfferResponseTO} from "../../../services/mgmt/api/backend";
 
 
 describe('ProvideComponent', () => {
@@ -11,19 +12,23 @@ describe('ProvideComponent', () => {
   let fixture: ComponentFixture<ProvideComponent>;
   let apiService: jasmine.SpyObj<ApiService>;
 
+  const offerCreationResponse = {
+    edcResponseId: 'dummy',
+    fhResponseId: 'dummy'
+  } as ICreateOfferResponseTO;
 
   beforeEach(async () => {
-    const apiServiceSpy = jasmine.createSpyObj('ApiService', ['getHealth', 'createOffer']);
+    const apiServiceSpy = jasmine.createSpyObj('ApiService', ['createOffer']);
 
 
     await TestBed.configureTestingModule({
       declarations: [ProvideComponent],
       providers: [
-        { provide: ApiService, useValue: apiServiceSpy }
+        {provide: ApiService, useValue: apiServiceSpy}
       ],
-      imports: [ FormsModule, GridModule, CommonViewsModule ],
+      imports: [FormsModule, GridModule, CommonViewsModule],
     })
-    .compileComponents();
+      .compileComponents();
 
 
     fixture = TestBed.createComponent(ProvideComponent);
@@ -38,13 +43,13 @@ describe('ProvideComponent', () => {
   });
 
   it('should call createOffer on apiService when createOffer is called', async () => {
-    const spy = spyOn<any>(component, 'createOffer').and.callThrough();
-    const mockResponse = Promise.resolve({ id: '123' });
+    const mockResponse = Promise.resolve(offerCreationResponse);
     apiService.createOffer.and.returnValue(mockResponse);
+
+    component.policy = 'Everything is allowed';
 
     await component.createOffer();
 
-    expect(spy).toHaveBeenCalled();
     expect(apiService.createOffer).toHaveBeenCalled();
   });
 
