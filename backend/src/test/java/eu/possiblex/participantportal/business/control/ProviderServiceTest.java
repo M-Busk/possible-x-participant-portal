@@ -58,7 +58,7 @@ class ProviderServiceTest {
     EdcClient edcClient;
 
     @Autowired
-    FHCatalogClient fhCatalogClient;
+    FhCatalogClient fhCatalogClient;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -118,7 +118,7 @@ class ProviderServiceTest {
         }
 
         @Bean
-        public FHCatalogClient fhCatalogClient() {
+        public FhCatalogClient fhCatalogClient() {
 
             return Mockito.spy(new FhCatalogClientMock());
         }
