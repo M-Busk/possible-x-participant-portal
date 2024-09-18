@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule , FormsModule } from '@angular/forms';
+import { WizardExtensionModule } from '../../wizard-extension/wizard-extension.module';
 
 import {
     AccordionButtonDirective,
@@ -49,6 +50,7 @@ import { SelectOfferComponent } from './select/select-offer.component';
         TemplateIdDirective,
         AccordionButtonDirective,
         BadgeComponent,
+        WizardExtensionModule
     ],
   declarations: [ProvideComponent, ConsumeComponent, AcceptOfferComponent, SelectOfferComponent],
 })

@@ -1,6 +1,7 @@
 package eu.possiblex.participantportal.business.control;
 
 import eu.possiblex.participantportal.application.entity.CreateOfferResponseTO;
+import eu.possiblex.participantportal.application.entity.ParticipantIdTO;
 import eu.possiblex.participantportal.business.entity.edc.CreateEdcOfferBE;
 import eu.possiblex.participantportal.business.entity.edc.asset.AssetCreateRequest;
 import eu.possiblex.participantportal.business.entity.edc.common.IdResponse;
@@ -36,6 +37,8 @@ public class ProviderServiceImpl implements ProviderService {
     @Value("${edc.protocol-base-url}")
     private String edcProtocolUrl;
 
+    @Value("${participant-id}")
+    private String participantId;
 
     /**
      * Constructor for ProviderServiceImpl.
@@ -60,10 +63,11 @@ public class ProviderServiceImpl implements ProviderService {
      */
     @Override
     public CreateOfferResponseTO createOffer(CreateFhOfferBE createFhOfferBE, CreateEdcOfferBE createEdcOfferBE)
-            throws FhOfferCreationException, EdcOfferCreationException {
+        throws FhOfferCreationException, EdcOfferCreationException {
 
         String assetId = generateAssetId();
-        ProviderRequestBuilder requestBuilder = new ProviderRequestBuilder(assetId, createFhOfferBE, createEdcOfferBE, edcProtocolUrl);
+        ProviderRequestBuilder requestBuilder = new ProviderRequestBuilder(assetId, createFhOfferBE, createEdcOfferBE,
+            edcProtocolUrl);
 
         FhCatalogIdResponse fhResponseId = createFhCatalogOffer(requestBuilder);
         IdResponse edcResponseId = createEdcOffer(requestBuilder);
@@ -72,11 +76,23 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     /**
+     * Return the participant's id.
+     *
+     * @return participant id
+     */
+    @Override
+    public ParticipantIdTO getParticipantId() {
+
+        return new ParticipantIdTO(participantId);
+    }
+
+    /**
      * Generates a unique asset ID.
      *
      * @return the generated asset ID
      */
     private String generateAssetId() {
+
         return "assetId_" + UUID.randomUUID();
     }
 
@@ -88,6 +104,7 @@ public class ProviderServiceImpl implements ProviderService {
      * @throws EdcOfferCreationException if EDC offer creation fails
      */
     private IdResponse createEdcOffer(ProviderRequestBuilder requestBuilder) throws EdcOfferCreationException {
+
         try {
             AssetCreateRequest assetCreateRequest = requestBuilder.buildAssetRequest();
             log.info("Creating Asset {}", assetCreateRequest);
@@ -97,7 +114,8 @@ public class ProviderServiceImpl implements ProviderService {
             log.info("Creating Policy {}", policyCreateRequest);
             IdResponse policyIdResponse = edcClient.createPolicy(policyCreateRequest);
 
-            ContractDefinitionCreateRequest contractDefinitionCreateRequest = requestBuilder.buildContractDefinitionRequest(policyIdResponse, assetIdResponse);
+            ContractDefinitionCreateRequest contractDefinitionCreateRequest = requestBuilder.buildContractDefinitionRequest(
+                policyIdResponse, assetIdResponse);
             log.info("Creating Contract Definition {}", contractDefinitionCreateRequest);
 
             return edcClient.createContractDefinition(contractDefinitionCreateRequest);

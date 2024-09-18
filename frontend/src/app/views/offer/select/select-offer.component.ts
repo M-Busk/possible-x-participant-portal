@@ -20,7 +20,7 @@ interface SelectionFormModel {
 @Component({
   selector: 'app-select-offer',
   templateUrl: './select-offer.component.html',
-  styleUrl: './select-offer.component.scss',
+  styleUrls: ['./select-offer.component.scss'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => SelectOfferComponent),
