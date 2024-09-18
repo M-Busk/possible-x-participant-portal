@@ -31,5 +31,6 @@ application:
         FH_CATALOG_URL: https://possible.fokus.fraunhofer.de/api/hub/repo
         EDC_MGMTBASEURL: https://consumer.edc.dev.possible-x.de/management
         EDC_PROTOCOLBASEURL: https://consumer.edc.dev.possible-x.de/protocol
+        SDCREATIONWIZARDAPI_BASEURL: https://sd-creation-wizard.dev.possible-x.de
   secrets:
     - consumer-management-secrets
