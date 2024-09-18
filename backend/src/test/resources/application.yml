@@ -8,7 +8,7 @@ fh:
     secret-key: test
     catalog-name: test-provider
 
-sdCreationWizardApi:
+sd-creation-wizard-api:
   base-url: test
 
 participant-id: "did:web:test.eu"

@@ -28,7 +28,7 @@ public class AppConfigurer {
     @Value("${fh.catalog.url}")
     private String fhCatalogUrl;
 
-    @Value("${sdCreationWizardApi.base-url}")
+    @Value("${sd-creation-wizard-api.base-url}")
     private String sdCreationWizardApiBaseUri;
 
     @Bean
