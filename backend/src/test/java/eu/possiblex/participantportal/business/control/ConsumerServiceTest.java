@@ -13,7 +13,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,13 +24,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@ContextConfiguration(classes = {ConsumerServiceTest.TestConfig.class, ConsumerServiceImpl.class})
+@ContextConfiguration(classes = { ConsumerServiceTest.TestConfig.class, ConsumerServiceImpl.class })
 class ConsumerServiceTest {
 
     @Autowired
     private ConsumerService sut;
+
     @Autowired
     private EdcClient edcClient;
+
     @Autowired
     private FhCatalogClient fhCatalogClient;
 
@@ -46,10 +50,7 @@ class ConsumerServiceTest {
         // WHEN
 
         SelectOfferResponseBE response = sut.selectContractOffer(
-                SelectOfferRequestBE
-                        .builder()
-                        .fhCatalogOfferId(EdcClientFake.FAKE_ID)
-                        .build());
+            SelectOfferRequestBE.builder().fhCatalogOfferId(EdcClientFake.FAKE_ID).build());
 
         // THEN
 
@@ -61,7 +62,7 @@ class ConsumerServiceTest {
 
     @Test
     void acceptContractOfferSucceeds()
-            throws NegotiationFailedException, TransferFailedException, OfferNotFoundException {
+        throws NegotiationFailedException, TransferFailedException, OfferNotFoundException {
 
         // GIVEN
 
@@ -71,11 +72,8 @@ class ConsumerServiceTest {
         // WHEN
 
         TransferProcess response = sut.acceptContractOffer(
-                ConsumeOfferRequestBE
-                        .builder()
-                        .counterPartyAddress("http://example.com")
-                        .edcOfferId(EdcClientFake.FAKE_ID)
-                        .build());
+            ConsumeOfferRequestBE.builder().counterPartyAddress("http://example.com").edcOfferId(EdcClientFake.FAKE_ID)
+                .build());
 
         // THEN
 
@@ -91,11 +89,8 @@ class ConsumerServiceTest {
         reset(edcClient);
         reset(fhCatalogClient);
         assertThrows(OfferNotFoundException.class, () -> sut.acceptContractOffer(
-                ConsumeOfferRequestBE
-                        .builder()
-                        .counterPartyAddress("http://example.com")
-                        .edcOfferId("someUnknownId")
-                        .build()));
+            ConsumeOfferRequestBE.builder().counterPartyAddress("http://example.com").edcOfferId("someUnknownId")
+                .build()));
     }
 
     @Test
@@ -104,11 +99,8 @@ class ConsumerServiceTest {
         reset(edcClient);
         reset(fhCatalogClient);
         assertThrows(NegotiationFailedException.class, () -> sut.acceptContractOffer(
-                ConsumeOfferRequestBE
-                        .builder()
-                        .counterPartyAddress("http://example.com")
-                        .edcOfferId(EdcClientFake.BAD_NEGOTIATION_ID)
-                        .build()));
+            ConsumeOfferRequestBE.builder().counterPartyAddress("http://example.com")
+                .edcOfferId(EdcClientFake.BAD_NEGOTIATION_ID).build()));
     }
 
     @Test
@@ -117,16 +109,16 @@ class ConsumerServiceTest {
         reset(edcClient);
         reset(fhCatalogClient);
         assertThrows(TransferFailedException.class, () -> sut.acceptContractOffer(
-                ConsumeOfferRequestBE
-                        .builder()
-                        .counterPartyAddress("http://example.com")
-                        .edcOfferId(EdcClientFake.BAD_TRANSFER_ID)
-                        .build()));
+            ConsumeOfferRequestBE.builder().counterPartyAddress("http://example.com")
+                .edcOfferId(EdcClientFake.BAD_TRANSFER_ID).build()));
     }
 
     // Test-specific configuration to provide mocks
     @TestConfiguration
     static class TestConfig {
+        @MockBean
+        private TaskScheduler taskScheduler;
+
         @Bean
         public EdcClient edcClient() {
 
