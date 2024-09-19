@@ -12,9 +12,11 @@ import eu.possiblex.participantportal.business.entity.exception.FhOfferCreationE
 import eu.possiblex.participantportal.business.entity.fh.CreateFhOfferBE;
 import eu.possiblex.participantportal.business.entity.fh.FhCatalogIdResponse;
 import eu.possiblex.participantportal.business.entity.fh.catalog.DcatDataset;
+import eu.possiblex.participantportal.utilities.PossibleXException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -62,17 +64,24 @@ public class ProviderServiceImpl implements ProviderService {
      * @throws EdcOfferCreationException if EDC offer creation fails
      */
     @Override
-    public CreateOfferResponseTO createOffer(CreateFhOfferBE createFhOfferBE, CreateEdcOfferBE createEdcOfferBE)
-        throws FhOfferCreationException, EdcOfferCreationException {
+    public CreateOfferResponseTO createOffer(CreateFhOfferBE createFhOfferBE, CreateEdcOfferBE createEdcOfferBE) {
+
 
         String assetId = generateAssetId();
         ProviderRequestBuilder requestBuilder = new ProviderRequestBuilder(assetId, createFhOfferBE, createEdcOfferBE,
             edcProtocolUrl);
 
-        FhCatalogIdResponse fhResponseId = createFhCatalogOffer(requestBuilder);
-        IdResponse edcResponseId = createEdcOffer(requestBuilder);
-
-        return new CreateOfferResponseTO(edcResponseId.getId(), fhResponseId.getId());
+        try {
+            FhCatalogIdResponse fhResponseId = createFhCatalogOffer(requestBuilder);
+            IdResponse edcResponseId = createEdcOffer(requestBuilder);
+            return new CreateOfferResponseTO(edcResponseId.getId(), fhResponseId.getId());
+        } catch (EdcOfferCreationException e) {
+            throw new PossibleXException("Failed to create offer. EdcOfferCreationException: " + e, HttpStatus.BAD_REQUEST);
+        } catch (FhOfferCreationException e) {
+            throw new PossibleXException("Failed to create offer. FhOfferCreationException: " + e, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new PossibleXException("Failed to create offer. Other Exception: " + e);
+        }
     }
 
     /**
@@ -120,8 +129,7 @@ public class ProviderServiceImpl implements ProviderService {
 
             return edcClient.createContractDefinition(contractDefinitionCreateRequest);
         } catch (Exception e) {
-            log.error("An error occurred: {}", e.getMessage(), e);
-            throw new EdcOfferCreationException("An error occurred: " + e.getMessage());
+            throw new EdcOfferCreationException("An error occurred during Edc offer creation: " + e.getMessage());
         }
     }
 
@@ -139,8 +147,7 @@ public class ProviderServiceImpl implements ProviderService {
 
             return fhCatalogClient.addDatasetToFhCatalog(dcatDataset);
         } catch (Exception e) {
-            log.error("An error occurred: {}", e.getMessage(), e);
-            throw new FhOfferCreationException("An error occurred: " + e.getMessage());
+            throw new FhOfferCreationException("An error occurred during Fh offer creation: " + e.getMessage());
         }
     }
 

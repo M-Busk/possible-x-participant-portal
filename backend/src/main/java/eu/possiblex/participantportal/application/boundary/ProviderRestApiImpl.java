@@ -9,6 +9,7 @@ import eu.possiblex.participantportal.business.entity.edc.CreateEdcOfferBE;
 import eu.possiblex.participantportal.business.entity.exception.EdcOfferCreationException;
 import eu.possiblex.participantportal.business.entity.exception.FhOfferCreationException;
 import eu.possiblex.participantportal.business.entity.fh.CreateFhOfferBE;
+import eu.possiblex.participantportal.utilities.PossibleXException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,11 +62,9 @@ public class ProviderRestApiImpl implements ProviderRestApi {
         try {
             return providerService.createOffer(createFhOfferBE, createEdcOfferBE);
         } catch (EdcOfferCreationException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                "EDC offer creation failed: " + e.getMessage());
+            throw new PossibleXException("EDC offer creation failed: " + e, HttpStatus.BAD_REQUEST);
         } catch (FhOfferCreationException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Fraunhofer catalog offer creation failed: " + e.getMessage());
+            throw new PossibleXException("Fraunhofer catalog offer creation failed: " + e, HttpStatus.BAD_REQUEST);
         }
     }
 

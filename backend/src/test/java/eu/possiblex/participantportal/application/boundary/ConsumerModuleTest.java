@@ -12,7 +12,9 @@ import eu.possiblex.participantportal.business.entity.edc.negotiation.Negotiatio
 import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import eu.possiblex.participantportal.business.entity.edc.transfer.IonosS3TransferProcess;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcessState;
+import eu.possiblex.participantportal.utilities.ExceptionHandlingFilter;
 import eu.possiblex.participantportal.utils.TestUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
@@ -26,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
@@ -63,6 +66,12 @@ public class ConsumerModuleTest {
     @Autowired
     private TechnicalFhCatalogClient technicalFhCatalogClientMock;
 
+    @BeforeEach
+    void setup() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new ConsumerRestApiImpl(consumerService, Mappers.getMapper(ConsumerApiMapper.class)))
+                .addFilters(new ExceptionHandlingFilter())
+                .build();
+    }
     @Test
     void acceptContractOfferSucceeds() throws Exception {
 

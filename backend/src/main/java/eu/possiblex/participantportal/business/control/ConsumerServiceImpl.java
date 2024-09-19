@@ -20,9 +20,11 @@ import eu.possiblex.participantportal.business.entity.edc.transfer.TransferReque
 import eu.possiblex.participantportal.business.entity.exception.NegotiationFailedException;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
 import eu.possiblex.participantportal.business.entity.exception.TransferFailedException;
+import eu.possiblex.participantportal.utilities.PossibleXException;
 import eu.possiblex.participantportal.business.entity.fh.FhCatalogOffer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +52,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public SelectOfferResponseBE selectContractOffer(SelectOfferRequestBE request) throws OfferNotFoundException {
-
         // get offer from FH Catalog and parse the attributes needed to get the offer from EDC Catalog
         FhCatalogOffer fhCatalogOffer = fhCatalogClient.getFhCatalogOffer(request.getFhCatalogOfferId());
         log.info("got fh catalog offer " + fhCatalogOffer);

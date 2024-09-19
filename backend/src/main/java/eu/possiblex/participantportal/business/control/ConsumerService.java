@@ -28,6 +28,5 @@ public interface ConsumerService {
      * @exception TransferFailedException failed to transfer the data
      * @return final result of the transfer
      */
-    TransferProcess acceptContractOffer(ConsumeOfferRequestBE request)
-        throws OfferNotFoundException, NegotiationFailedException, TransferFailedException;
+    TransferProcess acceptContractOffer(ConsumeOfferRequestBE request) throws OfferNotFoundException, NegotiationFailedException, TransferFailedException;
 }
