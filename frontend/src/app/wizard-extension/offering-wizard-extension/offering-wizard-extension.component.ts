@@ -34,22 +34,27 @@ import {
   styleUrls: ['./offering-wizard-extension.component.scss']
 })
 export class OfferingWizardExtensionComponent {
-  @ViewChild("gxServiceOfferingWizard") private gxServiceOfferingWizard: BaseWizardExtensionComponent;
-  @ViewChild("gxDataResourceWizard") private gxDataResourceWizard: BaseWizardExtensionComponent;
   @ViewChild("offerCreationStatusMessage") public offerCreationStatusMessage!: StatusMessageComponent;
-
   selectedFileName: string = "";
   policyMap = POLICY_MAP;
   selectedPolicy: string = "";
-
-
   public prefillDone: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
   protected isDataOffering: boolean = true;
+  @ViewChild("gxServiceOfferingWizard") private gxServiceOfferingWizard: BaseWizardExtensionComponent;
+  @ViewChild("gxDataResourceWizard") private gxDataResourceWizard: BaseWizardExtensionComponent;
 
   constructor(
     private apiService: ApiService
-  ) {}
+  ) {
+  }
+
+  get isInvalidFileName(): boolean {
+    return !this.isFieldFilled(this.selectedFileName);
+  }
+
+  get isInvalidPolicy(): boolean {
+    return !this.isFieldFilled(this.selectedPolicy);
+  }
 
   public async loadShape(offerType: string, serviceOfferingId: string, dataResourceId: string): Promise<void> {
     this.isDataOffering = offerType === "data";
@@ -70,15 +75,6 @@ export class OfferingWizardExtensionComponent {
 
   public isShapeLoaded(): boolean {
     return this.gxServiceOfferingWizard?.isShapeLoaded() && this.isOfferingDataOffering() ? this.gxDataResourceWizard?.isShapeLoaded() : true;
-  }
-
-  private prefillHandleCs(cs: IPojoCredentialSubject) {
-    if (isGxServiceOfferingCs(cs)) {
-      this.gxServiceOfferingWizard.prefillFields(cs, ["gx:providedBy"]);
-    }
-    if (isDataResourceCs(cs)) {
-      this.gxDataResourceWizard.prefillFields(cs, ["gx:producedBy", "gx:exposedThrough", "gx:copyrightOwnedBy"]);
-    }
   }
 
   public prefillFields(csList: IPojoCredentialSubject[]) {
@@ -150,11 +146,31 @@ export class OfferingWizardExtensionComponent {
       console.log(response);
       this.offerCreationStatusMessage.showSuccessMessage("");
     }).catch((e: HttpErrorResponse) => {
-      this.offerCreationStatusMessage.showErrorMessage(e.error.detail);
+      this.offerCreationStatusMessage.showErrorMessage(e.error.detail || e.error || e.message);
     }).catch(_ => {
       this.offerCreationStatusMessage.showErrorMessage("Unbekannter Fehler");
     });
 
+  }
+
+  public ngOnDestroy() {
+    this.gxServiceOfferingWizard.ngOnDestroy();
+    this.gxDataResourceWizard.ngOnDestroy();
+    this.resetPossibleSpecificFormValues();
+    this.offerCreationStatusMessage.hideAllMessages();
+  }
+
+  public isFieldFilled(str: string) {
+    if (!str || str.trim().length === 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public resetPossibleSpecificFormValues() {
+    this.selectedFileName = "";
+    this.selectedPolicy = "";
   }
 
   protected getPolicyNames() {
@@ -164,13 +180,6 @@ export class OfferingWizardExtensionComponent {
   protected getPolicyDetails(policy: string): string {
     const policyDetails = this.policyMap[policy];
     return policyDetails ? JSON.stringify(policyDetails, null, 2) : '';
-  }
-
-  public ngOnDestroy() {
-    this.gxServiceOfferingWizard.ngOnDestroy();
-    this.gxDataResourceWizard.ngOnDestroy();
-    this.resetPossibleSpecificFormValues();
-    this.offerCreationStatusMessage.hideAllMessages();
   }
 
   protected isWizardFormInvalid(): boolean {
@@ -184,29 +193,8 @@ export class OfferingWizardExtensionComponent {
     return this.isDataOffering;
   }
 
-  public isFieldFilled(str: string){
-    if (!str || str.trim().length === 0) {
-      return false;
-    }
-
-    return true;
-  }
-
   protected isPossibleSpecificFormInvalid(): boolean {
     return this.isInvalidFileName || this.isInvalidPolicy;
-  }
-
-  get isInvalidFileName(): boolean {
-    return !this.isFieldFilled(this.selectedFileName);
-  }
-
-  get isInvalidPolicy(): boolean {
-    return !this.isFieldFilled(this.selectedPolicy);
-  }
-
-  public resetPossibleSpecificFormValues() {
-    this.selectedFileName = "";
-    this.selectedPolicy = "";
   }
 
   protected adaptGxShape(shapeSource: any, shapeName: string, excludedFields: string[]) {
@@ -225,5 +213,14 @@ export class OfferingWizardExtensionComponent {
 
     console.log(shapeSource);
     return shapeSource;
+  }
+
+  private prefillHandleCs(cs: IPojoCredentialSubject) {
+    if (isGxServiceOfferingCs(cs)) {
+      this.gxServiceOfferingWizard.prefillFields(cs, ["gx:providedBy"]);
+    }
+    if (isDataResourceCs(cs)) {
+      this.gxDataResourceWizard.prefillFields(cs, ["gx:producedBy", "gx:exposedThrough", "gx:copyrightOwnedBy"]);
+    }
   }
 }

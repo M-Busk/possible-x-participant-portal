@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { ApiService } from '../../../services/mgmt/api/api.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { StatusMessageComponent } from '../../common-views/status-message/status-message.component';
-import { IOfferDetailsTO } from '../../../services/mgmt/api/backend';
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {ApiService} from '../../../services/mgmt/api/api.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {StatusMessageComponent} from '../../common-views/status-message/status-message.component';
+import {IOfferDetailsTO} from '../../../services/mgmt/api/backend';
 
 @Component({
   selector: 'app-accept-offer',
@@ -13,7 +13,8 @@ export class AcceptOfferComponent {
   @Output() dismiss: EventEmitter<any> = new EventEmitter();
   @ViewChild('acceptOfferStatusMessage') private acceptOfferStatusMessage!: StatusMessageComponent;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) {
+  }
 
   async acceptContractOffer() {
     this.acceptOfferStatusMessage.showInfoMessage();
@@ -26,7 +27,7 @@ export class AcceptOfferComponent {
       console.log(response);
       this.acceptOfferStatusMessage.showSuccessMessage("Check console for details.");
     }).catch((e: HttpErrorResponse) => {
-      this.acceptOfferStatusMessage.showErrorMessage(e.error.detail);
+      this.acceptOfferStatusMessage.showErrorMessage(e.error.detail || e.error || e.message);
     });
   };
 

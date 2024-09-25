@@ -1,17 +1,18 @@
-import { Component, EventEmitter, forwardRef, Output, ViewChild } from '@angular/core';
-import { HttpErrorResponse } from "@angular/common/http";
+import {Component, EventEmitter, forwardRef, Output, ViewChild} from '@angular/core';
+import {HttpErrorResponse} from "@angular/common/http";
 import {
   AbstractControl,
   ControlValueAccessor,
   FormBuilder,
   FormControl,
   FormGroup,
-  NG_VALUE_ACCESSOR, ValidationErrors,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
   Validators
 } from "@angular/forms";
-import { StatusMessageComponent } from "../../common-views/status-message/status-message.component";
-import { ApiService } from "../../../services/mgmt/api/api.service";
-import { IOfferDetailsTO } from "../../../services/mgmt/api/backend";
+import {StatusMessageComponent} from "../../common-views/status-message/status-message.component";
+import {ApiService} from "../../../services/mgmt/api/api.service";
+import {IOfferDetailsTO} from "../../../services/mgmt/api/backend";
 
 interface SelectionFormModel {
   offerId: FormControl<string>;
@@ -28,17 +29,19 @@ interface SelectionFormModel {
   }]
 })
 export class SelectOfferComponent implements ControlValueAccessor {
-  @ViewChild('queryCatalogStatusMessage') private queryCatalogStatusMessage!: StatusMessageComponent;
   selectionForm: FormGroup<SelectionFormModel>;
   @Output() selectedOffer = new EventEmitter<IOfferDetailsTO>();
-
-  private onChange = (offerId: string) => {};
-  private onTouched = () => {};
+  @ViewChild('queryCatalogStatusMessage') private queryCatalogStatusMessage!: StatusMessageComponent;
 
   constructor(private apiService: ApiService, private fb: FormBuilder) {
     this.selectionForm = this.fb.group({
       offerId: this.fb.nonNullable.control<string>('', [Validators.required, this.validateOfferId])
     });
+  }
+
+  get isInvalidOfferId(): boolean {
+    return (this.selectionForm.controls.offerId.value.length > 0)
+      && this.selectionForm.controls.offerId.hasError('Wrong format');
   }
 
   async selectOffer(offerId: string) {
@@ -50,11 +53,11 @@ export class SelectOfferComponent implements ControlValueAccessor {
       this.queryCatalogStatusMessage.showSuccessMessage("Check console for details.");
       this.selectedOffer.emit(response);
     }).catch((e: HttpErrorResponse) => {
-      this.queryCatalogStatusMessage.showErrorMessage(e.error.detail);
+      this.queryCatalogStatusMessage.showErrorMessage(e.error.detail || e.error || e.message);
     });
   }
 
-  registerOnChange(fn: (value: Partial<{ offerId: string; }>) => void ): void {
+  registerOnChange(fn: (value: Partial<{ offerId: string; }>) => void): void {
     this.selectionForm.valueChanges.subscribe(fn);
   }
 
@@ -66,11 +69,6 @@ export class SelectOfferComponent implements ControlValueAccessor {
     offerId ? this.selectionForm.controls.offerId.setValue(offerId) : this.selectionForm.reset();
   }
 
-  get isInvalidOfferId(): boolean {
-    return (this.selectionForm.controls.offerId.value.length > 0)
-      && this.selectionForm.controls.offerId.hasError('Wrong format');
-  }
-
   validateOfferId(control: AbstractControl): ValidationErrors | null {
     if (control.value.match(/^[a-zA-Z0-9][a-zA-Z0-9\-]*$/)) {
       return null;
@@ -79,4 +77,10 @@ export class SelectOfferComponent implements ControlValueAccessor {
       'Wrong format': true
     };
   }
+
+  private onChange = (offerId: string) => {
+  };
+
+  private onTouched = () => {
+  };
 }
