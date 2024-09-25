@@ -93,7 +93,7 @@ export interface ITransferDetailsTOBuilder {
 }
 
 export interface IPojoCredentialSubject {
-    "@type": "UnknownCredentialSubject" | "gx:DataResource" | "gx:ServiceOffering" | "PxExtendedServiceOfferingCredentialSubject";
+    "@type": "UnknownCredentialSubject" | "gx:DataResource" | "gx:ServiceOffering";
     id: string;
 }
 
@@ -192,8 +192,8 @@ export interface IGxServiceOfferingCredentialSubjectBuilderImpl extends IGxServi
     "gx:description": string;
 }
 
-export interface IPxExtendedServiceOfferingCredentialSubject extends IPojoCredentialSubject {
-    "@type": "PxExtendedServiceOfferingCredentialSubject";
+export interface IPxExtendedServiceOfferingCredentialSubject {
+    id: string;
     "gx:providedBy": INodeKindIRITypeId;
     "gx:aggregationOf": IGxDataResourceCredentialSubject[];
     "gx:termsAndConditions": IGxSOTermsAndConditions[];
@@ -204,11 +204,13 @@ export interface IPxExtendedServiceOfferingCredentialSubject extends IPojoCreden
     "gx:description": string;
     "px:assetId": string;
     "px:providerUrl": string;
+    "schema:name": string;
+    "schema:description": string;
     "@context": { [index: string]: string };
-    type: string[];
+    "@type": string[];
 }
 
-export interface IPxExtendedServiceOfferingCredentialSubjectBuilder<C, B> extends IPojoCredentialSubjectBuilder<C, B> {
+export interface IPxExtendedServiceOfferingCredentialSubjectBuilder<C, B> {
 }
 
 export interface IPxExtendedServiceOfferingCredentialSubjectBuilderImpl extends IPxExtendedServiceOfferingCredentialSubjectBuilder<IPxExtendedServiceOfferingCredentialSubject, IPxExtendedServiceOfferingCredentialSubjectBuilderImpl> {
@@ -222,6 +224,8 @@ export interface IPxExtendedServiceOfferingCredentialSubjectBuilderImpl extends 
     "gx:description": string;
     "px:assetId": string;
     "px:providerUrl": string;
+    "schema:name": string;
+    "schema:description": string;
 }
 
 export interface IPolicy {
