@@ -22,7 +22,8 @@ export class AcceptOfferComponent {
 
     this.apiService.acceptContractOffer({
       counterPartyAddress: this.offer == undefined ? "" : this.offer.counterPartyAddress,
-      edcOfferId: this.offer == undefined ? "" : this.offer.edcOfferId
+      edcOfferId: this.offer == undefined ? "" : this.offer.edcOfferId,
+      dataOffering: this.offer == undefined ? false : this.offer.dataOffering
     }).then(response => {
       console.log(response);
       this.acceptOfferStatusMessage.showSuccessMessage("Check console for details.");

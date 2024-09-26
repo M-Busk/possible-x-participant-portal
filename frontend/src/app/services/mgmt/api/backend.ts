@@ -67,6 +67,7 @@ export interface IOfferDetailsTO {
     name: string;
     description: string;
     contentType: string;
+    dataOffering: boolean;
 }
 
 export interface IOfferDetailsTOBuilder {
@@ -89,7 +90,7 @@ export interface ISelectOfferRequestTOBuilder {
 export interface IAcceptOfferResponseTO {
     transferProcessState: ITransferProcessState;
     negotiationState: INegotiationState;
-    isDataOffering: boolean;
+    dataOffering: boolean;
 }
 
 export interface IAcceptOfferResponseTOBuilder {
