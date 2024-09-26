@@ -24,4 +24,8 @@ public class SelectOfferResponseBE {
      * Does this offer contain Data Resources.
      */
     private boolean dataOffering;
+    /**
+     * Data Offering or Service Offering
+     */
+    private String offerType;
 }

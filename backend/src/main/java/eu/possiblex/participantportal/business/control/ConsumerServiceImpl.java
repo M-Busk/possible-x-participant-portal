@@ -65,6 +65,11 @@ public class ConsumerServiceImpl implements ConsumerService {
         response.setEdcOffer(edcCatalogOffer);
         response.setCounterPartyAddress(fhCatalogOffer.getCounterPartyAddress());
         response.setDataOffering(fhCatalogOffer.isDataOffering());
+        if (fhCatalogOffer.isDataOffering()) {
+            response.setOfferType("Data Offering");
+        } else {
+            response.setOfferType("Service Offering");
+        }
 
         return response;
     }

@@ -53,7 +53,6 @@ public class ConsumerRestApiImpl implements ConsumerRestApi {
 
     @Override
     public AcceptOfferResponseTO acceptContractOffer(@RequestBody ConsumeOfferRequestTO request) {
-
         log.info("accepting contract with " + request);
         ConsumeOfferRequestBE be = consumerApiMapper.consumeOfferRequestTOtoBE(request);
 
