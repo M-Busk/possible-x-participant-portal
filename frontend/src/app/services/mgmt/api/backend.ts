@@ -23,6 +23,7 @@ export interface IServiceOfferingShapeRestApi {
 export interface IConsumeOfferRequestTO {
     counterPartyAddress: string;
     edcOfferId: string;
+    dataOffering: boolean;
 }
 
 export interface IConsumeOfferRequestTOBuilder {
