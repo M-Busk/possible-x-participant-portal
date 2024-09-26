@@ -118,9 +118,63 @@ public class ConsumerModuleTest {
         // WHEN/THEN
 
         this.mockMvc.perform(post("/consumer/offer/accept").content(RestApiHelper.asJsonString(
-                    ConsumeOfferRequestTO.builder().edcOfferId(edcOfferId).counterPartyAddress(counterPartyAddress).build()))
+                    ConsumeOfferRequestTO.builder().edcOfferId(edcOfferId).counterPartyAddress(counterPartyAddress).dataOffering(true).build()))
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
-            .andExpect(jsonPath("$.state").value(TransferProcessState.COMPLETED.name()));
+            .andExpect(jsonPath("$.transferProcessState").value(TransferProcessState.COMPLETED.name()));
+
+        // THEN
+
+    }
+
+    @Test
+    void acceptContractOfferSucceedsNoTransfer() throws Exception {
+
+        // GIVEN
+
+        reset(edcClientMock);
+        reset(technicalFhCatalogClientMock);
+
+        String edcOfferId = "edcOfferId";
+        String counterPartyAddress = "counterPartyAddress";
+
+        // let the EDC provide the test data catalog
+        DcatDataset mockDatasetWrongOne = new DcatDataset(); // an offer in the EDC Catalog which the user does not look for
+        mockDatasetWrongOne.setAssetId("assetIdWhichTheUserDoesNotLookFor");
+        mockDatasetWrongOne.setName("wrong");
+        mockDatasetWrongOne.setContenttype("wrong");
+        mockDatasetWrongOne.setDescription("wrong");
+        DcatDataset mockDatasetCorrectOne = new DcatDataset(); // the offer in the EDC Catalog which the user looks for
+        mockDatasetCorrectOne.setAssetId(edcOfferId);
+        mockDatasetCorrectOne.setName("correctName");
+        mockDatasetCorrectOne.setContenttype("correctContentType");
+        mockDatasetCorrectOne.setDescription("correctDescription");
+        Policy policy = new Policy();
+        policy.setId("policyId");
+        mockDatasetCorrectOne.setHasPolicy(List.of(policy));
+        DcatCatalog edcCatalogAnswerMock = new DcatCatalog();
+        edcCatalogAnswerMock.setDataset(List.of(mockDatasetWrongOne, mockDatasetCorrectOne));
+        Mockito.when(edcClientMock.queryCatalog(Mockito.any())).thenReturn(edcCatalogAnswerMock);
+
+        // define EDC client behaviour for the data transfer so that it goes through
+        IdResponse negotiation = new IdResponse();
+        negotiation.setId("negiotiationId");
+        Mockito.when(edcClientMock.negotiateOffer(Mockito.any())).thenReturn(negotiation);
+        ContractNegotiation contractNegotiation = new ContractNegotiation();
+        contractNegotiation.setState(NegotiationState.FINALIZED);
+        Mockito.when(edcClientMock.checkOfferStatus(Mockito.eq(negotiation.getId()))).thenReturn(contractNegotiation);
+        IdResponse transfer = new IdResponse();
+        transfer.setId("transferId");
+        Mockito.when(edcClientMock.initiateTransfer(Mockito.any())).thenReturn(transfer);
+        IonosS3TransferProcess transferProcess = new IonosS3TransferProcess();
+        transferProcess.setState(TransferProcessState.COMPLETED);
+        Mockito.when(edcClientMock.checkTransferStatus(Mockito.any())).thenReturn(transferProcess);
+
+        // WHEN/THEN
+
+        this.mockMvc.perform(post("/consumer/offer/accept").content(RestApiHelper.asJsonString(
+                                ConsumeOfferRequestTO.builder().edcOfferId(edcOfferId).counterPartyAddress(counterPartyAddress).dataOffering(false).build()))
+                        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.transferProcessState").value(TransferProcessState.INITIAL.name()));
 
         // THEN
 
@@ -139,8 +193,8 @@ public class ConsumerModuleTest {
         Mockito.when(technicalFhCatalogClientMock.getFhCatalogOffer(Mockito.eq(ConsumerServiceMock.VALID_FH_OFFER_ID)))
             .thenReturn(fhCatalogOfferContent);
 
-        String expectedEdcProviderUrl = "EXPECTED_ACCESS_URL_VALUE"; // from the "dcat:accessURL" attribute in the test data offer
-        String expectedAssetId = "EXPECTED_ASSET_ID_VALUE"; // from the "https://possible-gaia-x.de/ns/#assetId" attribute in the test data offer
+        String expectedEdcProviderUrl = "EXPECTED_PROVIDER_URL_VALUE"; // from the "px:providerURL" attribute in the test data offer
+        String expectedAssetId = "EXPECTED_ASSET_ID_VALUE"; // from the "px:assetId" attribute in the test data offer
 
         // let the EDC provide the test data catalog
         DcatDataset mockDatasetWrongOne = new DcatDataset(); // an offer in the EDC Catalog which the user does not look for

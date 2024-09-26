@@ -25,4 +25,8 @@ public class OfferDetailsTO {
     private String name;
     private String description;
     private String contentType;
+    /**
+     * Does this offer contain Data Resources.
+     */
+    private boolean dataOffering;
 }

@@ -1,5 +1,6 @@
 package eu.possiblex.participantportal.business.control;
 
+import eu.possiblex.participantportal.business.entity.AcceptOfferResponseBE;
 import eu.possiblex.participantportal.business.entity.ConsumeOfferRequestBE;
 import eu.possiblex.participantportal.business.entity.SelectOfferRequestBE;
 import eu.possiblex.participantportal.business.entity.SelectOfferResponseBE;
@@ -20,11 +21,9 @@ import eu.possiblex.participantportal.business.entity.edc.transfer.TransferReque
 import eu.possiblex.participantportal.business.entity.exception.NegotiationFailedException;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
 import eu.possiblex.participantportal.business.entity.exception.TransferFailedException;
-import eu.possiblex.participantportal.utilities.PossibleXException;
 import eu.possiblex.participantportal.business.entity.fh.FhCatalogOffer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -65,12 +64,13 @@ public class ConsumerServiceImpl implements ConsumerService {
         SelectOfferResponseBE response = new SelectOfferResponseBE();
         response.setEdcOffer(edcCatalogOffer);
         response.setCounterPartyAddress(fhCatalogOffer.getCounterPartyAddress());
+        response.setDataOffering(fhCatalogOffer.isDataOffering());
 
         return response;
     }
 
     @Override
-    public TransferProcess acceptContractOffer(ConsumeOfferRequestBE request)
+    public AcceptOfferResponseBE acceptContractOffer(ConsumeOfferRequestBE request)
         throws OfferNotFoundException, NegotiationFailedException, TransferFailedException {
 
         // query edcOffer
@@ -85,13 +85,19 @@ public class ConsumerServiceImpl implements ConsumerService {
                     .policy(dataset.getHasPolicy().get(0)).build()).build();
         ContractNegotiation contractNegotiation = negotiateOffer(negotiationInitiateRequest);
 
-        // initiate transfer
-        DataAddress dataAddress = IonosS3DataDestination.builder().storage("s3-eu-central-2.ionoscloud.com")
-            .bucketName("dev-consumer-edc-bucket-possible-31952746").path("s3HatGeklappt/").keyName("myKey").build();
-        TransferRequest transferRequest = TransferRequest.builder().connectorId(edcOffer.getParticipantId())
-            .counterPartyAddress(request.getCounterPartyAddress()).assetId(dataset.getAssetId())
-            .contractId(contractNegotiation.getContractAgreementId()).dataDestination(dataAddress).build();
-        return performTransfer(transferRequest);
+        TransferProcessState transferProcessState = TransferProcessState.INITIAL;
+        if (request.isDataOffering()) {
+            // initiate transfer
+            DataAddress dataAddress = IonosS3DataDestination.builder().storage("s3-eu-central-2.ionoscloud.com")
+                    .bucketName("dev-consumer-edc-bucket-possible-31952746").path("s3HatGeklappt/").keyName("myKey").build();
+            TransferRequest transferRequest = TransferRequest.builder().connectorId(edcOffer.getParticipantId())
+                    .counterPartyAddress(request.getCounterPartyAddress()).assetId(dataset.getAssetId())
+                    .contractId(contractNegotiation.getContractAgreementId()).dataDestination(dataAddress).build();
+            transferProcessState = performTransfer(transferRequest).getState();
+        }
+        AcceptOfferResponseBE be = new AcceptOfferResponseBE(transferProcessState, contractNegotiation.getState(),
+            request.isDataOffering());
+        return be;
     }
 
     private DcatCatalog queryEdcCatalog(CatalogRequest catalogRequest) {

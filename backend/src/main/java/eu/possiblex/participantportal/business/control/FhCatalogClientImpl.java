@@ -40,15 +40,15 @@ public class FhCatalogClientImpl implements FhCatalogClient {
     }
 
     @Override
-    public FhCatalogOffer getFhCatalogOffer(String datasetId) throws OfferNotFoundException {
+    public FhCatalogOffer getFhCatalogOffer(String offeringId) throws OfferNotFoundException {
 
-        log.info("fetching offer for fh catalog ID " + datasetId);
+        log.info("fetching offer for fh catalog ID " + offeringId);
         String offerJsonContent = null;
         try {
-            offerJsonContent = technicalFhCatalogClient.getFhCatalogOffer(datasetId);
+            offerJsonContent = technicalFhCatalogClient.getFhCatalogOffer(offeringId);
         } catch (WebClientResponseException e) {
             if (e.getStatusCode().value() == 404) {
-                throw new OfferNotFoundException("no FH Catalog offer found with ID " + datasetId);
+                throw new OfferNotFoundException("no FH Catalog offer found with ID " + offeringId);
             }
             throw e;
         }
@@ -65,19 +65,21 @@ public class FhCatalogClientImpl implements FhCatalogClient {
             JsonNode offerJson = mapper.readTree(offerJsonContent);
 
             String assetId = getValueForAttribute("assetId", offerJson);
-            String accessURL = getValueForAttribute("accessURL", offerJson);
-            log.info("parsed fh catalog offer id assetId: " + assetId);
-            log.info("parsed fh catalog offer id accessURL: " + accessURL);
+            String providerURL = getValueForAttribute("providerUrl", offerJson);
+            int dataResourceCount = countKeyValuePairs("@type", "DataResource", offerJson);
+            log.info("parsed fh catalog offer id px:assetId: " + assetId);
+            log.info("parsed fh catalog offer id px:providerUrl: " + providerURL);
+            log.info("parsed fh catalog offer id number of dataResources: " + dataResourceCount);
 
-            if ((assetId == null) || (accessURL == null) || assetId.isEmpty() || accessURL.isEmpty()) {
-                throw new RuntimeException(
-                    "FH catalog offer did not contain all expected infos! asset-ID: " + assetId + ", access URL: "
-                        + accessURL);
+            if ((assetId == null) || (providerURL == null) || assetId.isEmpty() || providerURL.isEmpty()) {
+                throw new RuntimeException("FH catalog offer did not contain all expected infos! asset-ID: "
+                        + assetId + ", provider URL: " + providerURL);
             }
 
             fhCatalogOffer = new FhCatalogOffer();
             fhCatalogOffer.setAssetId(assetId);
-            fhCatalogOffer.setCounterPartyAddress(accessURL);
+            fhCatalogOffer.setCounterPartyAddress(providerURL);
+            fhCatalogOffer.setDataOffering(dataResourceCount>=1);
 
         } catch (Exception e) {
             throw new RuntimeException("failed to parse fh catalog offer json: " + offerJsonContent, e);
@@ -129,6 +131,41 @@ public class FhCatalogClientImpl implements FhCatalogClient {
         }
 
         return null;
+    }
+
+    /**
+     * Recursively parses the given JSON object. Looks for the all occurrences of a specified key-value pair.
+     * This method can be improved to better deal with JSON-LD structures in the future if necessary.
+     *
+     * @param key
+     * @param value
+     * @param jsonNode
+     * @return
+     */
+    private int countKeyValuePairs(String key, String value, JsonNode jsonNode) {
+        int count = 0;
+        if (jsonNode.isArray()) {
+            for (int i = 0; i < jsonNode.size(); i++) {
+                JsonNode child = jsonNode.get(i);
+                count += countKeyValuePairs(key, value, child);
+            }
+            return count;
+        }
+
+        for (Iterator<Map.Entry<String, JsonNode>> iter = jsonNode.fields(); iter.hasNext(); ) {
+            Map.Entry<String, JsonNode> entry = iter.next();
+
+            String currKey = entry.getKey();
+            if (currKey.equals(key)) {
+                String currValue = entry.getValue().asText();
+                if (currValue.equals(value) || currValue.endsWith("#" + value) || currValue.endsWith(":" + value)) {
+                    count++;
+                }
+            }
+            count += countKeyValuePairs(key, value, entry.getValue());
+        }
+
+        return count;
     }
 
     private Map<String, String> createHeaders() {

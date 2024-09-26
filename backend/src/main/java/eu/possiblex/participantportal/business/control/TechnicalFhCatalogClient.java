@@ -37,7 +37,7 @@ public interface TechnicalFhCatalogClient {
     void addServiceOfferingToFhCatalog(@RequestHeader Map<String, String> auth,
         @RequestBody PxExtendedServiceOfferingCredentialSubject serviceOfferingCs);
 
-    @GetExchange("/datasets/{dataset_id}")
-    String getFhCatalogOffer(@PathVariable String dataset_id);
+    @GetExchange("/resources/service-offering/{offering_id}")
+    String getFhCatalogOffer(@PathVariable String offering_id);
 }
 

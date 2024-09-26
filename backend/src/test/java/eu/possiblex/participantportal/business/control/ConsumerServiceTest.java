@@ -3,6 +3,7 @@ package eu.possiblex.participantportal.business.control;
 import eu.possiblex.participantportal.business.entity.ConsumeOfferRequestBE;
 import eu.possiblex.participantportal.business.entity.SelectOfferRequestBE;
 import eu.possiblex.participantportal.business.entity.SelectOfferResponseBE;
+import eu.possiblex.participantportal.business.entity.AcceptOfferResponseBE;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcess;
 import eu.possiblex.participantportal.business.entity.exception.NegotiationFailedException;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
@@ -70,14 +71,37 @@ class ConsumerServiceTest {
 
         // WHEN
 
-        TransferProcess response = sut.acceptContractOffer(
-            ConsumeOfferRequestBE.builder().counterPartyAddress("http://example.com").edcOfferId(EdcClientFake.FAKE_ID)
+        AcceptOfferResponseBE response = sut.acceptContractOffer(
+            ConsumeOfferRequestBE.builder().counterPartyAddress("http://example.com").edcOfferId(EdcClientFake.FAKE_ID).dataOffering(true)
                 .build());
 
         // THEN
 
         verify(edcClient).negotiateOffer(any());
         verify(edcClient).initiateTransfer(any());
+
+        assertNotNull(response);
+    }
+
+    @Test
+    void acceptContractOfferSucceedsNoTransfer()
+            throws NegotiationFailedException, TransferFailedException, OfferNotFoundException {
+
+        // GIVEN
+
+        reset(edcClient);
+        reset(fhCatalogClient);
+
+        // WHEN
+
+        AcceptOfferResponseBE response = sut.acceptContractOffer(
+                ConsumeOfferRequestBE.builder().counterPartyAddress("http://example.com").edcOfferId(EdcClientFake.FAKE_ID).dataOffering(false)
+                        .build());
+
+        // THEN
+
+        verify(edcClient).negotiateOffer(any());
+        verify(edcClient, never()).initiateTransfer(any());
 
         assertNotNull(response);
     }
@@ -109,7 +133,7 @@ class ConsumerServiceTest {
         reset(fhCatalogClient);
         assertThrows(TransferFailedException.class, () -> sut.acceptContractOffer(
             ConsumeOfferRequestBE.builder().counterPartyAddress("http://example.com")
-                .edcOfferId(EdcClientFake.BAD_TRANSFER_ID).build()));
+                .edcOfferId(EdcClientFake.BAD_TRANSFER_ID).dataOffering(true).build()));
     }
 
     // Test-specific configuration to provide mocks

@@ -19,4 +19,9 @@ public class FhCatalogOffer {
      * The URL for the provider EDC Connector.
      */
     private String counterPartyAddress;
+
+    /**
+     * Does this offer contain Data Resources.
+     */
+    private boolean dataOffering;
 }
