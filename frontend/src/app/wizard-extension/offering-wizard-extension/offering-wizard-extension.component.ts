@@ -194,7 +194,8 @@ export class OfferingWizardExtensionComponent {
   }
 
   protected isPossibleSpecificFormInvalid(): boolean {
-    return this.isInvalidFileName || this.isInvalidPolicy;
+    let isInvalidFileName = this.isOfferingDataOffering() ? this.isInvalidFileName : false;
+    return isInvalidFileName || this.isInvalidPolicy;
   }
 
   protected adaptGxShape(shapeSource: any, shapeName: string, excludedFields: string[]) {
