@@ -9,15 +9,12 @@ import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedD
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.CreateEdcOfferBE;
 import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
-import org.mapstruct.InheritConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 import java.util.Collections;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface ProviderServiceMapper {
 
     @Mapping(target = "providedBy", source = "request.providedBy")
@@ -41,16 +38,31 @@ public interface ProviderServiceMapper {
     PxExtendedServiceOfferingCredentialSubject getPxExtendedServiceOfferingCredentialSubject(
         CreateDataOfferingRequestBE request, String offeringId, String assetId, String providerUrl);
 
-    @Mapping(target = "assetName", source = "name")
-    @Mapping(target = "assetDescription", source = "description")
+    @Mapping(target = "assetId", source = "assetId")
+    @Mapping(target = "properties.offerId", source = "offerId")
+    @Mapping(target = "properties.name", source = "request.name")
+    @Mapping(target = "properties.description", source = "request.description")
+    @Mapping(target = "properties.providedBy", source = "request.providedBy")
+    @Mapping(target = "properties.termsAndConditions", source = "request.termsAndConditions")
+    @Mapping(target = "properties.dataProtectionRegime", source = "request.dataProtectionRegime")
+    @Mapping(target = "properties.dataAccountExport", source = "request.dataAccountExport")
+    @Mapping(target = "properties.contenttype", ignore = true)
+    @Mapping(target = "properties.version", ignore = true)
     @Mapping(target = "fileName", constant = "")
-    @Mapping(target = "policy", source = "policy")
-    CreateEdcOfferBE getCreateEdcOfferBE(CreateServiceOfferingRequestBE request);
+    @Mapping(target = "policy", source = "request.policy")
+    CreateEdcOfferBE getCreateEdcOfferBE(CreateServiceOfferingRequestBE request, String offerId, String assetId);
 
     @InheritConfiguration
-    @Mapping(target = "fileName", source = "fileName")
-    CreateEdcOfferBE getCreateEdcOfferBE(CreateDataOfferingRequestBE request);
+    @Mapping(target = "properties.copyrightOwnedBy", source = "request.dataResource.copyrightOwnedBy")
+    @Mapping(target = "properties.producedBy", source = "request.dataResource.producedBy")
+    @Mapping(target = "properties.exposedThrough", source = "request.dataResource.exposedThrough")
+    @Mapping(target = "properties.license", source = "request.dataResource.license")
+    @Mapping(target = "properties.containsPII", source = "request.dataResource.containsPII")
+    @Mapping(target = "fileName", source = "request.fileName")
+    CreateEdcOfferBE getCreateEdcOfferBE(CreateDataOfferingRequestBE request, String offerId, String assetId);
 
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "context", ignore = true)
     PxExtendedDataResourceCredentialSubject gxDataResourceToPxDataResource(
         GxDataResourceCredentialSubject dataResource);
 

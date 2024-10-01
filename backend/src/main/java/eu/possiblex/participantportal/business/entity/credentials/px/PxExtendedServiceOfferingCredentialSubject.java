@@ -17,6 +17,8 @@ import java.util.Map;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @ToString
 public class PxExtendedServiceOfferingCredentialSubject {
