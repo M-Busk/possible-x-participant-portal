@@ -30,5 +30,6 @@ application:
         SPRING_PROFILES_ACTIVE: dev
         FH_CATALOG_URL: https://possible.fokus.fraunhofer.de/api/hub/repo
         EDC_MGMTBASEURL: https://consumer.edc.poc.possible-x.de/management
+        SDCREATIONWIZARDAPI_BASEURL: https://sd-creation-wizard.poc.possible-x.de
   secrets:
     - consumer-management-secrets
