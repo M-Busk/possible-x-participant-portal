@@ -13,7 +13,7 @@ The script has some parameters:
 -f, --env-file - the env file path that will be made into a secret
 -t, --target - the path of the sealed secret you want to create
 -h, --help - prints this message
--n, --secret-name - the name of the secret that can be referenced in k8s
+-s, --secret-name - the name of the secret that can be referenced in k8s
 "
 while [[ "$#" -gt 0 ]]; do
   case "${1}" in
