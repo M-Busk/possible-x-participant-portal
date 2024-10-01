@@ -159,12 +159,24 @@ public class FhCatalogClientImpl implements FhCatalogClient {
 
             String currKey = entry.getKey();
             if (currKey.equals(key)) {
+                if (entry.getValue().isArray()) {
+                    for (int i = 0; i < entry.getValue().size(); i++) {
+                        JsonNode child = entry.getValue().get(i);
+                        if (child.asText().equals(value) || child.asText().endsWith("#" + value)
+                                || child.asText().endsWith(":" + value)) {
+                            count++;
+                        }
+                    }
+                }
                 String currValue = entry.getValue().asText();
                 if (currValue.equals(value) || currValue.endsWith("#" + value) || currValue.endsWith(":" + value)) {
                     count++;
                 }
+
             }
-            count += countKeyValuePairs(key, value, entry.getValue());
+            if (!currKey.equals(key)) {
+                count += countKeyValuePairs(key, value, entry.getValue());
+            }
         }
 
         return count;

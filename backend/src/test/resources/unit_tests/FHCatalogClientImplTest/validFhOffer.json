@@ -43,7 +43,7 @@
         "@value": "true",
         "@type": "http://www.w3.org/2001/XMLSchema#boolean"
       },
-      "@type": "gx:DataResource",
+      "@type": ["http://w3id.org/gaia-x/possible-x#PossibleXDataResourceExtension", "gx:DataResource"],
       "gx:policy": "{\n  \"@type\": \"odrl:Set\",\n  \"odrl:permission\": [\n    {\n      \"odrl:action\": {\n        \"odrl:type\": \"http://www.w3.org/ns/odrl/2/use\"\n      }\n    },\n    {\n      \"odrl:action\": {\n        \"odrl:type\": \"http://www.w3.org/ns/odrl/2/transfer\"\n      }\n    }\n  ],\n  \"odrl:prohibition\": [],\n  \"odrl:obligation\": []\n}",
       "gx:exposedThrough": {
         "@id": "_:b4"
