@@ -85,7 +85,7 @@ public class ContractServiceFake implements ContractService {
             "http://www.w3.org/ns/odrl/2/", "@vocab", "https://w3id.org/edc/v0.0.1/ns/");
 
         IonosS3DataSource dataAddress = IonosS3DataSource.builder().bucketName("bucket").blobName(NAME).keyName(NAME)
-            .storage("storage").build();
+            .regionId("storage").build();
 
         return PossibleAsset.builder().id(assetId).type("Asset").properties(properties).context(context)
             .dataAddress(dataAddress).build();
