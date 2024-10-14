@@ -104,7 +104,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         TransferProcessState transferProcessState = TransferProcessState.INITIAL;
         if (request.isDataOffering()) {
             // initiate transfer
-            DataAddress dataAddress = IonosS3DataDestination.builder().regionId(bucketStorageRegion)
+            DataAddress dataAddress = IonosS3DataDestination.builder().region(bucketStorageRegion)
                 .bucketName(bucketName).path(bucketTargetPath).keyName("myKey").build();
             TransferRequest transferRequest = TransferRequest.builder().connectorId(edcOffer.getParticipantId())
                 .counterPartyAddress(request.getCounterPartyAddress()).assetId(dataset.getAssetId())

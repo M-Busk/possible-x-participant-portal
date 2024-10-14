@@ -39,7 +39,7 @@ public class ProviderRequestBuilder {
 
         DataAddress dataAddress = IonosS3DataSource.builder().bucketName(bucketName)
             .blobName(createEdcOfferBE.getFileName()).keyName(createEdcOfferBE.getFileName())
-            .regionId(bucketStorageRegion).build();
+            .region(bucketStorageRegion).build();
 
         return AssetCreateRequest.builder().id(createEdcOfferBE.getAssetId())
             .properties(createEdcOfferBE.getProperties()).dataAddress(dataAddress).build();

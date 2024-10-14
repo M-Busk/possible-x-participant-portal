@@ -193,7 +193,7 @@ public class EdcClientFake implements EdcClient {
             "http://www.w3.org/ns/odrl/2/", "@vocab", "https://w3id.org/edc/v0.0.1/ns/");
 
         IonosS3DataSource dataAddress = IonosS3DataSource.builder().bucketName("bucket").blobName("name")
-            .keyName("name").regionId("storage").build();
+            .keyName("name").region("storage").build();
 
         return List.of(PossibleAsset.builder().id(FAKE_ID).type("Asset").properties(properties).context(context)
             .dataAddress(dataAddress).build());
