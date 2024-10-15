@@ -77,13 +77,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 
         SelectOfferResponseBE response = new SelectOfferResponseBE();
         response.setEdcOffer(edcCatalogOffer);
-        response.setCounterPartyAddress(fhCatalogOffer.getProviderUrl());
+        response.setCatalogOffering(fhCatalogOffer);
         response.setDataOffering(isDataOffering);
-        if (isDataOffering) {
-            response.setOfferType("Data Offering");
-        } else {
-            response.setOfferType("Service Offering");
-        }
 
         return response;
     }
@@ -114,9 +109,8 @@ public class ConsumerServiceImpl implements ConsumerService {
                 .contractId(contractNegotiation.getContractAgreementId()).dataDestination(dataAddress).build();
             transferProcessState = performTransfer(transferRequest).getState();
         }
-        AcceptOfferResponseBE be = new AcceptOfferResponseBE(transferProcessState, contractNegotiation.getState(),
-            request.isDataOffering());
-        return be;
+        return new AcceptOfferResponseBE(transferProcessState, contractNegotiation.getState(),
+            contractNegotiation.getContractAgreementId(), request.isDataOffering());
     }
 
     private DcatCatalog queryEdcCatalog(CatalogRequest catalogRequest) {

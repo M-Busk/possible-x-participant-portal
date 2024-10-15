@@ -220,11 +220,9 @@ public class ConsumerModuleTest {
         this.mockMvc.perform(post("/consumer/offer/select").content(RestApiHelper.asJsonString(
                     SelectOfferRequestTO.builder().fhCatalogOfferId(ConsumerServiceFake.VALID_FH_OFFER_ID).build()))
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
-            .andExpect(jsonPath("$.counterPartyAddress").value(expectedEdcProviderUrl))
+            .andExpect(jsonPath("$.catalogOffering['px:providerUrl']").value(expectedEdcProviderUrl))
             .andExpect(jsonPath("$.edcOfferId").value(expectedAssetId))
-            .andExpect(jsonPath("$.name").value(mockDatasetCorrectOne.getName()))
-            .andExpect(jsonPath("$.description").value(mockDatasetCorrectOne.getDescription()))
-            .andExpect(jsonPath("$.contentType").value(mockDatasetCorrectOne.getContenttype()));
+            .andExpect(jsonPath("$.dataOffering").value(true));
 
         // THEN
 

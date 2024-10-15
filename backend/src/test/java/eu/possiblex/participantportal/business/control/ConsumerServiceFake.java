@@ -4,6 +4,7 @@ import eu.possiblex.participantportal.business.entity.AcceptOfferResponseBE;
 import eu.possiblex.participantportal.business.entity.ConsumeOfferRequestBE;
 import eu.possiblex.participantportal.business.entity.SelectOfferRequestBE;
 import eu.possiblex.participantportal.business.entity.SelectOfferResponseBE;
+import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.catalog.DcatDataset;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.NegotiationState;
 import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
@@ -45,7 +46,9 @@ public class ConsumerServiceFake implements ConsumerService {
 
         SelectOfferResponseBE response = new SelectOfferResponseBE();
         response.setEdcOffer(edcCatalogOfferMock);
-        response.setCounterPartyAddress(VALID_COUNTER_PARTY_ADDRESS);
+        PxExtendedServiceOfferingCredentialSubject cs = new PxExtendedServiceOfferingCredentialSubject();
+        cs.setProviderUrl(VALID_COUNTER_PARTY_ADDRESS);
+        response.setCatalogOffering(cs);
 
         return response;
     }

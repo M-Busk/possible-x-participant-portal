@@ -56,7 +56,7 @@ public class ConsumerRestApiTest {
         this.mockMvc.perform(post("/consumer/offer/select").content(RestApiHelper.asJsonString(
                     SelectOfferRequestTO.builder().fhCatalogOfferId(ConsumerServiceFake.VALID_FH_OFFER_ID).build()))
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
-            .andExpect(jsonPath("$.counterPartyAddress").value(ConsumerServiceFake.VALID_COUNTER_PARTY_ADDRESS))
+            .andExpect(jsonPath("$.catalogOffering['px:providerUrl']").value(ConsumerServiceFake.VALID_COUNTER_PARTY_ADDRESS))
             .andExpect(jsonPath("$.edcOfferId").value(ConsumerServiceFake.VALID_ASSET_ID));
 
         ArgumentCaptor<SelectOfferRequestBE> requestCaptor = ArgumentCaptor.forClass(SelectOfferRequestBE.class);
