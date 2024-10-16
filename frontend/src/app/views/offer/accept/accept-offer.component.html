@@ -74,7 +74,7 @@
             <b>Description:</b> {{ offer.catalogOffering["gx:description"] }} <br/>
             <b>Terms & Conditions:</b> <br/>
             <ul *ngFor="let tnc of offer.catalogOffering['gx:termsAndConditions']">
-              <li><a href="{{ tnc['gx:URL'] }}">tnc</a> (Hash: {{ tnc["gx:hash"] }})</li>
+              <li><a href="{{ tnc['gx:URL'] }}">{{ tnc['gx:URL'] }}</a> (Hash: {{ tnc["gx:hash"] }})</li>
             </ul>
             <b>Policy:</b> <br/>
             <ul *ngFor="let p of offer.catalogOffering['gx:policy']">
