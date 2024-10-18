@@ -42,4 +42,8 @@ export class AcceptOfferComponent implements OnChanges {
   cancel(): void {
     this.dismiss.emit();
   }
+
+  isHttpOrHttps(url: string): boolean {
+    return url.startsWith('http://') || url.startsWith('https://');
+  }
 }
