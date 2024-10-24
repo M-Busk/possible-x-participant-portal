@@ -21,11 +21,12 @@ import {isDataResourceCs, isGxServiceOfferingCs} from '../../utils/credential-ut
 import {BehaviorSubject, takeWhile} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ApiService} from '../../services/mgmt/api/api.service';
-import {POLICY_MAP} from '../../constants';
 import {
+  IEverythingAllowedPolicy,
   IGxDataResourceCredentialSubject,
   IGxServiceOfferingCredentialSubject,
   INodeKindIRITypeId,
+  IParticipantRestrictionPolicy,
   IPojoCredentialSubject
 } from '../../services/mgmt/api/backend';
 
@@ -37,9 +38,9 @@ import {
 export class OfferingWizardExtensionComponent {
   @ViewChild("offerCreationStatusMessage") public offerCreationStatusMessage!: StatusMessageComponent;
   selectedFileName: string = "";
-  policyMap = POLICY_MAP;
-  selectedPolicy: string = "";
   public prefillDone: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isPolicyChecked: boolean;
+  dapsIDs: string[] = [''];
   protected isDataOffering: boolean = true;
   @ViewChild("gxServiceOfferingWizard") private gxServiceOfferingWizard: BaseWizardExtensionComponent;
   @ViewChild("gxDataResourceWizard") private gxDataResourceWizard: BaseWizardExtensionComponent;
@@ -54,7 +55,7 @@ export class OfferingWizardExtensionComponent {
   }
 
   get isInvalidPolicy(): boolean {
-    return !this.isFieldFilled(this.selectedPolicy);
+    return this.isPolicyChecked && this.dapsIDs.some(id => !this.isFieldFilled(id));
   }
 
   public async loadShape(offerType: string, serviceOfferingId: string, dataResourceId: string): Promise<void> {
@@ -120,12 +121,27 @@ export class OfferingWizardExtensionComponent {
     this.offerCreationStatusMessage.hideAllMessages();
 
     let gxOfferingJsonSd: IGxServiceOfferingCredentialSubject = this.gxServiceOfferingWizard.generateJsonCs();
-    gxOfferingJsonSd["gx:policy"] = [JSON.stringify(this.policyMap[this.selectedPolicy].policy)];
+    gxOfferingJsonSd["gx:policy"] = [""];
+
+    let policy: IParticipantRestrictionPolicy | IEverythingAllowedPolicy;
+
+    if (this.isPolicyChecked) {
+      policy = {
+        "@type": "ParticipantRestrictionPolicy",
+        allowedParticipants: this.dapsIDs
+      } as IParticipantRestrictionPolicy;
+    } else {
+      policy = {
+        "@type": "EverythingAllowedPolicy"
+      } as IEverythingAllowedPolicy;
+    }
 
     let createOfferTo: any = {
       serviceOfferingCredentialSubject: gxOfferingJsonSd,
-      policy: this.policyMap[this.selectedPolicy].policy
-    }
+      enforcementPolicies: [
+        policy
+      ]
+    };
 
     let createOfferMethod: (offer: any) => Promise<any>;
     createOfferMethod = this.apiService.createServiceOffering.bind(this.apiService)
@@ -173,16 +189,22 @@ export class OfferingWizardExtensionComponent {
 
   public resetPossibleSpecificFormValues() {
     this.selectedFileName = "";
-    this.selectedPolicy = "";
+    this.isPolicyChecked = false;
+    this.dapsIDs = [''];
   }
 
-  protected getPolicyNames() {
-    return Object.keys(this.policyMap);
+  addInput(): void {
+    this.dapsIDs.push('');
   }
 
-  protected getPolicyDetails(policy: string): string {
-    const policyDetails = this.policyMap[policy];
-    return policyDetails ? JSON.stringify(policyDetails, null, 2) : '';
+  removeInput(index: number): void {
+    if (this.dapsIDs.length > 1) {
+      this.dapsIDs.splice(index, 1);
+    }
+  }
+
+  public customTrackBy(index: number, obj: any): any {
+    return index;
   }
 
   protected isWizardFormInvalid(): boolean {
@@ -226,5 +248,6 @@ export class OfferingWizardExtensionComponent {
     if (isDataResourceCs(cs)) {
       this.gxDataResourceWizard.prefillFields(cs, []);
     }
+
   }
 }

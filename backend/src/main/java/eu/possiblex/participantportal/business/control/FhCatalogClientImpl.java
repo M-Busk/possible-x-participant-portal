@@ -53,7 +53,7 @@ public class FhCatalogClientImpl implements FhCatalogClient {
     @Override
     public FhCatalogIdResponse addServiceOfferingToFhCatalog(
         PxExtendedServiceOfferingCredentialSubject serviceOfferingCredentialSubject) {
-
+      
         log.info("sending to catalog: {}", LogUtils.serializeObjectToJson(serviceOfferingCredentialSubject));
 
         String offerId = serviceOfferingCredentialSubject.getId(); // just use the ID also for the offer in the catalog
@@ -66,6 +66,7 @@ public class FhCatalogClientImpl implements FhCatalogClient {
         }
         log.info("got offer id: {}", catalogOfferId.getId());
         return catalogOfferId;
+
     }
 
     @Override
