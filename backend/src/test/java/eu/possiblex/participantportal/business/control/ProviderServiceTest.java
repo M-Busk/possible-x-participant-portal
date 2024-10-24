@@ -158,7 +158,7 @@ class ProviderServiceTest {
         assertTrue(serviceOfferingId.matches(
             "urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
         assertTrue(dataResource.getId()
-            .matches("urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
+            .matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
         assertEquals(serviceOfferingId, dataResource.getExposedThrough().getId());
         //check if assetId exists and provider url is set correctly
         assertTrue(pxExtSoCs.getAssetId()

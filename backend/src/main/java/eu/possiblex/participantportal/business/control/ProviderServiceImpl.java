@@ -173,7 +173,9 @@ public class ProviderServiceImpl implements ProviderService {
 
         String assetId = UUID.randomUUID().toString();
         String serviceOfferingId = "urn:uuid:" + UUID.randomUUID();
-        String dataResourceId = "urn:uuid:" + UUID.randomUUID();
+        //String dataResourceId = "urn:uuid:" + UUID.randomUUID();
+        String dataResourceId = UUID.randomUUID()
+            .toString(); // TODO use the proper uri above once the catalog is correctly asserting compliance
 
         if (request instanceof CreateDataOfferingRequestBE dataOfferingRequest) { // data offering
             dataOfferingRequest.getDataResource().setId(dataResourceId);
