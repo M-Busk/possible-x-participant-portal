@@ -39,7 +39,7 @@ export class OfferingWizardExtensionComponent {
   @ViewChild("offerCreationStatusMessage") public offerCreationStatusMessage!: StatusMessageComponent;
   selectedFileName: string = "";
   public prefillDone: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  isPolicyChecked: boolean;
+  isPolicyChecked: boolean = false;
   dapsIDs: string[] = [''];
   protected isDataOffering: boolean = true;
   @ViewChild("gxServiceOfferingWizard") private gxServiceOfferingWizard: BaseWizardExtensionComponent;
