@@ -30,6 +30,7 @@ import {
 } from '../../services/mgmt/api/backend';
 import {TBR_DATA_RESOURCE_ID, TBR_SERVICE_OFFERING_ID} from "../../views/offer/offer-data";
 import {MatStepper} from "@angular/material/stepper";
+import {AccordionItemComponent} from "@coreui/angular";
 
 @Component({
   selector: 'app-offering-wizard-extension',
@@ -47,6 +48,7 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
   serviceOfferingShapeSource = "";
   dataResourceShapeSource = "";
   @ViewChild("stepper") stepper: MatStepper;
+  @ViewChild('accordionItem') accordionItem!: AccordionItemComponent;
   protected isDataOffering: boolean = true;
   @ViewChild("gxServiceOfferingWizard") private gxServiceOfferingWizard: BaseWizardExtensionComponent;
   @ViewChild("gxDataResourceWizard") private gxDataResourceWizard: BaseWizardExtensionComponent;
@@ -69,6 +71,7 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     this.retrieveAndAdaptDataResourceShape();
     this.retrieveAndSetParticipantId();
     this.resetPossibleSpecificFormValues();
+    this.resetAccordionItem();
   }
 
   async retrieveAndAdaptServiceOfferingShape() {
@@ -157,6 +160,7 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     this.gxServiceOfferingWizard.ngOnDestroy();
     this.gxDataResourceWizard.ngOnDestroy();
     this.resetPossibleSpecificFormValues();
+    this.resetAccordionItem();
     this.offerCreationStatusMessage.hideAllMessages();
   }
 
@@ -172,6 +176,10 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     this.selectedFileName = "";
     this.isPolicyChecked = false;
     this.dapsIDs = [''];
+  }
+
+  public resetAccordionItem() {
+    this.accordionItem.visible = false;
   }
 
   addInput(): void {
@@ -255,6 +263,7 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
   reset() {
     this.stepper.reset();
     this.resetPossibleSpecificFormValues();
+    this.resetAccordionItem();
   }
 
   protected isOfferingDataOffering() {
