@@ -9,11 +9,12 @@ import eu.possiblex.participantportal.application.entity.credentials.gx.datatype
 import eu.possiblex.participantportal.application.entity.credentials.gx.datatypes.NodeKindIRITypeId;
 import eu.possiblex.participantportal.application.entity.credentials.gx.resources.GxDataResourceCredentialSubject;
 import eu.possiblex.participantportal.application.entity.credentials.gx.serviceofferings.GxServiceOfferingCredentialSubject;
+import eu.possiblex.participantportal.application.entity.policies.EnforcementPolicy;
+import eu.possiblex.participantportal.application.entity.policies.EverythingAllowedPolicy;
 import eu.possiblex.participantportal.business.control.ProviderService;
 import eu.possiblex.participantportal.business.control.ProviderServiceFake;
 import eu.possiblex.participantportal.business.entity.CreateDataOfferingRequestBE;
 import eu.possiblex.participantportal.business.entity.CreateServiceOfferingRequestBE;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ProviderRestApiImpl.class)
 @ContextConfiguration(classes = { ProviderRestApiTest.TestConfig.class, ProviderRestApiImpl.class })
-class ProviderRestApiTest {
+class ProviderRestApiTest extends ProviderTestParent {
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,16 +55,17 @@ class ProviderRestApiTest {
     @Test
     void shouldReturnMessageOnCreateServiceOffering() throws Exception {
 
+        // GIVEN
+
         reset(providerService);
 
-        //given
         CreateServiceOfferingRequestTO request = objectMapper.readValue(getCreateServiceOfferingTOJsonString(),
             CreateServiceOfferingRequestTO.class);
 
         GxServiceOfferingCredentialSubject expectedServiceOfferingCS = getGxServiceOfferingCredentialSubject();
 
-        //when
-        //then
+        // WHEN/THEN
+
         this.mockMvc.perform(post("/provider/offer/service").content(RestApiHelper.asJsonString(request))
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
             .andExpect(jsonPath("$.edcResponseId").value(ProviderServiceFake.CREATE_OFFER_RESPONSE_ID))
@@ -76,10 +78,10 @@ class ProviderRestApiTest {
 
         CreateServiceOfferingRequestBE createServiceOfferingBE = createServiceOfferingCaptor.getValue();
 
-        Policy serviceOfferingPolicy = createServiceOfferingBE.getPolicy();
+        List<EnforcementPolicy> serviceOfferingPolicy = createServiceOfferingBE.getEnforcementPolicies();
 
         //check if request is mapped correctly
-        assertThat(request.getPolicy()).usingRecursiveComparison().isEqualTo(serviceOfferingPolicy);
+        assertThat(List.of(new EverythingAllowedPolicy())).usingRecursiveComparison().isEqualTo(serviceOfferingPolicy);
         assertThat(expectedServiceOfferingCS.getProvidedBy()).usingRecursiveComparison()
             .isEqualTo(createServiceOfferingBE.getProvidedBy());
         assertThat(expectedServiceOfferingCS.getDataAccountExport()).usingRecursiveComparison()
@@ -90,22 +92,24 @@ class ProviderRestApiTest {
             .isEqualTo(createServiceOfferingBE.getTermsAndConditions());
         assertEquals(expectedServiceOfferingCS.getName(), createServiceOfferingBE.getName());
         assertEquals(expectedServiceOfferingCS.getDescription(), createServiceOfferingBE.getDescription());
+        assertEquals("dummyServiceOfferingPolicy", createServiceOfferingBE.getPolicy().get(0));
     }
 
     @Test
     void shouldReturnMessageOnCreateDataOffering() throws Exception {
 
+        // GIVEN
+
         reset(providerService);
 
-        //given
         CreateDataOfferingRequestTO request = objectMapper.readValue(getCreateDataOfferingTOJsonString(),
             CreateDataOfferingRequestTO.class);
 
         GxServiceOfferingCredentialSubject expectedServiceOfferingCS = getGxServiceOfferingCredentialSubject();
         GxDataResourceCredentialSubject expectedDataResourceCS = getGxDataResourceCredentialSubject();
 
-        //when
-        //then
+        // WHEN/THEN
+
         this.mockMvc.perform(post("/provider/offer/data").content(RestApiHelper.asJsonString(request))
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
             .andExpect(jsonPath("$.edcResponseId").value(ProviderServiceFake.CREATE_OFFER_RESPONSE_ID))
@@ -117,10 +121,10 @@ class ProviderRestApiTest {
         verify(providerService).createOffering(createDataOfferingRequestBEArgumentCaptor.capture());
 
         CreateDataOfferingRequestBE createDataOfferingRequestBE = createDataOfferingRequestBEArgumentCaptor.getValue();
-        Policy serviceOfferingPolicy = createDataOfferingRequestBE.getPolicy();
+        List<EnforcementPolicy> serviceOfferingPolicy = createDataOfferingRequestBE.getEnforcementPolicies();
 
         //check if request is mapped correctly
-        assertThat(request.getPolicy()).usingRecursiveComparison().isEqualTo(serviceOfferingPolicy);
+        assertThat(List.of(new EverythingAllowedPolicy())).usingRecursiveComparison().isEqualTo(serviceOfferingPolicy);
         assertThat(expectedServiceOfferingCS.getProvidedBy()).usingRecursiveComparison()
             .isEqualTo(createDataOfferingRequestBE.getProvidedBy());
         assertThat(expectedServiceOfferingCS.getDataAccountExport()).usingRecursiveComparison()
@@ -132,6 +136,7 @@ class ProviderRestApiTest {
         assertEquals(expectedServiceOfferingCS.getName(), createDataOfferingRequestBE.getName());
         assertEquals(expectedServiceOfferingCS.getDescription(), createDataOfferingRequestBE.getDescription());
         assertEquals(request.getFileName(), createDataOfferingRequestBE.getFileName());
+        assertEquals("dummyServiceOfferingPolicy", createDataOfferingRequestBE.getPolicy().get(0));
 
         assertThat(expectedDataResourceCS).usingRecursiveComparison()
             .isEqualTo(createDataOfferingRequestBE.getDataResource());
@@ -139,8 +144,7 @@ class ProviderRestApiTest {
 
     @Test
     void shouldReturnMessageOnGetParticipantId() throws Exception {
-        //when
-        //then
+        // WHEN/THEN
         this.mockMvc.perform(get("/provider/id")).andDo(print()).andExpect(status().isOk())
             .andExpect(jsonPath("$.participantId").value(ProviderServiceFake.PARTICIPANT_ID));
     }
@@ -149,24 +153,8 @@ class ProviderRestApiTest {
 
         return GxServiceOfferingCredentialSubject.builder()
             .providedBy(new NodeKindIRITypeId("did:web:example-organization.eu")).name("Test Service Offering")
-            .description("This is the service offering description.").policy(List.of("""
-                {
-                  "@type": "odrl:Set",
-                  "odrl:permission": [
-                    {
-                      "odrl:action": {
-                        "odrl:type": "http://www.w3.org/ns/odrl/2/use"
-                      }
-                    },
-                    {
-                      "odrl:action": {
-                        "odrl:type": "http://www.w3.org/ns/odrl/2/transfer"
-                      }
-                    }
-                  ],
-                  "odrl:prohibition": [],
-                  "odrl:obligation": []
-                }""")).dataAccountExport(List.of(
+            .description("This is the service offering description.").policy(List.of("dummyServiceOfferingPolicy"))
+            .dataAccountExport(List.of(
                 GxDataAccountExport.builder().formatType("application/json").accessType("digital").requestType("API")
                     .build()))
             .termsAndConditions(List.of(GxSOTermsAndConditions.builder().url("test.eu/tnc").hash("hash123").build()))
@@ -175,25 +163,8 @@ class ProviderRestApiTest {
 
     GxDataResourceCredentialSubject getGxDataResourceCredentialSubject() {
 
-        return GxDataResourceCredentialSubject.builder().policy(List.of("""
-                {
-                  "@type": "odrl:Set",
-                  "odrl:permission": [
-                    {
-                      "odrl:action": {
-                        "odrl:type": "http://www.w3.org/ns/odrl/2/use"
-                      }
-                    },
-                    {
-                      "odrl:action": {
-                        "odrl:type": "http://www.w3.org/ns/odrl/2/transfer"
-                      }
-                    }
-                  ],
-                  "odrl:prohibition": [],
-                  "odrl:obligation": []
-                }""")).name("Test Dataset").description("This is the data resource description.")
-            .license(List.of("AGPL-1.0-only")).containsPII(true)
+        return GxDataResourceCredentialSubject.builder().policy(List.of("dummyDataResourcePolicy")).name("Test Dataset")
+            .description("This is the data resource description.").license(List.of("AGPL-1.0-only")).containsPII(true)
             .copyrightOwnedBy(new NodeKindIRITypeId("did:web:example-organization.eu"))
             .producedBy(new NodeKindIRITypeId("did:web:example-organization.eu"))
             .exposedThrough(new NodeKindIRITypeId("urn:uuid:GENERATED_SERVICE_OFFERING_ID"))
@@ -212,21 +183,22 @@ class ProviderRestApiTest {
                         "xsd": "http://www.w3.org/2001/XMLSchema#",
                         "skos": "http://www.w3.org/2004/02/skos/core#",
                         "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                        "vcard": "http://www.w3.org/2006/vcard/ns#"
+                        "vcard": "http://www.w3.org/2006/vcard/ns#",
+                        "schema": "https://schema.org/"
                     },
                     "gx:providedBy": {
                         "@id": "did:web:example-organization.eu"
                     },
-                    "gx:name": {
+                    "schema:name": {
                         "@value": "Test Service Offering",
                         "@type": "xsd:string"
                     },
-                    "gx:description": {
+                    "schema:description": {
                         "@value": "This is the service offering description.",
                         "@type": "xsd:string"
                     },
                     "gx:policy": {
-                        "@value": "{\\n  \\"@type\\": \\"odrl:Set\\",\\n  \\"odrl:permission\\": [\\n    {\\n      \\"odrl:action\\": {\\n        \\"odrl:type\\": \\"http://www.w3.org/ns/odrl/2/use\\"\\n      }\\n    },\\n    {\\n      \\"odrl:action\\": {\\n        \\"odrl:type\\": \\"http://www.w3.org/ns/odrl/2/transfer\\"\\n      }\\n    }\\n  ],\\n  \\"odrl:prohibition\\": [],\\n  \\"odrl:obligation\\": []\\n}",
+                        "@value": "dummyServiceOfferingPolicy",
                         "@type": "xsd:string"
                     },
                     "gx:dataAccountExport": {
@@ -258,23 +230,7 @@ class ProviderRestApiTest {
                     "id": "urn:uuid:GENERATED_SERVICE_OFFERING_ID",
                     "@type": "gx:ServiceOffering"
                 },
-                "policy": {
-                    "@type": "odrl:Set",
-                    "odrl:permission": [
-                        {
-                            "odrl:action": {
-                                "odrl:type": "http://www.w3.org/ns/odrl/2/use"
-                            }
-                        },
-                        {
-                            "odrl:action": {
-                                "odrl:type": "http://www.w3.org/ns/odrl/2/transfer"
-                            }
-                        }
-                    ],
-                    "odrl:prohibition": [],
-                    "odrl:obligation": []
-                }
+                "enforcementPolicies": []
             }""";
     }
 
@@ -290,21 +246,22 @@ class ProviderRestApiTest {
                         "xsd": "http://www.w3.org/2001/XMLSchema#",
                         "skos": "http://www.w3.org/2004/02/skos/core#",
                         "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                        "vcard": "http://www.w3.org/2006/vcard/ns#"
+                        "vcard": "http://www.w3.org/2006/vcard/ns#",
+                        "schema": "https://schema.org/"
                     },
                     "gx:providedBy": {
                         "@id": "did:web:example-organization.eu"
                     },
-                    "gx:name": {
+                    "schema:name": {
                         "@value": "Test Service Offering",
                         "@type": "xsd:string"
                     },
-                    "gx:description": {
+                    "schema:description": {
                         "@value": "This is the service offering description.",
                         "@type": "xsd:string"
                     },
                     "gx:policy": {
-                        "@value": "{\\n  \\"@type\\": \\"odrl:Set\\",\\n  \\"odrl:permission\\": [\\n    {\\n      \\"odrl:action\\": {\\n        \\"odrl:type\\": \\"http://www.w3.org/ns/odrl/2/use\\"\\n      }\\n    },\\n    {\\n      \\"odrl:action\\": {\\n        \\"odrl:type\\": \\"http://www.w3.org/ns/odrl/2/transfer\\"\\n      }\\n    }\\n  ],\\n  \\"odrl:prohibition\\": [],\\n  \\"odrl:obligation\\": []\\n}",
+                        "@value": "dummyServiceOfferingPolicy",
                         "@type": "xsd:string"
                     },
                     "gx:dataAccountExport": {
@@ -344,7 +301,8 @@ class ProviderRestApiTest {
                         "xsd": "http://www.w3.org/2001/XMLSchema#",
                         "skos": "http://www.w3.org/2004/02/skos/core#",
                         "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                        "vcard": "http://www.w3.org/2006/vcard/ns#"
+                        "vcard": "http://www.w3.org/2006/vcard/ns#",
+                        "schema": "https://schema.org/"
                     },
                     "gx:copyrightOwnedBy": {
                         "@id": "did:web:example-organization.eu"
@@ -352,11 +310,11 @@ class ProviderRestApiTest {
                     "gx:producedBy": {
                         "@id": "did:web:example-organization.eu"
                     },
-                    "gx:name": {
+                    "schema:name": {
                         "@value": "Test Dataset",
                         "@type": "xsd:string"
                     },
-                    "gx:description": {
+                    "schema:description": {
                         "@value": "This is the data resource description.",
                         "@type": "xsd:string"
                     },
@@ -369,30 +327,14 @@ class ProviderRestApiTest {
                         "@id": "urn:uuid:GENERATED_SERVICE_OFFERING_ID"
                     },
                     "gx:policy": {
-                        "@value": "{\\n  \\"@type\\": \\"odrl:Set\\",\\n  \\"odrl:permission\\": [\\n    {\\n      \\"odrl:action\\": {\\n        \\"odrl:type\\": \\"http://www.w3.org/ns/odrl/2/use\\"\\n      }\\n    },\\n    {\\n      \\"odrl:action\\": {\\n        \\"odrl:type\\": \\"http://www.w3.org/ns/odrl/2/transfer\\"\\n      }\\n    }\\n  ],\\n  \\"odrl:prohibition\\": [],\\n  \\"odrl:obligation\\": []\\n}",
+                        "@value": "dummyDataResourcePolicy",
                         "@type": "xsd:string"
                     },
                     "id": "urn:uuid:GENERATED_DATA_RESOURCE_ID",
                     "@type": "gx:DataResource"
                 },
                 "fileName": "testfile.txt",
-                "policy": {
-                    "@type": "odrl:Set",
-                    "odrl:permission": [
-                        {
-                            "odrl:action": {
-                                "odrl:type": "http://www.w3.org/ns/odrl/2/use"
-                            }
-                        },
-                        {
-                            "odrl:action": {
-                                "odrl:type": "http://www.w3.org/ns/odrl/2/transfer"
-                            }
-                        }
-                    ],
-                    "odrl:prohibition": [],
-                    "odrl:obligation": []
-                }
+                "enforcementPolicies": []
             }""";
     }
 

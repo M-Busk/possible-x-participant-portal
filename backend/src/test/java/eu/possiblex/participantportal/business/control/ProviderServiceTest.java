@@ -1,6 +1,5 @@
 package eu.possiblex.participantportal.business.control;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.possiblex.participantportal.application.entity.credentials.gx.datatypes.GxDataAccountExport;
@@ -8,6 +7,7 @@ import eu.possiblex.participantportal.application.entity.credentials.gx.datatype
 import eu.possiblex.participantportal.application.entity.credentials.gx.datatypes.NodeKindIRITypeId;
 import eu.possiblex.participantportal.application.entity.credentials.gx.resources.GxDataResourceCredentialSubject;
 import eu.possiblex.participantportal.application.entity.credentials.gx.serviceofferings.GxServiceOfferingCredentialSubject;
+import eu.possiblex.participantportal.application.entity.policies.EverythingAllowedPolicy;
 import eu.possiblex.participantportal.business.entity.CreateDataOfferingRequestBE;
 import eu.possiblex.participantportal.business.entity.CreateServiceOfferingRequestBE;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedDataResourceCredentialSubject;
@@ -15,7 +15,6 @@ import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedS
 import eu.possiblex.participantportal.business.entity.edc.asset.AssetCreateRequest;
 import eu.possiblex.participantportal.business.entity.edc.asset.ionoss3extension.IonosS3DataSource;
 import eu.possiblex.participantportal.business.entity.edc.asset.possible.PossibleAssetProperties;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyCreateRequest;
 import eu.possiblex.participantportal.business.entity.exception.EdcOfferCreationException;
 import eu.possiblex.participantportal.business.entity.exception.FhOfferCreationException;
@@ -43,26 +42,6 @@ import static org.mockito.Mockito.verify;
 class ProviderServiceTest {
     private static final String FILE_NAME = "file.txt";
 
-    private static final String POLICY_JSON_STRING = """
-        {
-            "@id": "GENERATED_POLICY_ID",
-            "@type": "odrl:Set",
-            "odrl:permission": [
-              {
-                "odrl:action": {
-                  "odrl:type": "http://www.w3.org/ns/odrl/2/use"
-                }
-              },
-              {
-                "odrl:action": {
-                  "odrl:type": "http://www.w3.org/ns/odrl/2/transfer"
-                }
-              }
-            ],
-            "odrl:prohibition": [],
-            "odrl:obligation": []
-          }""";
-
     @Autowired
     ProviderService providerService;
 
@@ -76,8 +55,7 @@ class ProviderServiceTest {
     ObjectMapper objectMapper;
 
     @Test
-    void testCreateServiceOffering()
-        throws JsonProcessingException, EdcOfferCreationException, FhOfferCreationException {
+    void testCreateServiceOffering() throws EdcOfferCreationException, FhOfferCreationException {
 
         reset(fhCatalogClient);
         reset(edcClient);
@@ -87,10 +65,10 @@ class ProviderServiceTest {
         GxServiceOfferingCredentialSubject offeringCs = getGxServiceOfferingCredentialSubject();
 
         CreateServiceOfferingRequestBE be = CreateServiceOfferingRequestBE.builder()
-            .policy(objectMapper.readValue(POLICY_JSON_STRING, Policy.class)).providedBy(offeringCs.getProvidedBy())
+            .enforcementPolicies(List.of(new EverythingAllowedPolicy())).providedBy(offeringCs.getProvidedBy())
             .name(offeringCs.getName()).description(offeringCs.getDescription())
             .termsAndConditions(offeringCs.getTermsAndConditions()).dataAccountExport(offeringCs.getDataAccountExport())
-            .dataProtectionRegime(offeringCs.getDataProtectionRegime()).build();
+            .policy(offeringCs.getPolicy()).dataProtectionRegime(offeringCs.getDataProtectionRegime()).build();
 
         //when
         var response = providerService.createOffering(be);
@@ -112,6 +90,7 @@ class ProviderServiceTest {
         assertTrue(pxExtSoCs.getAssetId()
             .matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
         assertEquals("test", pxExtSoCs.getProviderUrl());
+        assertThat(pxExtSoCs.getPolicy()).hasSize(2).contains("dummyServiceOfferingPolicy");
 
         verify(edcClient).createAsset(assetCreateRequestCaptor.capture());
         verify(edcClient).createPolicy(policyCreateRequestCaptor.capture());
@@ -129,6 +108,8 @@ class ProviderServiceTest {
             properties.getDataProtectionRegime());
         assertThat(offeringCs.getDataAccountExport()).usingRecursiveComparison()
             .isEqualTo(properties.getDataAccountExport());
+        assertThat(properties.getOfferingPolicy()).hasSize(2).contains("dummyServiceOfferingPolicy");
+        assertThat(properties.getDataPolicy()).isNull();
         //check if file name is set correctly
         assertEquals("", assetCreateRequest.getDataAddress().getKeyName());
         assertEquals("", ((IonosS3DataSource) assetCreateRequest.getDataAddress()).getBlobName());
@@ -137,7 +118,6 @@ class ProviderServiceTest {
         //check if policyId is set correctly
         assertTrue(policyCreateRequest.getId()
             .matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
-        assertEquals("GENERATED_POLICY_ID", policyCreateRequest.getPolicy().getId());
 
         assertNotNull(response);
         assertNotNull(response.getEdcResponseId());
@@ -145,7 +125,7 @@ class ProviderServiceTest {
     }
 
     @Test
-    void testCreateDataOffering() throws JsonProcessingException, EdcOfferCreationException, FhOfferCreationException {
+    void testCreateDataOffering() throws EdcOfferCreationException, FhOfferCreationException {
 
         reset(fhCatalogClient);
         reset(edcClient);
@@ -155,10 +135,11 @@ class ProviderServiceTest {
         GxDataResourceCredentialSubject resourceCs = getGxDataResourceCredentialSubject();
 
         CreateDataOfferingRequestBE be = CreateDataOfferingRequestBE.builder().fileName(FILE_NAME)
-            .policy(objectMapper.readValue(POLICY_JSON_STRING, Policy.class)).providedBy(offeringCs.getProvidedBy())
+            .enforcementPolicies(List.of(new EverythingAllowedPolicy())).providedBy(offeringCs.getProvidedBy())
             .name(offeringCs.getName()).description(offeringCs.getDescription())
             .termsAndConditions(offeringCs.getTermsAndConditions()).dataAccountExport(offeringCs.getDataAccountExport())
-            .dataProtectionRegime(offeringCs.getDataProtectionRegime()).dataResource(resourceCs).build();
+            .dataProtectionRegime(offeringCs.getDataProtectionRegime()).policy(offeringCs.getPolicy())
+            .dataResource(resourceCs).build();
 
         //when
         var response = providerService.createOffering(be);
@@ -185,6 +166,9 @@ class ProviderServiceTest {
         assertTrue(pxExtSoCs.getAssetId()
             .matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
         assertEquals("test", pxExtSoCs.getProviderUrl());
+        assertThat(pxExtSoCs.getPolicy()).hasSize(2).contains("dummyServiceOfferingPolicy");
+        assertThat(pxExtSoCs.getAggregationOf()).hasSize(1);
+        assertThat(pxExtSoCs.getAggregationOf().get(0).getPolicy()).contains("dummyDataResourcePolicy");
 
         verify(edcClient).createAsset(assetCreateRequestCaptor.capture());
         verify(edcClient).createPolicy(policyCreateRequestCaptor.capture());
@@ -207,6 +191,8 @@ class ProviderServiceTest {
         assertEquals(resourceCs.getExposedThrough().getId(), properties.getExposedThrough().getId());
         assertThat(resourceCs.getLicense()).containsExactlyInAnyOrderElementsOf(properties.getLicense());
         assertEquals(resourceCs.isContainsPII(), properties.isContainsPII());
+        assertThat(properties.getOfferingPolicy()).hasSize(2).contains("dummyServiceOfferingPolicy");
+        assertThat(properties.getDataPolicy()).hasSize(1).contains("dummyDataResourcePolicy");
         //check if file name is set correctly
         assertEquals(FILE_NAME, assetCreateRequest.getDataAddress().getKeyName());
         assertEquals(FILE_NAME, ((IonosS3DataSource) assetCreateRequest.getDataAddress()).getBlobName());
@@ -215,7 +201,6 @@ class ProviderServiceTest {
         //check if policyId is set correctly
         assertTrue(policyCreateRequest.getId()
             .matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
-        assertEquals("GENERATED_POLICY_ID", policyCreateRequest.getPolicy().getId());
 
         assertNotNull(response);
         assertNotNull(response.getEdcResponseId());
@@ -236,24 +221,8 @@ class ProviderServiceTest {
 
         return GxServiceOfferingCredentialSubject.builder()
             .providedBy(new NodeKindIRITypeId("did:web:example-organization.eu")).name("Test Service Offering")
-            .description("This is the service offering description.").policy(List.of("""
-                {
-                  "@type": "odrl:Set",
-                  "odrl:permission": [
-                    {
-                      "odrl:action": {
-                        "odrl:type": "http://www.w3.org/ns/odrl/2/use"
-                      }
-                    },
-                    {
-                      "odrl:action": {
-                        "odrl:type": "http://www.w3.org/ns/odrl/2/transfer"
-                      }
-                    }
-                  ],
-                  "odrl:prohibition": [],
-                  "odrl:obligation": []
-                }""")).dataAccountExport(List.of(
+            .description("This is the service offering description.").policy(List.of("dummyServiceOfferingPolicy"))
+            .dataAccountExport(List.of(
                 GxDataAccountExport.builder().formatType("application/json").accessType("digital").requestType("API")
                     .build())).dataProtectionRegime(List.of("GDPR"))
             .termsAndConditions(List.of(GxSOTermsAndConditions.builder().url("test.eu/tnc").hash("hash123").build()))
@@ -262,25 +231,8 @@ class ProviderServiceTest {
 
     GxDataResourceCredentialSubject getGxDataResourceCredentialSubject() {
 
-        return GxDataResourceCredentialSubject.builder().policy(List.of("""
-                {
-                  "@type": "odrl:Set",
-                  "odrl:permission": [
-                    {
-                      "odrl:action": {
-                        "odrl:type": "http://www.w3.org/ns/odrl/2/use"
-                      }
-                    },
-                    {
-                      "odrl:action": {
-                        "odrl:type": "http://www.w3.org/ns/odrl/2/transfer"
-                      }
-                    }
-                  ],
-                  "odrl:prohibition": [],
-                  "odrl:obligation": []
-                }""")).name("Test Dataset").description("This is the data resource description.")
-            .license(List.of("AGPL-1.0-only")).containsPII(true)
+        return GxDataResourceCredentialSubject.builder().policy(List.of("dummyDataResourcePolicy")).name("Test Dataset")
+            .description("This is the data resource description.").license(List.of("AGPL-1.0-only")).containsPII(true)
             .copyrightOwnedBy(new NodeKindIRITypeId("did:web:example-organization.eu"))
             .producedBy(new NodeKindIRITypeId("did:web:example-organization.eu"))
             .exposedThrough(new NodeKindIRITypeId("urn:uuid:GENERATED_SERVICE_OFFERING_ID"))

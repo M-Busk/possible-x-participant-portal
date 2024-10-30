@@ -11,6 +11,7 @@ import eu.possiblex.participantportal.business.entity.edc.CreateEdcOfferBE;
 import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import org.mapstruct.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface ProviderServiceMapper {
     @Mapping(target = "providedBy", source = "request.providedBy")
     @Mapping(target = "aggregationOf", expression = "java(java.util.Collections.emptyList())")
     @Mapping(target = "termsAndConditions", source = "request.termsAndConditions")
-    @Mapping(target = "policy", source = "request.policy", qualifiedByName = "policyToStringList")
+    @Mapping(target = "policy", expression = "java(combineSOPolicyAndPolicy(request, policy))")
     @Mapping(target = "dataProtectionRegime", source = "request.dataProtectionRegime")
     @Mapping(target = "dataAccountExport", source = "request.dataAccountExport")
     @Mapping(target = "name", source = "request.name")
@@ -28,15 +29,15 @@ public interface ProviderServiceMapper {
     @Mapping(target = "assetId", source = "assetId")
     @Mapping(target = "providerUrl", source = "providerUrl")
     @Mapping(target = "id", source = "offeringId")
-    @Mapping(target = "schemaName", source = "request.name")
-    @Mapping(target = "schemaDescription", source = "request.description")
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "context", ignore = true)
     PxExtendedServiceOfferingCredentialSubject getPxExtendedServiceOfferingCredentialSubject(
-        CreateServiceOfferingRequestBE request, String offeringId, String assetId, String providerUrl);
+        CreateServiceOfferingRequestBE request, String offeringId, String assetId, String providerUrl, Policy policy);
 
     @InheritConfiguration
     @Mapping(target = "aggregationOf", source = "request.dataResource", qualifiedByName = "gxDataResourceToPxDataResourceList")
     PxExtendedServiceOfferingCredentialSubject getPxExtendedServiceOfferingCredentialSubject(
-        CreateDataOfferingRequestBE request, String offeringId, String assetId, String providerUrl);
+        CreateDataOfferingRequestBE request, String offeringId, String assetId, String providerUrl, Policy policy);
 
     @Mapping(target = "assetId", source = "assetId")
     @Mapping(target = "properties.offerId", source = "offerId")
@@ -49,8 +50,9 @@ public interface ProviderServiceMapper {
     @Mapping(target = "properties.contenttype", ignore = true)
     @Mapping(target = "properties.version", ignore = true)
     @Mapping(target = "fileName", constant = "")
-    @Mapping(target = "policy", source = "request.policy")
-    CreateEdcOfferBE getCreateEdcOfferBE(CreateServiceOfferingRequestBE request, String offerId, String assetId);
+    @Mapping(target = "policy", source = "policy")
+    CreateEdcOfferBE getCreateEdcOfferBE(CreateServiceOfferingRequestBE request, String offerId, String assetId,
+        Policy policy);
 
     @InheritConfiguration
     @Mapping(target = "properties.copyrightOwnedBy", source = "request.dataResource.copyrightOwnedBy")
@@ -58,8 +60,10 @@ public interface ProviderServiceMapper {
     @Mapping(target = "properties.exposedThrough", source = "request.dataResource.exposedThrough")
     @Mapping(target = "properties.license", source = "request.dataResource.license")
     @Mapping(target = "properties.containsPII", source = "request.dataResource.containsPII")
+    @Mapping(target = "properties.dataPolicy", source = "request.dataResource.policy")
     @Mapping(target = "fileName", source = "request.fileName")
-    CreateEdcOfferBE getCreateEdcOfferBE(CreateDataOfferingRequestBE request, String offerId, String assetId);
+    CreateEdcOfferBE getCreateEdcOfferBE(CreateDataOfferingRequestBE request, String offerId, String assetId,
+        Policy policy);
 
     @Mapping(target = "type", ignore = true)
     @Mapping(target = "context", ignore = true)
@@ -73,7 +77,6 @@ public interface ProviderServiceMapper {
         return List.of(gxDataResourceToPxDataResource(dataResource));
     }
 
-    @Named("policyToStringList")
     default List<String> policyToStringList(Policy policy) {
 
         try {
@@ -81,6 +84,19 @@ public interface ProviderServiceMapper {
         } catch (JsonProcessingException e) {
             return Collections.emptyList();
         }
+    }
+
+    default List<String> combineSOPolicyAndPolicy(CreateServiceOfferingRequestBE request, Policy policy) {
+
+        List<String> policyList = new ArrayList<>();
+
+        if (request.getPolicy() != null) {
+            policyList.addAll(request.getPolicy());
+        }
+
+        policyList.addAll(policyToStringList(policy));
+
+        return policyList;
     }
 
 }

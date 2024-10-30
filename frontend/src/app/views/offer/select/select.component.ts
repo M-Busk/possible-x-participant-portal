@@ -20,18 +20,18 @@ interface SelectionFormModel {
 
 @Component({
   selector: 'app-select-offer',
-  templateUrl: './select-offer.component.html',
-  styleUrls: ['./select-offer.component.scss'],
+  templateUrl: './select.component.html',
+  styleUrls: ['./select.component.scss'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => SelectOfferComponent),
+    useExisting: forwardRef(() => SelectComponent),
     multi: true
   }]
 })
-export class SelectOfferComponent implements ControlValueAccessor {
+export class SelectComponent implements ControlValueAccessor {
   selectionForm: FormGroup<SelectionFormModel>;
   @Output() selectedOffer = new EventEmitter<IOfferDetailsTO>();
-  @ViewChild('queryCatalogStatusMessage') private queryCatalogStatusMessage!: StatusMessageComponent;
+  @ViewChild('queryCatalogStatusMessage') queryCatalogStatusMessage!: StatusMessageComponent;
 
   constructor(private apiService: ApiService, private fb: FormBuilder) {
     this.selectionForm = this.fb.group({
@@ -70,7 +70,7 @@ export class SelectOfferComponent implements ControlValueAccessor {
   }
 
   validateOfferId(control: AbstractControl): ValidationErrors | null {
-    if (control.value.match(/^[a-zA-Z0-9][a-zA-Z0-9\-]*$/)) {
+    if (control.value.match(/^[a-zA-Z0-9][a-zA-Z0-9\-:]*$/)) {
       return null;
     }
     return {
