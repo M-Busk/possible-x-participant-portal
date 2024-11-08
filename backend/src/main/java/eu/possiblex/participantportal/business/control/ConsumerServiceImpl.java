@@ -42,6 +42,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     private static final int MAX_TRANSFER_CHECK_ATTEMPTS = 30;
 
+    private static final String UNKNOWN_ERROR = "Unknown Error.";
+
     private final ObjectMapper objectMapper;
 
     private final EdcClient edcClient;
@@ -172,11 +174,13 @@ public class ConsumerServiceImpl implements ConsumerService {
             } else if (contractNegotiation.getState().equals(NegotiationState.TERMINATED)) {
                 String errorReason;
                 try {
-                    errorReason = objectMapper.readValue(contractNegotiation.getErrorDetail(),
-                        DataspaceErrorMessage.class).getReason();
+                    errorReason = contractNegotiation.getErrorDetail() == null
+                        ? UNKNOWN_ERROR
+                        : objectMapper.readValue(contractNegotiation.getErrorDetail(), DataspaceErrorMessage.class)
+                            .getReason();
                 } catch (JsonProcessingException e) {
                     log.warn("Failed to read error message from payload", e);
-                    errorReason = "Unknown Error.";
+                    errorReason = UNKNOWN_ERROR;
                 }
 
                 throw new NegotiationFailedException("Negotiation was terminated. " + errorReason);
@@ -206,11 +210,13 @@ public class ConsumerServiceImpl implements ConsumerService {
 
                 String errorReason;
                 try {
-                    errorReason = objectMapper.readValue(transferProcess.getErrorDetail(), DataspaceErrorMessage.class)
-                        .getReason();
+                    errorReason = transferProcess.getErrorDetail() == null
+                        ? UNKNOWN_ERROR
+                        : objectMapper.readValue(transferProcess.getErrorDetail(), DataspaceErrorMessage.class)
+                            .getReason();
                 } catch (JsonProcessingException e) {
                     log.warn("Failed to read error message from payload", e);
-                    errorReason = "Unknown Error.";
+                    errorReason = UNKNOWN_ERROR;
                 }
 
                 throw new TransferFailedException("Transfer was terminated. " + errorReason);

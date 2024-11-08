@@ -1,5 +1,6 @@
 package eu.possiblex.participantportal.business.control;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.possiblex.participantportal.business.entity.*;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.exception.NegotiationFailedException;
@@ -155,6 +156,12 @@ class ConsumerServiceTest {
         public EdcClient edcClient() {
 
             return Mockito.spy(new EdcClientFake());
+        }
+
+        @Bean
+        public ObjectMapper objectMapper() {
+
+            return new ObjectMapper();
         }
 
         @Bean
