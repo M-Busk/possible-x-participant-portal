@@ -48,7 +48,8 @@
 
 .accordion-body {
   display: grid;
-  font-style: italic;
+  font-size: 14px;
+  color:#7f7f7f;
   grid-template-columns: 1fr;
   gap: 5px;
 }
