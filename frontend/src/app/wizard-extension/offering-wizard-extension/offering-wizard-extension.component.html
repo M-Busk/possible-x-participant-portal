@@ -13,7 +13,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-
 <div class="mb-3 flex-1" xmlns="http://www.w3.org/1999/html">
   <mat-stepper #stepper linear orientation="vertical">
     <mat-step>
@@ -112,7 +111,7 @@
       </div>
     </mat-step>
 
-    <mat-step [completed]="isServiceOfferingValid()" errorMessage="Missing fields">
+    <mat-step errorMessage="Missing fields">
       <ng-template matStepLabel>Define Service Offering</ng-template>
       <app-base-wizard-extension #gxServiceOfferingWizard></app-base-wizard-extension>
       <br/>
@@ -348,5 +347,10 @@
         </button>
       </div>
     </mat-step>
+
+    <!-- Icon overrides. -->
+    <ng-template matStepperIcon="edit">
+      <mat-icon>done</mat-icon>
+    </ng-template>
   </mat-stepper>
 </div>
