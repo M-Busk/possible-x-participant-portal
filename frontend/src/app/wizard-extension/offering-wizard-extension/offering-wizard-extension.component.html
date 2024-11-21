@@ -115,7 +115,7 @@
     <mat-step *ngIf="isContainingPII()" [completed]="isLegitimateInterestValid()" errorMessage="Missing fields" [ngClass]="{'hidden': !isContainingPII()}">
       <ng-template matStepLabel>Define Legitimate Interest</ng-template>
       <div>
-        In the previous step, it was indicated that the data contains personal identifiable information. 
+        In the previous step, it was indicated that the data contains personal identifiable information.
         It is therefore necessary to specify the legitimate interest in this additional step.
         <br/><br/>
       </div>
