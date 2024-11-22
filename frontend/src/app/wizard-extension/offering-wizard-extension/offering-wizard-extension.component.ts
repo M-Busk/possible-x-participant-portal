@@ -140,19 +140,20 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
       createOfferMethod = this.apiService.createDataOffering.bind(this.apiService);
     }
 
-    console.log(createOfferTo);
+    let trimmedCreateOfferTo = this.trimStringsInDataStructure(createOfferTo);
+    console.log(trimmedCreateOfferTo);
 
-    createOfferMethod(createOfferTo).then(response => {
-      console.log(response);
-      this.waitingForResponse = false;
-      this.offerCreationStatusMessage.showSuccessMessage("");
-    }).catch((e: HttpErrorResponse) => {
-      this.waitingForResponse = false;
-      this.offerCreationStatusMessage.showErrorMessage(e.error.detail || e.error || e.message);
-    }).catch(_ => {
-      this.waitingForResponse = false;
-      this.offerCreationStatusMessage.showErrorMessage("Unbekannter Fehler");
-    });
+     createOfferMethod(trimmedCreateOfferTo).then(response => {
+       console.log(response);
+       this.waitingForResponse = false;
+       this.offerCreationStatusMessage.showSuccessMessage("");
+     }).catch((e: HttpErrorResponse) => {
+       this.waitingForResponse = false;
+       this.offerCreationStatusMessage.showErrorMessage(e.error.detail || e.error || e.message);
+     }).catch(_ => {
+       this.waitingForResponse = false;
+       this.offerCreationStatusMessage.showErrorMessage("Unbekannter Fehler");
+     });
 
   }
 
@@ -231,7 +232,7 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     } as any;
 
     if (this.isOfferingDataOffering()) {
-      let gxDataResourceJsonSd: IGxDataResourceCredentialSubject = this.gxDataResourceWizard.generateJsonCs();
+      let gxDataResourceJsonSd: IGxDataResourceCredentialSubject = this.trimStringsInDataStructure(this.gxDataResourceWizard.generateJsonCs());
       gxServiceOfferingCs["schema:name"] = "Data Offering Service - " + (gxDataResourceJsonSd["schema:name"] ? gxDataResourceJsonSd["schema:name"]["@value"] : "data resource name not available");
       //gxServiceOfferingCs["schema:description"] = " ";//"Data Offering Service provides data (" + (gxDataResourceJsonSd["schema:name"] ? gxDataResourceJsonSd["schema:name"]["@value"] : "data resource name not available") + ") securely through the Possible Dataspace software solution. The Data Offering Service enables secure and sovereign data exchange between different organizations using the Eclipse Dataspace Connector (EDC). The service seamlessly integrates with IONOS S3 buckets to ensure reliable and scalable data storage and transfer.";
     }
@@ -297,6 +298,20 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
       this.gxDataResourceWizard.prefillFields(cs, []);
     }
 
+  }
+
+  trimStringsInDataStructure = (obj: any): any => {
+    if (typeof obj === 'string') {
+      return obj.trim();
+    } else if (Array.isArray(obj)) {
+      return obj.map(this.trimStringsInDataStructure);
+    } else if (typeof obj === 'object' && obj !== null) {
+      return Object.keys(obj).reduce((acc, key) => {
+        acc[key] = this.trimStringsInDataStructure(obj[key]);
+        return acc;
+      }, {} as any);
+    }
+    return obj;
   }
 
 }
