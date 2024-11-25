@@ -5,6 +5,7 @@ import eu.possiblex.participantportal.business.entity.*;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.exception.NegotiationFailedException;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
+import eu.possiblex.participantportal.business.entity.exception.ParticipantNotFoundException;
 import eu.possiblex.participantportal.business.entity.exception.TransferFailedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -59,7 +60,7 @@ class ConsumerServiceTest {
     }
 
     @Test
-    void acceptContractOfferSucceeds() throws NegotiationFailedException, OfferNotFoundException {
+    void acceptContractOfferSucceeds() throws NegotiationFailedException, ParticipantNotFoundException, OfferNotFoundException {
 
         // GIVEN
 
@@ -79,7 +80,7 @@ class ConsumerServiceTest {
     }
 
     @Test
-    void acceptContractOfferSucceedsNoTransfer() throws NegotiationFailedException, OfferNotFoundException {
+    void acceptContractOfferSucceedsNoTransfer() throws NegotiationFailedException, ParticipantNotFoundException, OfferNotFoundException {
 
         // GIVEN
 
