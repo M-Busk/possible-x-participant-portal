@@ -34,6 +34,8 @@ import { TransferComponent } from './transfer/transfer.component';
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MaterialModule} from "../../sdwizard/material.module";
 
 @NgModule({
     imports: [
@@ -63,7 +65,9 @@ import {MatIconModule} from "@angular/material/icon";
         TooltipModule,
         MatStepperModule,
         MatButtonModule,
-        MatIconModule
+        MatIconModule,
+        MatCheckboxModule,
+        MaterialModule
     ],
   declarations: [ProvideComponent, ConsumeComponent, AcceptComponent, SelectComponent, ContractsComponent, TransferComponent],
   exports: [
