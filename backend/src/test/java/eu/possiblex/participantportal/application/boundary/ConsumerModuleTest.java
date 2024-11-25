@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.reset;
@@ -205,11 +206,13 @@ public class ConsumerModuleTest {
         mockDatasetWrongOne.setName("wrong");
         mockDatasetWrongOne.setContenttype("wrong");
         mockDatasetWrongOne.setDescription("wrong");
+        mockDatasetWrongOne.setHasPolicy(Collections.emptyList());
         DcatDataset mockDatasetCorrectOne = new DcatDataset(); // the offer in the EDC Catalog which the user looks for
         mockDatasetCorrectOne.setAssetId(expectedAssetId);
         mockDatasetCorrectOne.setName("correctName");
         mockDatasetCorrectOne.setContenttype("correctContentType");
         mockDatasetCorrectOne.setDescription("correctDescription");
+        mockDatasetCorrectOne.setHasPolicy(Collections.emptyList());
         DcatCatalog edcCatalogAnswerMock = new DcatCatalog();
         edcCatalogAnswerMock.setDataset(List.of(mockDatasetWrongOne, mockDatasetCorrectOne));
         Mockito.when(edcClientMock.queryCatalog(Mockito.any())).thenReturn(edcCatalogAnswerMock);
@@ -256,11 +259,13 @@ public class ConsumerModuleTest {
         mockDatasetWrongOne.setName("wrong");
         mockDatasetWrongOne.setContenttype("wrong");
         mockDatasetWrongOne.setDescription("wrong");
+        mockDatasetWrongOne.setHasPolicy(Collections.emptyList());
         DcatDataset mockDatasetCorrectOne = new DcatDataset(); // the offer in the EDC Catalog which the user looks for
         mockDatasetCorrectOne.setAssetId(expectedAssetId);
         mockDatasetCorrectOne.setName("correctName");
         mockDatasetCorrectOne.setContenttype("correctContentType");
         mockDatasetCorrectOne.setDescription("correctDescription");
+        mockDatasetCorrectOne.setHasPolicy(Collections.emptyList());
         DcatCatalog edcCatalogAnswerMock = new DcatCatalog();
         edcCatalogAnswerMock.setDataset(List.of(mockDatasetWrongOne, mockDatasetCorrectOne));
         Mockito.when(edcClientMock.queryCatalog(Mockito.any())).thenReturn(edcCatalogAnswerMock);
