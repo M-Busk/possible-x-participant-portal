@@ -13,8 +13,8 @@ export interface IProviderRestApi {
 }
 
 export interface IResourceShapeRestApi {
-    gxDataResourceShape: string;
     gxInstantiatedVirtualResourceShape: string;
+    gxDataResourceShape: string;
     gxPhysicalResourceShape: string;
     gxSoftwareResourceShape: string;
     gxVirtualResourceShape: string;
@@ -29,6 +29,7 @@ export interface IAcceptOfferResponseTO {
     negotiationState: INegotiationState;
     contractAgreementId: string;
     dataOffering: boolean;
+    providerEmail: string;
 }
 
 export interface IAcceptOfferResponseTOBuilder {
@@ -46,6 +47,7 @@ export interface IConsumeOfferRequestTO {
     counterPartyAddress: string;
     edcOfferId: string;
     dataOffering: boolean;
+    providedBy: string;
 }
 
 export interface IConsumeOfferRequestTOBuilder {

@@ -199,6 +199,7 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     this.selectedFileName = "";
     this.isPolicyChecked = false;
     this.dapsIDs = [''];
+    this.containsPII = false;
   }
 
   public resetAccordionItem() {

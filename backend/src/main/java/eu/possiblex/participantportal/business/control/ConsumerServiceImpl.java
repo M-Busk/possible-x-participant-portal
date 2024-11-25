@@ -6,6 +6,7 @@ import eu.possiblex.participantportal.application.entity.policies.EnforcementPol
 import eu.possiblex.participantportal.application.entity.policies.EverythingAllowedPolicy;
 import eu.possiblex.participantportal.application.entity.policies.ParticipantRestrictionPolicy;
 import eu.possiblex.participantportal.business.entity.*;
+import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedLegalParticipantCredentialSubjectSubset;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.DataspaceErrorMessage;
 import eu.possiblex.participantportal.business.entity.edc.asset.DataAddress;
@@ -27,6 +28,7 @@ import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProce
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferRequest;
 import eu.possiblex.participantportal.business.entity.exception.NegotiationFailedException;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
+import eu.possiblex.participantportal.business.entity.exception.ParticipantNotFoundException;
 import eu.possiblex.participantportal.business.entity.exception.TransferFailedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +109,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public AcceptOfferResponseBE acceptContractOffer(ConsumeOfferRequestBE request)
-        throws OfferNotFoundException, NegotiationFailedException {
+        throws OfferNotFoundException, ParticipantNotFoundException, NegotiationFailedException {
 
         // query edcOffer
         DcatCatalog edcOffer = queryEdcCatalog(
@@ -122,8 +124,11 @@ public class ConsumerServiceImpl implements ConsumerService {
 
         ContractNegotiation contractNegotiation = negotiateOffer(negotiationInitiateRequest);
 
+        PxExtendedLegalParticipantCredentialSubjectSubset provider = fhCatalogClient.getFhCatalogParticipant(request.getProvidedBy());
+        log.info("got fh provider participant: " + provider);
+
         return new AcceptOfferResponseBE(contractNegotiation.getState(), contractNegotiation.getContractAgreementId(),
-            request.isDataOffering());
+            request.isDataOffering(), provider.getMailAddress());
     }
 
     @Override

@@ -66,7 +66,8 @@ export class AcceptComponent implements OnChanges {
     this.apiService.acceptContractOffer({
       counterPartyAddress: this.offer == undefined ? "" : this.offer.catalogOffering["px:providerUrl"],
       edcOfferId: this.offer == undefined ? "" : this.offer.edcOfferId,
-      dataOffering: this.offer == undefined ? false : this.offer.dataOffering
+      dataOffering: this.offer == undefined ? false : this.offer.dataOffering,
+      providedBy: this.offer == undefined ? "" : this.offer.catalogOffering["gx:providedBy"].id,
     }).then(response => {
       console.log(response);
       this.negotiatedContract.emit(response);

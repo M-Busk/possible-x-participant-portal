@@ -1,5 +1,6 @@
 package eu.possiblex.participantportal.business.control;
 
+import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedLegalParticipantCredentialSubjectSubset;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.fh.FhCatalogIdResponse;
 
@@ -18,7 +19,12 @@ public class FhCatalogClientFake implements FhCatalogClient {
     }
 
     @Override
+    public PxExtendedLegalParticipantCredentialSubjectSubset getFhCatalogParticipant(String participant_id) {
+
+        return null;
+    }
+
     public void deleteServiceOfferingFromFhCatalog(String offeringId, boolean doesContainData) {
-        
+
     }
 }
