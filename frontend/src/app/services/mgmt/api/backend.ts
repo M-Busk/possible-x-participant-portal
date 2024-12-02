@@ -8,8 +8,12 @@ export interface IContractRestApi {
     contractAgreements: IContractAgreementTO[];
 }
 
-export interface IProviderRestApi {
+export interface IParticipantRestApi {
     participantId: IParticipantIdTO;
+    participantDetails: IParticipantDetailsTO;
+}
+
+export interface IProviderRestApi {
 }
 
 export interface IResourceShapeRestApi {
@@ -29,7 +33,6 @@ export interface IAcceptOfferResponseTO {
     negotiationState: INegotiationState;
     contractAgreementId: string;
     dataOffering: boolean;
-    providerEmail: string;
 }
 
 export interface IAcceptOfferResponseTOBuilder {
@@ -47,7 +50,6 @@ export interface IConsumeOfferRequestTO {
     counterPartyAddress: string;
     edcOfferId: string;
     dataOffering: boolean;
-    providedBy: string;
 }
 
 export interface IConsumeOfferRequestTOBuilder {
@@ -105,6 +107,15 @@ export interface IOfferDetailsTO {
 }
 
 export interface IOfferDetailsTOBuilder {
+}
+
+export interface IParticipantDetailsTO {
+    participantId: string;
+    participantName: string;
+    participantEmail: string;
+}
+
+export interface IParticipantDetailsTOBuilder {
 }
 
 export interface IParticipantIdTO {
@@ -409,11 +420,27 @@ export class RestApplicationClient {
     }
 
     /**
-     * HTTP GET /provider/id
-     * Java method: eu.possiblex.participantportal.application.boundary.ProviderRestApiImpl.getParticipantId
+     * HTTP GET /participant/details/me
+     * Java method: eu.possiblex.participantportal.application.boundary.ParticipantRestApiImpl.getParticipantDetails
+     */
+    getParticipantDetails$GET$participant_details_me(): RestResponse<IParticipantDetailsTO> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`participant/details/me` });
+    }
+
+    /**
+     * HTTP GET /participant/details/{participantId}
+     * Java method: eu.possiblex.participantportal.application.boundary.ParticipantRestApiImpl.getParticipantDetails
+     */
+    getParticipantDetails$GET$participant_details_participantId(participantId: string): RestResponse<IParticipantDetailsTO> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`participant/details/${participantId}` });
+    }
+
+    /**
+     * HTTP GET /participant/id/me
+     * Java method: eu.possiblex.participantportal.application.boundary.ParticipantRestApiImpl.getParticipantId
      */
     getParticipantId(): RestResponse<IParticipantIdTO> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`provider/id` });
+        return this.httpClient.request({ method: "GET", url: uriEncoding`participant/id/me` });
     }
 
     /**
