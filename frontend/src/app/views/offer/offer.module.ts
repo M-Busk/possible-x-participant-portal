@@ -39,6 +39,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MaterialModule} from "../../sdwizard/material.module";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 import { OfferPrintViewComponent } from './offer-print-view/offer-print-view.component';
 
 @NgModule({
@@ -72,6 +73,7 @@ import { OfferPrintViewComponent } from './offer-print-view/offer-print-view.com
         MatIconModule,
         MatCheckboxModule,
         MaterialModule,
+        MatSnackBarModule,
         ModalModule,
         NgxPrintModule
     ],
