@@ -44,6 +44,10 @@ logging:
   level:
     reactor.netty.http.client: DEBUG
 
+prefill-fields:
+  data-product:
+    json-file-path: "src/main/resources/prefillFieldsDataProduct.json"
+
 version.no: "1.0.0"
 
 version.date: "01.01.1970"

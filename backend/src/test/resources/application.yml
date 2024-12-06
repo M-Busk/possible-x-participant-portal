@@ -27,4 +27,9 @@ s3:
 logging:
   level:
     reactor.netty.http.client: DEBUG
+
+prefill-fields:
+  data-product:
+    json-file-path: "src/test/resources/prefillFieldsDataProduct.json"
+
 version.no: "1.0.0"
