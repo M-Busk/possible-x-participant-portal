@@ -73,6 +73,7 @@ public class ContractServiceImpl implements ContractService {
 
         // convert contract agreements to contract agreement BEs
         contractAgreements.forEach(c -> contractAgreementBEs.add(ContractAgreementBE.builder().contractAgreement(c)
+            .isDataOffering(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getAggregationOf() != null)
             .enforcementPolicies(consumerService.getEnforcementPoliciesFromEdcPolicies(List.of(c.getPolicy())))
             .offeringDetails(OfferingDetailsBE.builder().assetId(c.getAssetId())
                 .offeringId(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getUri())
@@ -85,20 +86,7 @@ public class ContractServiceImpl implements ContractService {
                 ParticipantDetailsBE.builder().dapsId(c.getProviderId()).did(participantDidMap.get(c.getProviderId()))
                     .name(participantNames.getOrDefault(participantDidMap.getOrDefault(c.getProviderId(), ""),
                         unknownParticipant).getName()).build()).build()));
-
-        for (ContractAgreementBE contractAgreementBE : contractAgreementBEs) {
-            try {
-                if (fhCatalogClient.getFhCatalogOffer(contractAgreementBE.getOfferingDetails().getAssetId()).getAggregationOf().isEmpty()) {
-                    contractAgreementBE.setDataOffering(false);
-                } else {
-                    contractAgreementBE.setDataOffering(true);
-                }
-            } catch (OfferNotFoundException e) {
-                log.error("Failed to check if offer is a data product for contractAgreementBE with assetId: {}",
-                contractAgreementBE.getOfferingDetails().getAssetId());
-                throw new OfferNotFoundException(e.getMessage());
-            }
-        }
+        
         return contractAgreementBEs;
     }
 
