@@ -18,6 +18,7 @@ import eu.possiblex.participantportal.business.entity.fh.SparqlQueryResponse;
 import jakarta.json.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -40,8 +41,11 @@ public class FhCatalogClientImpl implements FhCatalogClient {
 
     private final ObjectMapper objectMapper;
 
+    @Value("${participant-id}")
+    private String participantId;
+
     public FhCatalogClientImpl(@Autowired TechnicalFhCatalogClient technicalFhCatalogClient,
-        @Autowired SparqlFhCatalogClient sparqlFhCatalogClient, @Autowired ObjectMapper objectMapper) {
+                               @Autowired SparqlFhCatalogClient sparqlFhCatalogClient, @Autowired ObjectMapper objectMapper) {
 
         this.technicalFhCatalogClient = technicalFhCatalogClient;
         this.objectMapper = objectMapper;
@@ -57,25 +61,26 @@ public class FhCatalogClientImpl implements FhCatalogClient {
         type.forEach(typeArrayBuilder::add);
 
         return JsonDocument.of(
-            Json.createObjectBuilder().add("@context", contextBuilder.build()).add("@type", typeArrayBuilder.build())
-                .build());
+                Json.createObjectBuilder().add("@context", contextBuilder.build()).add("@type", typeArrayBuilder.build())
+                        .build());
     }
 
     @Override
     public FhCatalogIdResponse addServiceOfferingToFhCatalog(
-        PxExtendedServiceOfferingCredentialSubject serviceOfferingCredentialSubject, boolean doesContainData) {
+            PxExtendedServiceOfferingCredentialSubject serviceOfferingCredentialSubject, boolean doesContainData) {
 
         log.info("sending to catalog");
 
         String offerId = serviceOfferingCredentialSubject.getId(); // just use the ID also for the offer in the catalog
         FhCatalogIdResponse catalogOfferId = null;
+        String verMethod = participantId + "#JWK2020-PossibleLetsEncrypt";
         try {
             if (doesContainData) {
-                catalogOfferId = technicalFhCatalogClient.addServiceOfferingWithDataToFhCatalog(
-                    serviceOfferingCredentialSubject, offerId);
+                catalogOfferId = technicalFhCatalogClient.addServiceOfferingWithDataToFhCatalog(serviceOfferingCredentialSubject,
+                        offerId, verMethod);
             } else {
-                catalogOfferId = technicalFhCatalogClient.addServiceOfferingToFhCatalog(
-                    serviceOfferingCredentialSubject, offerId);
+                catalogOfferId = technicalFhCatalogClient.addServiceOfferingToFhCatalog(serviceOfferingCredentialSubject,
+                        offerId, verMethod);
             }
         } catch (Exception e) {
             log.error("error when trying to send offer to catalog!", e);
@@ -107,7 +112,7 @@ public class FhCatalogClientImpl implements FhCatalogClient {
               ?uri a gx:LegalParticipant;
               schema:name ?name .
               FILTER(?uri IN (""" + String.join(",",
-            participantDids.stream().map(id -> "<" + PARTICIPANT_URI_PREFIX + id + ">").toList()) + "))" + """
+                participantDids.stream().map(id -> "<" + PARTICIPANT_URI_PREFIX + id + ">").toList()) + "))" + """
             }
             """;
         String stringResult = sparqlFhCatalogClient.queryCatalog(query, null);
@@ -121,8 +126,8 @@ public class FhCatalogClientImpl implements FhCatalogClient {
         }
 
         return result.getResults().getBindings().stream()
-            .collect(HashMap::new, (map, p) -> map.put(p.getUri().replace(PARTICIPANT_URI_PREFIX, ""), p),
-                HashMap::putAll);
+                .collect(HashMap::new, (map, p) -> map.put(p.getUri().replace(PARTICIPANT_URI_PREFIX, ""), p),
+                        HashMap::putAll);
     }
 
     public Map<String, OfferingDetailsSparqlQueryResult> getOfferingDetails(Collection<String> assetIds) {
@@ -139,7 +144,7 @@ public class FhCatalogClientImpl implements FhCatalogClient {
               px:assetId ?assetId .
               OPTIONAL { ?uri schema:description ?description } .
               FILTER(?assetId IN (""" + String.join(",", assetIds.stream().map(id -> "\"" + id + "\"").toList()) + "))"
-            + """
+                + """
             }
             """;
 
@@ -154,7 +159,7 @@ public class FhCatalogClientImpl implements FhCatalogClient {
         }
 
         return result.getResults().getBindings().stream()
-            .collect(HashMap::new, (map, p) -> map.put(p.getAssetId(), p), HashMap::putAll);
+                .collect(HashMap::new, (map, p) -> map.put(p.getAssetId(), p), HashMap::putAll);
     }
 
     private String getFhCatalogContent(String id, UnaryOperator<String> fetchFunction) {
@@ -173,7 +178,7 @@ public class FhCatalogClientImpl implements FhCatalogClient {
 
     @Override
     public PxExtendedServiceOfferingCredentialSubject getFhCatalogOffer(String offeringId)
-        throws OfferNotFoundException {
+            throws OfferNotFoundException {
 
         try {
             String jsonContent;
@@ -184,10 +189,10 @@ public class FhCatalogClientImpl implements FhCatalogClient {
             }
             try {
                 JsonObject parsedCatalogOffer = parseCatalogContent(jsonContent,
-                    PxExtendedServiceOfferingCredentialSubject.TYPE,
-                    PxExtendedServiceOfferingCredentialSubject.CONTEXT);
+                        PxExtendedServiceOfferingCredentialSubject.TYPE,
+                        PxExtendedServiceOfferingCredentialSubject.CONTEXT);
                 return objectMapper.readValue(parsedCatalogOffer.toString(),
-                    PxExtendedServiceOfferingCredentialSubject.class);
+                        PxExtendedServiceOfferingCredentialSubject.class);
             } catch (JsonProcessingException e) {
                 throw new JsonException("failed to parse fh catalog offer json: " + jsonContent, e);
             }
@@ -198,17 +203,17 @@ public class FhCatalogClientImpl implements FhCatalogClient {
 
     @Override
     public PxExtendedLegalParticipantCredentialSubjectSubset getFhCatalogParticipant(String participantId)
-        throws ParticipantNotFoundException {
+            throws ParticipantNotFoundException {
 
         try {
             String jsonContent = getFhCatalogContent(participantId,
-                this.technicalFhCatalogClient::getFhCatalogParticipant);
+                    this.technicalFhCatalogClient::getFhCatalogParticipant);
             try {
                 JsonObject parsedCatalogParticipant = parseCatalogContent(jsonContent,
-                    PxExtendedLegalParticipantCredentialSubjectSubset.TYPE,
-                    PxExtendedLegalParticipantCredentialSubjectSubset.CONTEXT);
+                        PxExtendedLegalParticipantCredentialSubjectSubset.TYPE,
+                        PxExtendedLegalParticipantCredentialSubjectSubset.CONTEXT);
                 return objectMapper.readValue(parsedCatalogParticipant.toString(),
-                    PxExtendedLegalParticipantCredentialSubjectSubset.class);
+                        PxExtendedLegalParticipantCredentialSubjectSubset.class);
             } catch (JsonProcessingException e) {
                 throw new JsonException("failed to parse fh catalog participant json: " + jsonContent, e);
             }
