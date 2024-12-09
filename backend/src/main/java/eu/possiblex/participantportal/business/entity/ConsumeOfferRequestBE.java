@@ -22,4 +22,5 @@ public class ConsumeOfferRequestBE {
      * Does this offer contain Data Resources.
      */
     private boolean dataOffering;
+
 }

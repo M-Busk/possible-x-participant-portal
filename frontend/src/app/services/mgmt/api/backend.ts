@@ -1,6 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export interface ICommonPortalRestApi {
+    version: IVersionTO;
+}
+
 export interface IConsumerRestApi {
 }
 
@@ -8,16 +12,22 @@ export interface IContractRestApi {
     contractAgreements: IContractAgreementTO[];
 }
 
-export interface IProviderRestApi {
+export interface IParticipantRestApi {
     participantId: IParticipantIdTO;
+    participantDetails: IParticipantDetailsTO;
+}
+
+export interface IProviderRestApi {
+    prefillFields: IPrefillFieldsTO;
 }
 
 export interface IResourceShapeRestApi {
-    gxInstantiatedVirtualResourceShape: string;
     gxDataResourceShape: string;
+    gxInstantiatedVirtualResourceShape: string;
     gxPhysicalResourceShape: string;
     gxSoftwareResourceShape: string;
     gxVirtualResourceShape: string;
+    gxLegitimateInterestShape: string;
 }
 
 export interface IServiceOfferingShapeRestApi {
@@ -36,6 +46,8 @@ export interface IAcceptOfferResponseTOBuilder {
 export interface IAssetDetailsTO {
     name: string;
     description: string;
+    assetId: string;
+    offeringId: string;
 }
 
 export interface IAssetDetailsTOBuilder {
@@ -55,17 +67,29 @@ export interface IContractAgreementTO {
     assetId: string;
     assetDetails: IAssetDetailsTO;
     policy: IPolicy;
+    enforcementPolicies: IEnforcementPolicyUnion[];
     contractSigningDate: Date;
-    consumerId: string;
-    providerId: string;
+    consumerDetails: IContractParticipantDetailsTO;
+    providerDetails: IContractParticipantDetailsTO;
+    dataOffering: boolean;
 }
 
 export interface IContractAgreementTOBuilder {
 }
 
+export interface IContractParticipantDetailsTO {
+    name: string;
+    did: string;
+    dapsId: string;
+}
+
+export interface IContractParticipantDetailsTOBuilder {
+}
+
 export interface ICreateDataOfferingRequestTO extends ICreateServiceOfferingRequestTO {
     dataResourceCredentialSubject: IGxDataResourceCredentialSubject;
     fileName: string;
+    legitimateInterest: IGxLegitimateInterest;
 }
 
 export interface ICreateDataOfferingRequestTOBuilder<C, B> extends ICreateServiceOfferingRequestTOBuilder<C, B> {
@@ -93,13 +117,31 @@ export interface ICreateServiceOfferingRequestTOBuilder<C, B> {
 export interface ICreateServiceOfferingRequestTOBuilderImpl extends ICreateServiceOfferingRequestTOBuilder<ICreateServiceOfferingRequestTO, ICreateServiceOfferingRequestTOBuilderImpl> {
 }
 
+export interface IDataProductPrefillFieldsTO {
+    serviceOfferingName: string;
+    serviceOfferingDescription: string;
+}
+
+export interface IDataProductPrefillFieldsTOBuilder {
+}
+
 export interface IOfferDetailsTO {
     edcOfferId: string;
     catalogOffering: IPxExtendedServiceOfferingCredentialSubject;
     dataOffering: boolean;
+    enforcementPolicies: IEnforcementPolicyUnion[];
 }
 
 export interface IOfferDetailsTOBuilder {
+}
+
+export interface IParticipantDetailsTO {
+    participantId: string;
+    participantName: string;
+    participantEmail: string;
+}
+
+export interface IParticipantDetailsTOBuilder {
 }
 
 export interface IParticipantIdTO {
@@ -107,6 +149,14 @@ export interface IParticipantIdTO {
 }
 
 export interface IParticipantIdTOBuilder {
+}
+
+export interface IPrefillFieldsTO {
+    participantId: string;
+    dataProductPrefillFields: IDataProductPrefillFieldsTO;
+}
+
+export interface IPrefillFieldsTOBuilder {
 }
 
 export interface ISelectOfferRequestTO {
@@ -130,6 +180,14 @@ export interface ITransferOfferResponseTO {
 }
 
 export interface ITransferOfferResponseTOBuilder {
+}
+
+export interface IVersionTO {
+    version: string;
+    date: string;
+}
+
+export interface IVersionTOBuilder {
 }
 
 export interface IPojoCredentialSubject {
@@ -204,6 +262,21 @@ export interface IGxDataResourceCredentialSubjectBuilderImpl extends IGxDataReso
     "schema:description": string;
 }
 
+export interface IGxLegitimateInterest {
+    "@type": string;
+    "gx:dataProtectionContact": string;
+    "gx:legalBasis": string;
+}
+
+export interface IGxLegitimateInterestBuilder<C, B> {
+}
+
+export interface IGxLegitimateInterestBuilderImpl extends IGxLegitimateInterestBuilder<IGxLegitimateInterest, IGxLegitimateInterestBuilderImpl> {
+    "gx:dataProtectionContact": string;
+    "gx:legalBasis": string;
+    "@type": string;
+}
+
 export interface IGxServiceOfferingCredentialSubject extends IPojoCredentialSubject {
     "@type": "gx:ServiceOffering";
     "gx:providedBy": INodeKindIRITypeId;
@@ -230,6 +303,9 @@ export interface IGxServiceOfferingCredentialSubjectBuilderImpl extends IGxServi
     "gx:dataAccountExport": IGxDataAccountExport[];
     "schema:name": string;
     "schema:description": string;
+}
+
+export interface IOfferingComplianceException extends IException {
 }
 
 export interface IEnforcementPolicy {
@@ -286,6 +362,28 @@ export interface IPxExtendedServiceOfferingCredentialSubject {
     "@type": string[];
 }
 
+export interface IThrowable extends ISerializable {
+    cause: IThrowable;
+    stackTrace: IStackTraceElement[];
+    message: string;
+    suppressed: IThrowable[];
+    localizedMessage: string;
+}
+
+export interface IStackTraceElement extends ISerializable {
+    classLoaderName: string;
+    moduleName: string;
+    moduleVersion: string;
+    methodName: string;
+    fileName: string;
+    lineNumber: number;
+    nativeMethod: boolean;
+    className: string;
+}
+
+export interface IException extends IThrowable {
+}
+
 export interface IOdrlPermission {
     "odrl:target": string;
     "odrl:action": IOdrlAction;
@@ -304,10 +402,14 @@ export interface IPxExtendedDataResourceCredentialSubject {
     "gx:policy": string[];
     "gx:license": string[];
     "gx:containsPII": boolean;
+    "gx:legitimateInterest": IGxLegitimateInterest;
     "schema:name": string;
     "schema:description": string;
     "@context": { [index: string]: string };
     "@type": string[];
+}
+
+export interface ISerializable {
 }
 
 export interface IOdrlConstraint {
@@ -325,6 +427,14 @@ export interface HttpClient {
 export class RestApplicationClient {
 
     constructor(protected httpClient: HttpClient) {
+    }
+
+    /**
+     * HTTP GET /common/version
+     * Java method: eu.possiblex.participantportal.application.boundary.CommonPortalRestApiImpl.getVersion
+     */
+    getVersion(): RestResponse<IVersionTO> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`common/version` });
     }
 
     /**
@@ -360,11 +470,35 @@ export class RestApplicationClient {
     }
 
     /**
-     * HTTP GET /provider/id
-     * Java method: eu.possiblex.participantportal.application.boundary.ProviderRestApiImpl.getParticipantId
+     * HTTP POST /contract/transfer
+     * Java method: eu.possiblex.participantportal.application.boundary.ContractRestApiImpl.transferDataOfferAgain
+     */
+    transferDataOfferAgain(request: ITransferOfferRequestTO): RestResponse<ITransferOfferResponseTO> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`contract/transfer`, data: request });
+    }
+
+    /**
+     * HTTP GET /participant/details/me
+     * Java method: eu.possiblex.participantportal.application.boundary.ParticipantRestApiImpl.getParticipantDetails
+     */
+    getParticipantDetails$GET$participant_details_me(): RestResponse<IParticipantDetailsTO> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`participant/details/me` });
+    }
+
+    /**
+     * HTTP GET /participant/details/{participantId}
+     * Java method: eu.possiblex.participantportal.application.boundary.ParticipantRestApiImpl.getParticipantDetails
+     */
+    getParticipantDetails$GET$participant_details_participantId(participantId: string): RestResponse<IParticipantDetailsTO> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`participant/details/${participantId}` });
+    }
+
+    /**
+     * HTTP GET /participant/id/me
+     * Java method: eu.possiblex.participantportal.application.boundary.ParticipantRestApiImpl.getParticipantId
      */
     getParticipantId(): RestResponse<IParticipantIdTO> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`provider/id` });
+        return this.httpClient.request({ method: "GET", url: uriEncoding`participant/id/me` });
     }
 
     /**
@@ -384,6 +518,14 @@ export class RestApplicationClient {
     }
 
     /**
+     * HTTP GET /provider/prefillFields
+     * Java method: eu.possiblex.participantportal.application.boundary.ProviderRestApiImpl.getPrefillFields
+     */
+    getPrefillFields(): RestResponse<IPrefillFieldsTO> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`provider/prefillFields` });
+    }
+
+    /**
      * HTTP GET /shapes/gx/resource/dataresource
      * Java method: eu.possiblex.participantportal.application.boundary.ShapeRestApiImpl.getGxDataResourceShape
      */
@@ -397,6 +539,14 @@ export class RestApplicationClient {
      */
     getGxInstantiatedVirtualResourceShape(): RestResponse<string> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`shapes/gx/resource/instantiatedvirtualresource` });
+    }
+
+    /**
+     * HTTP GET /shapes/gx/resource/legitimateinterest
+     * Java method: eu.possiblex.participantportal.application.boundary.ShapeRestApiImpl.getGxLegitimateInterestShape
+     */
+    getGxLegitimateInterestShape(): RestResponse<string> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`shapes/gx/resource/legitimateinterest` });
     }
 
     /**

@@ -1,8 +1,8 @@
 package eu.possiblex.participantportal.application.boundary;
 
+import eu.possiblex.participantportal.application.control.ConsumerApiMapper;
 import eu.possiblex.participantportal.application.control.ContractApiMapper;
-import eu.possiblex.participantportal.business.control.ContractService;
-import eu.possiblex.participantportal.business.control.ContractServiceFake;
+import eu.possiblex.participantportal.business.control.*;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
@@ -27,16 +27,23 @@ class ContractRestApiTest {
     @Autowired
     private ContractService contractService;
 
+    @Autowired
+    private ContractApiMapper contractApiMapper;
+
+    @Autowired
+    private ConsumerApiMapper consumerApiMapper;
+
     @Test
     void shouldReturnMessageOnGetContractAgreements() throws Exception {
         //when
         //then
+
         this.mockMvc.perform(get("/contract/agreement")).andDo(print()).andExpect(status().isOk())
             .andExpect(jsonPath("$.length()").value(1))
-            .andExpect(jsonPath("$[0].id").value(ContractServiceFake.FAKE_ID_CONTRACT_AGREEMENT)).andExpect(
-                jsonPath("$[0].contractSigningDate").value(ContractServiceFake.getDateAsOffsetDateTime().toString()))
-            .andExpect(jsonPath("$[0].consumerId").value(ContractServiceFake.FAKE_ID_CONSUMER))
-            .andExpect(jsonPath("$[0].providerId").value(ContractServiceFake.FAKE_ID_PROVIDER))
+            .andExpect(jsonPath("$[0].id").value(ContractServiceFake.FAKE_ID_CONTRACT_AGREEMENT))
+            .andExpect(jsonPath("$[0].contractSigningDate").value(ContractServiceFake.getDateAsOffsetDateTime().toString()))
+            .andExpect(jsonPath("$[0].providerDetails").exists())
+            .andExpect(jsonPath("$[0].consumerDetails").exists())
             .andExpect(jsonPath("$[0].assetId").value(ContractServiceFake.FAKE_ID_ASSET))
             .andExpect(jsonPath("$[0].assetDetails.name").value(ContractServiceFake.NAME))
             .andExpect(jsonPath("$[0].assetDetails.description").value(ContractServiceFake.DESCRIPTION))
@@ -49,13 +56,19 @@ class ContractRestApiTest {
     @TestConfiguration
     static class TestConfig {
         @Bean
-        public ContractService consumerService() {
+        public ContractService contractService() {
 
             return Mockito.spy(new ContractServiceFake());
         }
 
         @Bean
-        public ContractApiMapper consumerApiMapper() {
+        public ConsumerApiMapper consumerApiMapper() {
+
+            return Mappers.getMapper(ConsumerApiMapper.class);
+        }
+
+        @Bean
+        public ContractApiMapper contractApiMapper() {
 
             return Mappers.getMapper(ContractApiMapper.class);
         }

@@ -18,19 +18,19 @@ import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {StatusMessageComponent} from '../../views/common-views/status-message/status-message.component';
 import {BaseWizardExtensionComponent} from '../base-wizard-extension/base-wizard-extension.component';
 import {isDataResourceCs, isGxServiceOfferingCs} from '../../utils/credential-utils';
-import {HttpErrorResponse} from '@angular/common/http';
 import {ApiService} from '../../services/mgmt/api/api.service';
 import {
   IEverythingAllowedPolicy,
-  IGxDataResourceCredentialSubject,
+  IGxDataResourceCredentialSubject, IGxLegitimateInterest,
   IGxServiceOfferingCredentialSubject,
   INodeKindIRITypeId,
   IParticipantRestrictionPolicy,
-  IPojoCredentialSubject
+  IPojoCredentialSubject, IPrefillFieldsTO
 } from '../../services/mgmt/api/backend';
-import {TBR_DATA_RESOURCE_ID, TBR_SERVICE_OFFERING_ID} from "../../views/offer/offer-data";
+import {TBR_DATA_RESOURCE_ID, TBR_LEGITIMATE_INTEREST_ID, TBR_SERVICE_OFFERING_ID} from "../../views/offer/offer-data";
 import {MatStepper} from "@angular/material/stepper";
 import {AccordionItemComponent} from "@coreui/angular";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-offering-wizard-extension',
@@ -44,14 +44,16 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
   dapsIDs: string[] = [''];
   waitingForResponse = true;
   offerType: string = "data";
-  participantId = "";
+  prefillFields: IPrefillFieldsTO | undefined = undefined;
   serviceOfferingShapeSource = "";
   dataResourceShapeSource = "";
+  legitimateInterestShapeSource = "";
   @ViewChild("stepper") stepper: MatStepper;
   @ViewChild('accordionItem') accordionItem!: AccordionItemComponent;
-  protected isDataOffering: boolean = true;
+  protected containsPII: boolean = false;
   @ViewChild("gxServiceOfferingWizard") private gxServiceOfferingWizard: BaseWizardExtensionComponent;
   @ViewChild("gxDataResourceWizard") private gxDataResourceWizard: BaseWizardExtensionComponent;
+  @ViewChild("gxLegitimateInterestWizard") private gxLegitimateInterestWizard: BaseWizardExtensionComponent;
 
   constructor(
     private apiService: ApiService
@@ -67,11 +69,13 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.retrieveAndAdaptServiceOfferingShape();
-    this.retrieveAndAdaptDataResourceShape();
-    this.retrieveAndSetParticipantId();
-    this.resetPossibleSpecificFormValues();
-    this.resetAccordionItem();
+      this.retrieveAndAdaptServiceOfferingShape();
+      this.retrieveAndAdaptDataResourceShape();
+      this.retrieveLegitimateInterestShape();
+      this.retrieveAndSetPrefillFields();
+      this.resetPossibleSpecificFormValues();
+      this.resetAccordionItem();
+      this.containsPII = false;
   }
 
   async retrieveAndAdaptServiceOfferingShape() {
@@ -95,6 +99,15 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     }
   }
 
+  async retrieveLegitimateInterestShape() {
+    try {
+      console.log("Retrieving legitimate interest shape");
+      this.legitimateInterestShapeSource = await this.apiService.getGxLegitimateInterestShape();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   public async loadShape(wizard: BaseWizardExtensionComponent, shapeSource: string, id: string): Promise<void> {
     console.log("Loading shape");
     await wizard.loadShape(Promise.resolve(shapeSource), id);
@@ -108,6 +121,8 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     let gxOfferingJsonSd: IGxServiceOfferingCredentialSubject = this.gxServiceOfferingWizard.generateJsonCs();
 
     let policy: IParticipantRestrictionPolicy | IEverythingAllowedPolicy;
+
+    let gxLegitimateInterestJsonSd: IGxLegitimateInterest;
 
     if (this.isPolicyChecked) {
       policy = {
@@ -124,7 +139,8 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
       serviceOfferingCredentialSubject: gxOfferingJsonSd,
       enforcementPolicies: [
         policy
-      ]
+      ],
+      legitimateInterest: gxLegitimateInterestJsonSd,
     };
 
     let createOfferMethod: (offer: any) => Promise<any>;
@@ -136,6 +152,10 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
 
       createOfferTo.dataResourceCredentialSubject = gxDataResourceJsonSd;
       createOfferTo.fileName = this.selectedFileName;
+
+      if (this.isContainingPII()) {
+        createOfferTo.legitimateInterest = this.gxLegitimateInterestWizard.generateJsonCs();
+      }
 
       createOfferMethod = this.apiService.createDataOffering.bind(this.apiService);
     }
@@ -158,11 +178,13 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
   }
 
   public ngOnDestroy() {
-    this.gxServiceOfferingWizard.ngOnDestroy();
-    this.gxDataResourceWizard.ngOnDestroy();
+    this.gxServiceOfferingWizard?.ngOnDestroy();
+    this.gxDataResourceWizard?.ngOnDestroy();
+    this.gxLegitimateInterestWizard?.ngOnDestroy();
     this.resetPossibleSpecificFormValues();
     this.resetAccordionItem();
     this.offerCreationStatusMessage.hideAllMessages();
+    this.containsPII = false;
   }
 
   public isFieldFilled(str: string) {
@@ -177,6 +199,7 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     this.selectedFileName = "";
     this.isPolicyChecked = false;
     this.dapsIDs = [''];
+    this.containsPII = false;
   }
 
   public resetAccordionItem() {
@@ -210,9 +233,9 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
 
     let gxDataResourceCs = {
       "gx:producedBy": {
-        "@id": this.participantId
+        "@id": this.prefillFields.participantId
       },
-      "gx:copyrightOwnedBy": [this.participantId],
+      "gx:copyrightOwnedBy": [this.prefillFields.participantId],
       "gx:containsPII": false,
       "@type": "gx:DataResource"
     } as any;
@@ -222,19 +245,28 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     });
   }
 
+  async prefillLegitimateInterestWizard() {
+    let gxLegitimateInterestCs = {"@type": "gx:LegitimateInterest"} as any;
+
+    this.loadShape(this.gxLegitimateInterestWizard, this.legitimateInterestShapeSource, TBR_LEGITIMATE_INTEREST_ID).then(_ => {
+      this.prefillHandleCs(gxLegitimateInterestCs);
+    });
+  }
+
   async prefillServiceOfferingWizard() {
 
     let gxServiceOfferingCs = {
       "gx:providedBy": {
-        "@id": this.participantId
+        "@id": this.prefillFields?.participantId
       },
       "@type": "gx:ServiceOffering",
     } as any;
 
     if (this.isOfferingDataOffering()) {
       let gxDataResourceJsonSd: IGxDataResourceCredentialSubject = this.trimStringsInDataStructure(this.gxDataResourceWizard.generateJsonCs());
-      gxServiceOfferingCs["schema:name"] = "Data Offering Service - " + (gxDataResourceJsonSd["schema:name"] ? gxDataResourceJsonSd["schema:name"]["@value"] : "data resource name not available");
-      //gxServiceOfferingCs["schema:description"] = " ";//"Data Offering Service provides data (" + (gxDataResourceJsonSd["schema:name"] ? gxDataResourceJsonSd["schema:name"]["@value"] : "data resource name not available") + ") securely through the Possible Dataspace software solution. The Data Offering Service enables secure and sovereign data exchange between different organizations using the Eclipse Dataspace Connector (EDC). The service seamlessly integrates with IONOS S3 buckets to ensure reliable and scalable data storage and transfer.";
+      let dataResourceName = gxDataResourceJsonSd["schema:name"] ? gxDataResourceJsonSd["schema:name"]["@value"] : "data resource name not available";
+      gxServiceOfferingCs["schema:name"] = this.prefillFields.dataProductPrefillFields.serviceOfferingName.replace("<Data resource name>", dataResourceName);
+      gxServiceOfferingCs["schema:description"] = this.prefillFields.dataProductPrefillFields.serviceOfferingDescription.replace("<Data resource name>", dataResourceName);
     }
 
     this.loadShape(this.gxServiceOfferingWizard, this.serviceOfferingShapeSource, TBR_SERVICE_OFFERING_ID).then(_ => {
@@ -243,12 +275,12 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
 
   }
 
-  async retrieveAndSetParticipantId() {
+  async retrieveAndSetPrefillFields() {
     try {
-      console.log("Retrieving participant id");
-      const response = await this.apiService.getParticipantId();
+      console.log("Retrieving prefill fields");
+      const response = await this.apiService.getPrefillFields();
       console.log(response);
-      this.participantId = response.participantId;
+      this.prefillFields = response;
     } catch (e) {
       console.error(e);
     }
@@ -264,8 +296,16 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     return this.offerType === "data";
   }
 
+  protected isContainingPII(): boolean {
+    return this.containsPII;
+  }
+
   protected isDataResourceValid(): boolean {
     return !this.gxDataResourceWizard?.isWizardFormInvalid() && !this.isInvalidFileName;
+  }
+
+  protected isLegitimateInterestValid(): boolean {
+    return !this.gxLegitimateInterestWizard?.isWizardFormInvalid();
   }
 
   protected isServiceOfferingValid(): boolean {
@@ -290,6 +330,23 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     return shapeSource;
   }
 
+  protected prepareStepAfterDataResource() {
+    this.setContainsPII();
+
+    setTimeout(() => {
+      if (this.isContainingPII()) {
+        this.prefillLegitimateInterestWizard();
+      } else {
+        this.prefillServiceOfferingWizard();
+      }
+    }, 50);
+  }
+
+  protected setContainsPII() {
+    let gxDataResourceJsonSd = this.gxDataResourceWizard.generateJsonCs();
+    this.containsPII = gxDataResourceJsonSd["gx:containsPII"];
+  }
+
   private prefillHandleCs(cs: IPojoCredentialSubject) {
     if (isGxServiceOfferingCs(cs)) {
       this.gxServiceOfferingWizard.prefillFields(cs, ["gx:providedBy"]);
@@ -312,6 +369,10 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
       }, {} as any);
     }
     return obj;
+  }
+
+  prepareStepBeforeDataResource() {
+    this.containsPII = false;
   }
 
 }

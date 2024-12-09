@@ -20,4 +20,5 @@ public class AcceptOfferResponseBE {
      * Does this offer contain Data Resources.
      */
     private boolean dataOffering;
+
 }

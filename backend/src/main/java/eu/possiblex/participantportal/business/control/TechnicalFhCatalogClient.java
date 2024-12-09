@@ -36,14 +36,19 @@ public interface TechnicalFhCatalogClient {
 
     @PutExchange(CommonConstants.REST_PATH_FH_CATALOG_SERVICE_OFFER)
     FhCatalogIdResponse addServiceOfferingToFhCatalog(
-        @RequestBody PxExtendedServiceOfferingCredentialSubject serviceOfferingCs, @RequestParam String id);
+        @RequestBody PxExtendedServiceOfferingCredentialSubject serviceOfferingCs, @RequestParam String id,
+        @RequestParam String verificationMethod);
 
     @PutExchange(CommonConstants.REST_PATH_FH_CATALOG_SERVICE_OFFER_WITH_DATA)
     FhCatalogIdResponse addServiceOfferingWithDataToFhCatalog(
-            @RequestBody PxExtendedServiceOfferingCredentialSubject serviceOfferingCs, @RequestParam String id);
+            @RequestBody PxExtendedServiceOfferingCredentialSubject serviceOfferingCs, @RequestParam String id,
+            @RequestParam String verificationMethod);
 
     @GetExchange("/resources/service-offering/{offering_id}")
     String getFhCatalogOffer(@PathVariable String offering_id);
+
+    @GetExchange("/resources/legal-participant/{participant_id}")
+    String getFhCatalogParticipant(@PathVariable String participant_id);
 
     @GetExchange("/resources/data-product/{offering_id}")
     String getFhCatalogOfferWithData(@PathVariable String offering_id);

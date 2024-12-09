@@ -2,19 +2,23 @@ package eu.possiblex.participantportal.business.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.possiblex.participantportal.application.entity.policies.EnforcementPolicy;
+import eu.possiblex.participantportal.application.entity.policies.EverythingAllowedPolicy;
+import eu.possiblex.participantportal.application.entity.policies.ParticipantRestrictionPolicy;
 import eu.possiblex.participantportal.business.entity.*;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.DataspaceErrorMessage;
 import eu.possiblex.participantportal.business.entity.edc.asset.DataAddress;
 import eu.possiblex.participantportal.business.entity.edc.asset.ionoss3extension.IonosS3DataDestination;
-import eu.possiblex.participantportal.business.entity.edc.catalog.CatalogRequest;
-import eu.possiblex.participantportal.business.entity.edc.catalog.DcatCatalog;
-import eu.possiblex.participantportal.business.entity.edc.catalog.DcatDataset;
+import eu.possiblex.participantportal.business.entity.edc.catalog.*;
 import eu.possiblex.participantportal.business.entity.edc.common.IdResponse;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.ContractNegotiation;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.ContractOffer;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.NegotiationInitiateRequest;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.NegotiationState;
+import eu.possiblex.participantportal.business.entity.edc.policy.OdrlConstraint;
+import eu.possiblex.participantportal.business.entity.edc.policy.OdrlPermission;
+import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import eu.possiblex.participantportal.business.entity.edc.transfer.IonosS3TransferProcess;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcess;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcessState;
@@ -31,7 +35,10 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -82,8 +89,16 @@ public class ConsumerServiceImpl implements ConsumerService {
         log.info("got fh catalog offer " + fhCatalogOffer);
 
         // get offer from EDC Catalog
-        DcatCatalog edcCatalog = queryEdcCatalog(
-            CatalogRequest.builder().counterPartyAddress(fhCatalogOffer.getProviderUrl()).build());
+        DcatCatalog edcCatalog = queryEdcCatalog(CatalogRequest.builder()
+            .counterPartyAddress(fhCatalogOffer.getProviderUrl())
+            .querySpec(QuerySpec.builder()
+                .filterExpression(List.of(FilterExpression.builder()
+                    .operandLeft("id")
+                    .operator("=")
+                    .operandRight(fhCatalogOffer.getAssetId())
+                    .build()))
+                .build())
+            .build());
         log.info("got edc catalog: " + edcCatalog);
         DcatDataset edcCatalogOffer = getDatasetById(edcCatalog, fhCatalogOffer.getAssetId());
 
@@ -91,6 +106,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         response.setEdcOffer(edcCatalogOffer);
         response.setCatalogOffering(fhCatalogOffer);
         response.setDataOffering(isDataOffering);
+        response.setEnforcementPolicies(getEnforcementPoliciesFromEdcPolicies(edcCatalogOffer.getHasPolicy()));
 
         return response;
     }
@@ -100,8 +116,16 @@ public class ConsumerServiceImpl implements ConsumerService {
         throws OfferNotFoundException, NegotiationFailedException {
 
         // query edcOffer
-        DcatCatalog edcOffer = queryEdcCatalog(
-            CatalogRequest.builder().counterPartyAddress(request.getCounterPartyAddress()).build());
+        DcatCatalog edcOffer = queryEdcCatalog(CatalogRequest.builder()
+            .counterPartyAddress(request.getCounterPartyAddress())
+            .querySpec(QuerySpec.builder()
+                .filterExpression(List.of(FilterExpression.builder()
+                    .operandLeft("id")
+                    .operator("=")
+                    .operandRight(request.getEdcOfferId())
+                    .build()))
+                .build())
+            .build());
         DcatDataset dataset = getDatasetById(edcOffer, request.getEdcOfferId());
 
         // initiate negotiation
@@ -122,7 +146,16 @@ public class ConsumerServiceImpl implements ConsumerService {
 
         // query edcOffer
         DcatCatalog edcOffer = queryEdcCatalog(
-            CatalogRequest.builder().counterPartyAddress(request.getCounterPartyAddress()).build());
+            CatalogRequest.builder()
+                .counterPartyAddress(request.getCounterPartyAddress())
+                .querySpec(QuerySpec.builder()
+                    .filterExpression(List.of(FilterExpression.builder()
+                            .operandLeft("id")
+                            .operator("=")
+                            .operandRight(request.getEdcOfferId())
+                        .build()))
+                    .build())
+                .build());
         DcatDataset dataset = getDatasetById(edcOffer, request.getEdcOfferId());
 
         // initiate transfer
@@ -145,7 +178,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     private DcatDataset getDatasetById(DcatCatalog catalog, String assetId) throws OfferNotFoundException {
 
-        List<DcatDataset> datasets = catalog.getDataset().stream().filter(d -> d.getAssetId().equals(assetId)).toList();
+        List<DcatDataset> datasets = catalog.getDataset();
 
         if (datasets.size() == 1) {
             return datasets.get(0);
@@ -240,5 +273,38 @@ public class ConsumerServiceImpl implements ConsumerService {
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    /**
+     * Given the ODRL Policy stored in the EDC, build the corresponding list of enforcement policies.
+     *
+     * @param policies ODRL Policies
+     * @return enforcement policies
+     */
+    @Override
+    public List<EnforcementPolicy> getEnforcementPoliciesFromEdcPolicies(List<Policy> policies) {
+
+        List<OdrlConstraint> constraints = new ArrayList<>();
+        for (Policy policy : policies) {
+            for (OdrlPermission permission : policy.getPermission()) {
+                constraints.addAll(permission.getConstraint());
+            }
+        }
+
+        Set<EnforcementPolicy> enforcementPolicies = new HashSet<>();
+        for (OdrlConstraint constraint : constraints) {
+            if (constraint.getLeftOperand().equals("did")) {
+                enforcementPolicies.add(
+                    new ParticipantRestrictionPolicy(List.of(constraint.getRightOperand().split(","))));
+            } else {
+                log.warn("Encountered unknown constraint: {}", constraint);
+            }
+        }
+
+        if (enforcementPolicies.isEmpty()) {
+            enforcementPolicies.add(new EverythingAllowedPolicy());
+        }
+
+        return enforcementPolicies.stream().toList();
     }
 }
