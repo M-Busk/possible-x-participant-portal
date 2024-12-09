@@ -137,12 +137,13 @@ public class FhCatalogClientImpl implements FhCatalogClient {
             PREFIX schema: <https://schema.org/>
             PREFIX px: <http://w3id.org/gaia-x/possible-x#>
             
-            SELECT ?uri ?assetId ?name ?description WHERE {
+            SELECT ?uri ?assetId ?name ?description ?aggregationOf WHERE {
               ?uri a px:PossibleXServiceOfferingExtension;
               schema:name ?name;
               px:providerUrl ?providerUrl;
               px:assetId ?assetId .
               OPTIONAL { ?uri schema:description ?description } .
+              OPTIONAL { ?uri gx:aggregationOf ?aggregationOf } .
               FILTER(?assetId IN (""" + String.join(",", assetIds.stream().map(id -> "\"" + id + "\"").toList()) + "))"
                 + """
             }
