@@ -25,7 +25,9 @@ import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProce
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferRequest;
 import eu.possiblex.participantportal.business.entity.exception.NegotiationFailedException;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
+import eu.possiblex.participantportal.business.entity.exception.ParticipantNotFoundException;
 import eu.possiblex.participantportal.business.entity.exception.TransferFailedException;
+import eu.possiblex.participantportal.business.entity.fh.ParticipantDetailsSparqlQueryResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,10 +37,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -65,10 +64,13 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     private final String bucketTopLevelFolder;
 
+    private final ConsumerServiceMapper consumerServiceMapper;
+
     public ConsumerServiceImpl(@Autowired ObjectMapper objectMapper, @Autowired EdcClient edcClient,
         @Autowired FhCatalogClient fhCatalogClient, @Autowired TaskScheduler taskScheduler,
         @Value("${s3.bucket-storage-region}") String bucketStorageRegion, @Value("${s3.bucket-name}") String bucketName,
-        @Value("${s3.bucket-top-level-folder}") String bucketTopLevelFolder) {
+        @Value("${s3.bucket-top-level-folder}") String bucketTopLevelFolder,
+        @Autowired ConsumerServiceMapper consumerServiceMapper) {
 
         this.objectMapper = objectMapper;
         this.edcClient = edcClient;
@@ -77,16 +79,18 @@ public class ConsumerServiceImpl implements ConsumerService {
         this.bucketStorageRegion = bucketStorageRegion;
         this.bucketName = bucketName;
         this.bucketTopLevelFolder = bucketTopLevelFolder;
+        this.consumerServiceMapper = consumerServiceMapper;
     }
 
     @Override
-    public SelectOfferResponseBE selectContractOffer(SelectOfferRequestBE request) throws OfferNotFoundException {
+    public SelectOfferResponseBE selectContractOffer(SelectOfferRequestBE request) throws OfferNotFoundException,
+        ParticipantNotFoundException {
         // get offer from FH Catalog and parse the attributes needed to get the offer from EDC Catalog
         PxExtendedServiceOfferingCredentialSubject fhCatalogOffer = fhCatalogClient.getFhCatalogOffer(
             request.getFhCatalogOfferId());
         boolean isDataOffering = !(fhCatalogOffer.getAggregationOf() == null || fhCatalogOffer.getAggregationOf()
             .isEmpty());
-        log.info("got fh catalog offer " + fhCatalogOffer);
+        log.info("got fh catalog offer {}", fhCatalogOffer);
 
         // get offer from EDC Catalog
         DcatCatalog edcCatalog = queryEdcCatalog(CatalogRequest.builder()
@@ -99,16 +103,56 @@ public class ConsumerServiceImpl implements ConsumerService {
                     .build()))
                 .build())
             .build());
-        log.info("got edc catalog: " + edcCatalog);
+        log.info("got edc catalog: {}", edcCatalog);
         DcatDataset edcCatalogOffer = getDatasetById(edcCatalog, fhCatalogOffer.getAssetId());
+
+        List<EnforcementPolicy> enforcementPolicies = getEnforcementPoliciesFromEdcPolicies(
+            edcCatalogOffer.getHasPolicy());
+
+        Map<String, ParticipantDetailsSparqlQueryResult> participantDetailsMap = getParticipantDetailsInOffer(
+            fhCatalogOffer, isDataOffering, enforcementPolicies);
+
+        ParticipantDetailsSparqlQueryResult providerDetails = participantDetailsMap.get(fhCatalogOffer.getProvidedBy().getId());
+
+        if (providerDetails == null) {
+            throw new ParticipantNotFoundException("Provider of offer with ID " + fhCatalogOffer.getId() + " not found in catalog.");
+        }
+
+        Map<String, ParticipantNameBE> participantNamesMap = new HashMap<>();
+
+        participantDetailsMap.forEach((k, v) -> participantNamesMap.put(k, consumerServiceMapper
+            .mapToParticipantNameBE(v)));
 
         SelectOfferResponseBE response = new SelectOfferResponseBE();
         response.setEdcOffer(edcCatalogOffer);
         response.setCatalogOffering(fhCatalogOffer);
         response.setDataOffering(isDataOffering);
-        response.setEnforcementPolicies(getEnforcementPoliciesFromEdcPolicies(edcCatalogOffer.getHasPolicy()));
+        response.setEnforcementPolicies(enforcementPolicies);
+        response.setProviderDetails(consumerServiceMapper.mapToParticipantWithMailBE(providerDetails));
+        response.setParticipantNames(participantNamesMap);
 
         return response;
+    }
+
+    private Map<String, ParticipantDetailsSparqlQueryResult> getParticipantDetailsInOffer(
+        PxExtendedServiceOfferingCredentialSubject fhCatalogOffer, boolean isDataOffering,
+        List<EnforcementPolicy> enforcementPolicies) {
+
+        Set<String> participantIds = new HashSet<>();
+        participantIds.add(fhCatalogOffer.getProvidedBy().getId());
+
+        if (isDataOffering) {
+            participantIds.add(fhCatalogOffer.getAggregationOf().get(0).getCopyrightOwnedBy().getId());
+            participantIds.add(fhCatalogOffer.getAggregationOf().get(0).getProducedBy().getId());
+        }
+
+        for (EnforcementPolicy enforcementPolicy : enforcementPolicies) {
+            if (enforcementPolicy instanceof ParticipantRestrictionPolicy participantrestrictionpolicy) {
+                participantIds.addAll(participantrestrictionpolicy.getAllowedParticipants());
+            }
+        }
+
+        return fhCatalogClient.getParticipantDetails(participantIds);
     }
 
     @Override
