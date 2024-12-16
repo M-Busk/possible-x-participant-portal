@@ -30,7 +30,7 @@
 </div>
 <br/><br/>
 <div>6. Contains PII:<br/>
-  {{ catalogOffering["gx:aggregationOf"]?.[0]["gx:containsPII"] || "-" }}
+  {{ catalogOffering["gx:aggregationOf"] ? catalogOffering["gx:aggregationOf"][0]["gx:containsPII"] : "-" }}
 </div>
 <ng-container *ngIf="catalogOffering['gx:aggregationOf']?.[0]['gx:containsPII']">
   <br/>
