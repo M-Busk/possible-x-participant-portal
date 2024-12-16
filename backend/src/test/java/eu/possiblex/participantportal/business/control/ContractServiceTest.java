@@ -52,7 +52,33 @@ class ContractServiceTest {
     private ConsumerService consumerService;
 
     @Test
-    void testGetContractAgreementsAsProviderOfAssets() throws OfferNotFoundException {
+    void testGetContractAgreements() throws OfferNotFoundException {
+
+        reset(fhCatalogClient);
+        reset(edcClient);
+
+        Mockito.when(fhCatalogClient.getParticipantDetails(any())).thenReturn(Map.of(OmejdnConnectorApiClientFake.PARTICIPANT_ID,
+            ParticipantDetailsSparqlQueryResult.builder().name(OmejdnConnectorApiClientFake.PARTICIPANT_NAME).build()));
+        Mockito.when(fhCatalogClient.getOfferingDetails(any())).thenReturn(Map.of(EdcClientFake.FAKE_ID,
+            OfferingDetailsSparqlQueryResult.builder().assetId(EdcClientFake.FAKE_ID).build()));
+
+        List<ContractAgreementBE> expected = getContractAgreementBEs();
+        List<ContractAgreementBE> actual = contractService.getContractAgreements();
+
+        verify(fhCatalogClient).getParticipantDetails(any());
+        verify(fhCatalogClient).getOfferingDetails(any());
+        verify(edcClient).queryContractAgreements();
+
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.size()).isEqualTo(1).isEqualTo(expected.size());
+        assertThat(actual.get(0).getOfferingDetails().getAssetId()).isEqualTo(EdcClientFake.FAKE_ID);
+        assertThat(actual.get(0).getProviderDetails().getName()).isEqualTo("Unknown");
+        assertThat(actual.get(0).getConsumerDetails().getName()).isEqualTo("Unknown");
+
+    }
+
+    @Test
+    void testGetContractDetailsByContractAgreementId() throws OfferNotFoundException {
 
         reset(fhCatalogClient);
         reset(edcClient);
@@ -62,21 +88,21 @@ class ContractServiceTest {
         Mockito.when(fhCatalogClient.getParticipantDetails(any())).thenReturn(Map.of(OmejdnConnectorApiClientFake.PARTICIPANT_ID,
             ParticipantDetailsSparqlQueryResult.builder().name(OmejdnConnectorApiClientFake.PARTICIPANT_NAME).build()));
         Mockito.when(fhCatalogClient.getOfferingDetails(any())).thenReturn(Map.of(EdcClientFake.FAKE_ID,
-            OfferingDetailsSparqlQueryResult.builder().assetId(EdcClientFake.FAKE_ID).build()));
-        Mockito.when(fhCatalogClient.getFhCatalogOffer(any())).thenReturn(new OfferRetrievalResponseBE(pxExtendedServiceOfferingCredentialSubject, OffsetDateTime.now()));
+            OfferingDetailsSparqlQueryResult.builder().assetId(EdcClientFake.FAKE_ID).uri("some uri").build()));
+        OffsetDateTime offerRetrievalDate = OffsetDateTime.now();
+        Mockito.when(fhCatalogClient.getFhCatalogOffer(any())).thenReturn(new OfferRetrievalResponseBE(pxExtendedServiceOfferingCredentialSubject,
+            offerRetrievalDate));
 
-        List<ContractAgreementBE> expected = getContractAgreementBEs();
-        List<ContractAgreementBE> actual = contractService.getContractAgreements();
+        ContractDetailsBE actual = contractService.getContractDetailsByContractAgreementId("some id");
 
         verify(fhCatalogClient).getParticipantDetails(any());
         verify(fhCatalogClient).getOfferingDetails(any());
-        verify(edcClient).queryContractAgreements();
+        verify(edcClient).getContractAgreementById(any());
 
-        assertThat(!actual.isEmpty());
-        assertThat(actual.size()).isEqualTo(1).isEqualTo(expected.size());
-        assertThat(actual.get(0).getOfferingDetails().getAssetId()).isEqualTo(EdcClientFake.FAKE_ID);
-        assertThat(actual.get(0).getProviderDetails().getName()).isEqualTo("Unknown");
-        assertThat(actual.get(0).getConsumerDetails().getName()).isEqualTo("Unknown");
+        assertThat(actual).isNotNull();
+        assertThat(actual.getOfferingDetails().getOfferRetrievalDate()).isEqualTo(offerRetrievalDate);
+        assertThat(actual.getProviderDetails().getName()).isEqualTo("Unknown");
+        assertThat(actual.getConsumerDetails().getName()).isEqualTo("Unknown");
 
     }
 

@@ -3,6 +3,7 @@ package eu.possiblex.participantportal.application.boundary;
 import eu.possiblex.participantportal.application.control.ConsumerApiMapper;
 import eu.possiblex.participantportal.application.control.ContractApiMapper;
 import eu.possiblex.participantportal.application.entity.ContractAgreementTO;
+import eu.possiblex.participantportal.application.entity.ContractDetailsTO;
 import eu.possiblex.participantportal.application.entity.TransferOfferRequestTO;
 import eu.possiblex.participantportal.application.entity.TransferOfferResponseTO;
 import eu.possiblex.participantportal.business.control.ContractService;
@@ -51,6 +52,18 @@ public class ContractRestApiImpl implements ContractRestApi {
         try {
             return contractService.getContractAgreements().stream().map(contractApiMapper::contractAgreementBEToTO)
                 .toList();
+        } catch (OfferNotFoundException e) {
+            throw new PossibleXException("" + e,
+                HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @Override
+    public ContractDetailsTO getContractDetailsByContractAgreementId(String contractAgreementId) {
+        try {
+            return contractApiMapper.contractDetailsBEToTO(contractService.getContractDetailsByContractAgreementId(
+                contractAgreementId));
         } catch (OfferNotFoundException e) {
             throw new PossibleXException("" + e,
                 HttpStatus.NOT_FOUND);
