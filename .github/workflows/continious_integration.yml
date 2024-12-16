@@ -65,6 +65,7 @@ jobs:
     needs: build-and-push-image
     steps:
       - name: 'Invoke Kubectl Consumer'
+        if: github.ref == 'refs/heads/develop'
         uses: actions-hub/kubectl@v1.31.0
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
@@ -75,6 +76,7 @@ jobs:
     needs: build-and-push-image
     steps:
       - name: 'Invoke Kubectl Provider'
+        if: github.ref == 'refs/heads/develop'
         uses: actions-hub/kubectl@v1.31.0
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
