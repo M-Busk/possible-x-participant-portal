@@ -24,6 +24,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set current date as env variable
+        run: echo "VERSION_NO=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Set current short hash as env variable
         run: echo "VERSION_DATE=$(date +'%d.%m.%Y')" >> $GITHUB_ENV
 
       - name: Log in to the Container registry
@@ -57,7 +60,7 @@ jobs:
           tags: ${{ steps.management-meta.outputs.tags }}
           labels: ${{ steps.management-meta.outputs.labels }}
           build-args: |
-            VERSION_NO=${{ github.sha }}
+            VERSION_NO=${{ env.VERSION_NO }}
             VERSION_DATE=${{ env.VERSION_DATE }}
 
   deploy-consumer:
