@@ -41,8 +41,8 @@
     Data Protection Contact:<br/>
     {{ catalogOffering["gx:aggregationOf"][0]["gx:legitimateInterest"]?.["gx:dataProtectionContact"] || "-" }}
   </div>
-  <br/><br/>
 </ng-container>
+<br/><br/>
 <div>7. Data Resource Policy:<br/>
   <ng-container *ngIf="!catalogOffering['gx:aggregationOf']?.[0]['gx:policy']; else drPolicyList">
     -
