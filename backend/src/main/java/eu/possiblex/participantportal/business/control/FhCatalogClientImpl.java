@@ -188,13 +188,19 @@ public class FhCatalogClientImpl implements FhCatalogClient {
         try {
             String jsonContent;
             OffsetDateTime currentDateTime;
+            // since the Piveau catalog now has two endpoints for fetching offerings (one for data offerings, one for service offerings)
+            // and we do not know what type of offering we have based on the ID, we currently have to try one endpoint and
+            // if the request fails, retry with the other endpoint.
+            // This is unfortunately unavoidable with the current Piveau API design.
             try {
                 // capture the timestamp of retrieval
                 currentDateTime = OffsetDateTime.now();
+                // try to fetch offer as data offer
                 jsonContent = getFhCatalogContent(offeringId, technicalFhCatalogClient::getFhCatalogOfferWithData);
             } catch (RuntimeException e) {
                 // capture the timestamp of retrieval
                 currentDateTime = OffsetDateTime.now();
+                // retry to fetch offer as service offer
                 jsonContent = getFhCatalogContent(offeringId, technicalFhCatalogClient::getFhCatalogOffer);
             }
             PxExtendedServiceOfferingCredentialSubject offer = getOfferingCredentialSubjectFromJsonString(jsonContent);
