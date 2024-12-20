@@ -104,7 +104,13 @@ public class FhCatalogClientImpl implements FhCatalogClient {
         }
     }
 
-    public Map<String, ParticipantDetailsSparqlQueryResult> getParticipantDetails(Collection<String> participantDids) {
+    @Override
+    public Map<String, ParticipantDetailsSparqlQueryResult> getParticipantDetailsByIds(Collection<String> participantDids) {
+
+        boolean participantIdsAvailable = participantDids != null && !participantDids.isEmpty();
+
+        String conditionalFilterClause = participantIdsAvailable ? "FILTER(?uri IN (" + String.join(",",
+            participantDids.stream().map(id -> "<" + PARTICIPANT_URI_PREFIX + id + ">").toList()) + "))" : "";
 
         String query = """
             PREFIX gx: <https://w3id.org/gaia-x/development#>
@@ -115,10 +121,10 @@ public class FhCatalogClientImpl implements FhCatalogClient {
               ?uri a gx:LegalParticipant;
               schema:name ?name;
               px:mailAddress ?mailAddress .
-              FILTER(?uri IN (""" + String.join(",",
-                participantDids.stream().map(id -> "<" + PARTICIPANT_URI_PREFIX + id + ">").toList()) + "))" + """
+            """ + conditionalFilterClause + """
             }
             """;
+
         String stringResult = sparqlFhCatalogClient.queryCatalog(query, null);
 
         SparqlQueryResponse<ParticipantDetailsSparqlQueryResult> result;
@@ -134,7 +140,13 @@ public class FhCatalogClientImpl implements FhCatalogClient {
                         HashMap::putAll);
     }
 
-    public Map<String, OfferingDetailsSparqlQueryResult> getOfferingDetails(Collection<String> assetIds) {
+    @Override
+    public Map<String, ParticipantDetailsSparqlQueryResult> getParticipantDetails() {
+        return getParticipantDetailsByIds(null);
+    }
+
+    @Override
+    public Map<String, OfferingDetailsSparqlQueryResult> getOfferingDetailsByAssetIds(Collection<String> assetIds) {
 
         String query = """
             PREFIX gx: <https://w3id.org/gaia-x/development#>
