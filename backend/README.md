@@ -27,7 +27,8 @@ Replace the right hand side with the actual values.
 ```
 export EDC_XAPIKEY="EDC X-API-Key"
 export EDC_MGMTBASEURL="EDC management URL"
-export FH_CATALOG_URL="Fraunhofer catalogue URL"
+export FH_CATALOG_REPO_URL="Fraunhofer catalogue URL to piveau-hub-repo"
+export FH_CATALOG_SPARQL_URL="Fraunhofer catalogue URL to the SPARQL interface of Virtuoso"
 export FH_CATALOG_SECRETKEY="secret key"
 export SDCREATIONWIZARDAPI_BASEURL="SD Creation Wizard API base URL"
 export PARTICIPANTID="participant ID"
