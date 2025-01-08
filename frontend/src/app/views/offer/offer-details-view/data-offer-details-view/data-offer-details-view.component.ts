@@ -28,8 +28,13 @@ export class DataOfferDetailsViewComponent {
   constructor(private readonly nameMappingService: NameMappingService) {
   }
 
-  getNameById(id: string): string {
+  async getNameById(id: string): Promise<string> {
     return this.nameMappingService.getNameById(id);
+  }
+
+  async getNameIdStringById(id: string): Promise<string> {
+    const name = await this.getNameById(id);
+    return `${name} (${id})`;
   }
 
 }

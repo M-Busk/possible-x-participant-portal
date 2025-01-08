@@ -44,6 +44,7 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
   isPolicyChecked: boolean = false;
   ids: string[] = [''];
   nameMapping: { [key: string]: string } = {};
+  sortedIds: string[] = [];
   waitingForResponse = true;
   offerType: string = "data";
   prefillFields: IPrefillFieldsTO | undefined = undefined;
@@ -81,8 +82,9 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
       this.containsPII = false;
   }
 
-  setNameMapping() {
-    this.nameMapping = this.nameMappingService.getNameMapping();
+  async setNameMapping() {
+    this.nameMapping = await this.nameMappingService.getNameMapping();
+    this.sortedIds = this.getIdsSortedByNames();
     this.cdr.detectChanges();
   }
 
@@ -264,9 +266,12 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
 
   async prefillServiceOfferingWizard() {
 
+    const participantId = this.prefillFields?.participantId;
+    const participantNameIdString = await this.getNameIdStringById(participantId);
+
     let gxServiceOfferingCs = {
       "gx:providedBy": {
-        "@id": this.prefillFields?.participantId
+        "@id": participantNameIdString,
       },
       "@type": "gx:ServiceOffering",
     } as any;
@@ -388,6 +393,11 @@ export class OfferingWizardExtensionComponent implements AfterViewInit {
     return Object.keys(this.nameMapping).sort((a, b) => {
       return this.nameMapping[a].localeCompare(this.nameMapping[b]);
     });
+  }
+
+  async getNameIdStringById(id: string): Promise<string> {
+    const name = await this.nameMappingService.getNameById(id);
+    return `${name} (${id})`;
   }
 
 }

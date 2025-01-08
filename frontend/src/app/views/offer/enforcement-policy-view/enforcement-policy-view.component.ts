@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {IEnforcementPolicy, IParticipantRestrictionPolicy} from "../../../services/mgmt/api/backend";
+import {IEnforcementPolicy} from "../../../services/mgmt/api/backend";
 
 import {
   isEverythingAllowedPolicy,
@@ -26,8 +26,9 @@ export class EnforcementPolicyViewComponent {
   constructor(private readonly nameMappingService: NameMappingService) {
   }
 
-  getNameById(id: string): string {
-    return this.nameMappingService.getNameById(id);
+  async getNameIdStringById(id: string): Promise<string> {
+    const name = await this.nameMappingService.getNameById(id);
+    return `${name} (${id})`;
   }
 
 }

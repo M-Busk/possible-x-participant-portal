@@ -12,10 +12,12 @@ import {ApiService} from '../../../services/mgmt/api/api.service';
 import {HttpErrorResponse} from '@angular/common/http';
 import {StatusMessageComponent} from '../../common-views/status-message/status-message.component';
 import {
-  IAcceptOfferResponseTO, IContractDetailsTO,
+  IAcceptOfferResponseTO,
   IOfferDetailsTO,
   IPxExtendedServiceOfferingCredentialSubject
 } from '../../../services/mgmt/api/backend';
+
+import {NameMappingService} from "../../../services/mgmt/name-mapping.service";
 
 @Component({
   selector: 'app-accept-offer',
@@ -35,7 +37,12 @@ export class AcceptComponent implements OnChanges {
   isPoliciesAccepted = false;
   isTnCAccepted = false;
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService, private readonly nameMappingService: NameMappingService) {
+  }
+
+  async getNameIdStringById(id: string): Promise<string> {
+    const name = await this.nameMappingService.getNameById(id);
+    return `${name} (${id})`;
   }
 
   ngOnChanges(): void {
