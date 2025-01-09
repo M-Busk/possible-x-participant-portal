@@ -82,7 +82,7 @@ export class BaseWizardExtensionComponent {
     //remove spaces from the values of nodeKind IRI fields
     this.wizard.shape.fields.forEach(field => {
       if (field.datatype.prefix === "nodeKind" && field.datatype.value === "IRI") {
-        let values: string[] = field.values.map(value => value.replace(" ", ""));
+        let values: string[] = field.values.map(value => value.replaceAll(" ", ""));
         field.values = values;
       }
     });
