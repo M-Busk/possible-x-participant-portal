@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- ../../base
+  - ../../base
 
 namespace: edc-dev
 namePrefix: consumer-
@@ -23,19 +23,19 @@ configMapGenerator:
       - SDCREATIONWIZARDAPI_BASEURL=https://sd-creation-wizard.dev.possible-x.de
       - SPRING_PROFILES_ACTIVE=dev
       - S3_BUCKETSTORAGEREGION=eu-central-3
-# Specific Files
+      # Specific Files
       - S3_BUCKETNAME=dev-consumer-edc-bucket-possible-31952746
       - EDC_MGMTBASEURL=https://consumer.edc.dev.possible-x.de/management
       - EDC_PROTOCOLBASEURL=https://consumer.edc.dev.possible-x.de/protocol
 
 
 images:
-- name: backend-image
-  newName: ghcr.io/possible-x/backend
-  newTag: a54b9ae9eb2dca28ba1c64d78587c4b728660100
-- name: frontend-image
-  newName: ghcr.io/possible-x/frontend
-  newTag: a54b9ae9eb2dca28ba1c64d78587c4b728660100
+  - name: backend-image
+    newName: ghcr.io/possible-x/backend
+    newTag: a54b9ae9eb2dca28ba1c64d78587c4b728660100
+  - name: frontend-image
+    newName: ghcr.io/possible-x/frontend
+    newTag: a54b9ae9eb2dca28ba1c64d78587c4b728660100
 
 patches:
   - target:
@@ -51,3 +51,9 @@ patches:
       - op: replace
         path: /spec/rules/0/host
         value: management.consumer.edc.dev.possible-x.de
+      - op: replace
+        path: /spec/rules/0/http/paths/0/backend/service/name
+        value: consumer-participant-portal-backend-svc
+      - op: replace
+        path: /spec/rules/0/http/paths/1/backend/service/name
+        value: consumer-participant-portal-frontend-svc

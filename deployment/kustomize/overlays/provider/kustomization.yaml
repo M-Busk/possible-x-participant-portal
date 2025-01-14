@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- ../../base
+  - ../../base
 
 namespace: edc-dev
 namePrefix: provider-
@@ -32,12 +32,12 @@ configMapGenerator:
 
 
 images:
-- name: backend-image
-  newName: ghcr.io/possible-x/backend
-  newTag: a54b9ae9eb2dca28ba1c64d78587c4b728660100
-- name: frontend-image
-  newName: ghcr.io/possible-x/frontend
-  newTag: a54b9ae9eb2dca28ba1c64d78587c4b728660100
+  - name: backend-image
+    newName: ghcr.io/possible-x/backend
+    newTag: a54b9ae9eb2dca28ba1c64d78587c4b728660100
+  - name: frontend-image
+    newName: ghcr.io/possible-x/frontend
+    newTag: a54b9ae9eb2dca28ba1c64d78587c4b728660100
 
 patches:
   - target:
@@ -53,3 +53,9 @@ patches:
       - op: replace
         path: /spec/rules/0/host
         value: management.provider.edc.dev.possible-x.de
+      - op: replace
+        path: /spec/rules/0/http/paths/0/backend/service/name
+        value: provider-participant-portal-backend-svc
+      - op: replace
+        path: /spec/rules/0/http/paths/1/backend/service/name
+        value: provider-participant-portal-frontend-svc
