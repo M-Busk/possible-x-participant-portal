@@ -283,6 +283,10 @@ class ProviderServiceTest {
 
     @Test
     void testEnforcementPoliciesAreTranslatedCorrectly() {
+
+        reset(fhCatalogClient);
+        reset(edcClient);
+
         //given
         GxServiceOfferingCredentialSubject offeringCs = getGxServiceOfferingCredentialSubject();
 
