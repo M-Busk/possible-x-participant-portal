@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.possiblex.participantportal.application.entity.CreateOfferResponseTO;
 import eu.possiblex.participantportal.application.entity.credentials.gx.datatypes.NodeKindIRITypeId;
 import eu.possiblex.participantportal.application.entity.exception.OfferingComplianceException;
-import eu.possiblex.participantportal.application.entity.policies.EnforcementPolicy;
-import eu.possiblex.participantportal.application.entity.policies.ParticipantRestrictionPolicy;
+import eu.possiblex.participantportal.application.entity.policies.*;
 import eu.possiblex.participantportal.business.entity.CreateDataOfferingRequestBE;
 import eu.possiblex.participantportal.business.entity.CreateServiceOfferingRequestBE;
 import eu.possiblex.participantportal.business.entity.DataProductPrefillFieldsBE;
@@ -34,6 +33,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -330,10 +330,32 @@ public class ProviderServiceImpl implements ProviderService {
             if (enforcementPolicy instanceof ParticipantRestrictionPolicy participantRestrictionPolicy) { // restrict to participants
 
                 // create constraint
-                OdrlConstraint participantConstraint = OdrlConstraint.builder().leftOperand("did")
+                OdrlConstraint participantConstraint = OdrlConstraint.builder().leftOperand(ParticipantRestrictionPolicy.EDC_OPERAND)
                     .operator(OdrlOperator.IN)
                     .rightOperand(String.join(",", participantRestrictionPolicy.getAllowedParticipants())).build();
                 constraints.add(participantConstraint);
+            } else if (enforcementPolicy instanceof TimeDatePolicy timeDatePolicy) { // restrict to fixed time
+                
+                boolean isEndDate = timeDatePolicy instanceof EndDatePolicy;
+                // create constraint
+                OdrlConstraint timeConstraint = OdrlConstraint.builder().leftOperand(TimeDatePolicy.EDC_OPERAND)
+                    .operator(isEndDate ? OdrlOperator.LEQ : OdrlOperator.GEQ)
+                    .rightOperand(DateTimeFormatter.ISO_DATE_TIME.format(timeDatePolicy.getDate()))
+                .build(); // ISO 8601 date
+                constraints.add(timeConstraint);
+            } else if (enforcementPolicy instanceof TimeAgreementOffsetPolicy timeAgreementOffsetPolicy) { // restrict to time after agreement
+                
+                boolean isEndOffset = timeAgreementOffsetPolicy instanceof EndAgreementOffsetPolicy;
+                // create constraint
+                OdrlConstraint timeConstraint = OdrlConstraint.builder().leftOperand(TimeAgreementOffsetPolicy.EDC_OPERAND)
+                    .operator(isEndOffset ? OdrlOperator.LEQ : OdrlOperator.GEQ)
+                    .rightOperand(
+                        "contractAgreement+" 
+                        + timeAgreementOffsetPolicy.getOffsetNumber() 
+                        + timeAgreementOffsetPolicy.getOffsetUnit().toValue()
+                    )
+                    .build(); // format "contractAgreement+<number><unit>"
+                constraints.add(timeConstraint);
             } // else unknown or everything allowed => no constraint
         }
 
