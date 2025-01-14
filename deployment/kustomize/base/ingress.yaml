@@ -15,14 +15,14 @@ spec:
         paths:
           - backend:
               service:
-                name: backend-svc
+                name: participant-portal-backend-svc
                 port:
                   number: 8080
             path: /api/
             pathType: ImplementationSpecific
           - backend:
               service:
-                name: frontend-svc
+                name: participant-portal-frontend-svc
                 port:
                   number: 8080
             path: /
