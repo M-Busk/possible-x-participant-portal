@@ -23,6 +23,7 @@ configMapGenerator:
       - SDCREATIONWIZARDAPI_BASEURL=https://sd-creation-wizard.dev.possible-x.de
       - SPRING_PROFILES_ACTIVE=dev
       - S3_BUCKETSTORAGEREGION=eu-central-3
+      - PARTICIPANTID=did:web:didwebservice.dev.possible-x.de:participant:a8d62eee-3a16-3a05-adc1-88404998d781
       # Specific Files
       - S3_BUCKETNAME=dev-consumer-edc-bucket-possible-31952746
       - EDC_MGMTBASEURL=https://consumer.edc.dev.possible-x.de/management
