@@ -3,8 +3,6 @@ package eu.possiblex.participantportal.business.entity.edc.policy;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import eu.possiblex.participantportal.business.entity.common.JsonLdConstants;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +12,8 @@ public enum OdrlAction {
     private static final Map<String, OdrlAction> actionMap = new HashMap<>();
 
     static {
-        actionMap.put(JsonLdConstants.ODRL_PREFIX + "use", USE);
-        actionMap.put(JsonLdConstants.ODRL_PREFIX + "transfer", TRANSFER);
+        actionMap.put("http://www.w3.org/ns/odrl/2/use", USE);
+        actionMap.put("http://www.w3.org/ns/odrl/2/transfer", TRANSFER);
     }
 
     @JsonCreator
