@@ -50,8 +50,7 @@ import {
   NgxMatDateFormats,
   NGX_MAT_DATE_FORMATS,
 } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentModule, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
-import {MAT_MOMENT_DATE_ADAPTER_OPTIONS} from "@angular/material-moment-adapter";
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 
 export const MOMENT_DATETIME_WITH_SECONDS_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
 
@@ -97,9 +96,7 @@ const CUSTOM_MOMENT_FORMATS: NgxMatDateFormats = {
     NgxMatMomentModule
   ],
   providers: [
-    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS },
-    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+    { provide: NGX_MAT_DATE_FORMATS, useValue: CUSTOM_MOMENT_FORMATS }
   ],
 })
 export class WizardExtensionModule {
