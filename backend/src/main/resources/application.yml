@@ -29,7 +29,7 @@ fh:
       url: http://localhost:5081/
     sparql:
       url: http://localhost:8890/sparql/
-    uri-base: http://localhost:5081/
+    uri-resource-base: http://localhost:5081/resources/
     secret-key: yourRepoApiKey
 
 sd-creation-wizard-api:

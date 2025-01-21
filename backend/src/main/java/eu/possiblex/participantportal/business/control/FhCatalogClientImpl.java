@@ -48,12 +48,12 @@ public class FhCatalogClientImpl implements FhCatalogClient {
 
     public FhCatalogClientImpl(@Autowired TechnicalFhCatalogClient technicalFhCatalogClient,
         @Autowired SparqlFhCatalogClient sparqlFhCatalogClient, @Autowired ObjectMapper objectMapper,
-        @Value("${fh.catalog.uri-base}") String fhCatalogUriBase) {
+        @Value("${fh.catalog.uri-resource-base}") String fhCatalogUriResourceBase) {
 
         this.technicalFhCatalogClient = technicalFhCatalogClient;
         this.objectMapper = objectMapper;
         this.sparqlFhCatalogClient = sparqlFhCatalogClient;
-        this.participantUriPrefix = fhCatalogUriBase + "resources/legal-participant/";
+        this.participantUriPrefix = fhCatalogUriResourceBase + "legal-participant/";
     }
 
     private static JsonDocument getFrameByType(List<String> type, Map<String, String> context) {
