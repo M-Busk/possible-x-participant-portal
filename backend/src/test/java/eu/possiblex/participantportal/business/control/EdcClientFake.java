@@ -40,10 +40,7 @@ import eu.possiblex.participantportal.business.entity.edc.negotiation.Negotiatio
 import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyCreateRequest;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyTarget;
-import eu.possiblex.participantportal.business.entity.edc.transfer.DataRequest;
-import eu.possiblex.participantportal.business.entity.edc.transfer.IonosS3TransferProcess;
-import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcessState;
-import eu.possiblex.participantportal.business.entity.edc.transfer.TransferRequest;
+import eu.possiblex.participantportal.business.entity.edc.transfer.*;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.math.BigInteger;
@@ -164,6 +161,11 @@ public class EdcClientFake implements EdcClient {
     @Override
     public void deprovisionTransfer(String transferId) {
 
+    }
+
+    @Override
+    public void terminateTransfer(String transferId, TerminateTransferRequest request) {
+        
     }
 
     @Override
