@@ -18,12 +18,12 @@ export interface IProviderRestApi {
 }
 
 export interface IResourceShapeRestApi {
+    gxInstantiatedVirtualResourceShape: string;
+    gxDataResourceShape: string;
     gxPhysicalResourceShape: string;
     gxSoftwareResourceShape: string;
     gxVirtualResourceShape: string;
     gxLegitimateInterestShape: string;
-    gxInstantiatedVirtualResourceShape: string;
-    gxDataResourceShape: string;
 }
 
 export interface IServiceOfferingShapeRestApi {
@@ -136,6 +136,12 @@ export interface IDataProductPrefillFieldsTO {
 }
 
 export interface IDataProductPrefillFieldsTOBuilder {
+}
+
+export interface IErrorResponseTO {
+    timestamp: Date;
+    message: string;
+    details: string;
 }
 
 export interface IOfferDetailsTO {
@@ -333,9 +339,6 @@ export interface IGxServiceOfferingCredentialSubjectBuilderImpl extends IGxServi
     "schema:description": string;
 }
 
-export interface IOfferingComplianceException extends IException {
-}
-
 export interface IEndAgreementOffsetPolicy extends ITimeAgreementOffsetPolicy {
     "@type": "EndAgreementOffsetPolicy";
 }
@@ -448,28 +451,6 @@ export interface IPxExtendedServiceOfferingCredentialSubject {
     "@type": string[];
 }
 
-export interface IThrowable extends ISerializable {
-    cause: IThrowable;
-    stackTrace: IStackTraceElement[];
-    message: string;
-    suppressed: IThrowable[];
-    localizedMessage: string;
-}
-
-export interface IStackTraceElement extends ISerializable {
-    classLoaderName: string;
-    moduleName: string;
-    moduleVersion: string;
-    methodName: string;
-    fileName: string;
-    lineNumber: number;
-    nativeMethod: boolean;
-    className: string;
-}
-
-export interface IException extends IThrowable {
-}
-
 export interface IOdrlPermission {
     "odrl:target": string;
     "odrl:action": IOdrlAction;
@@ -493,9 +474,6 @@ export interface IPxExtendedDataResourceCredentialSubject {
     "schema:description": string;
     "@context": { [index: string]: string };
     "@type": string[];
-}
-
-export interface ISerializable {
 }
 
 export interface IOdrlConstraint {

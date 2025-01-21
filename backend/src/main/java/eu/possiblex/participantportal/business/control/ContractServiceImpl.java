@@ -6,22 +6,15 @@ import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedS
 import eu.possiblex.participantportal.business.entity.daps.OmejdnConnectorDetailsBE;
 import eu.possiblex.participantportal.business.entity.edc.catalog.QuerySpec;
 import eu.possiblex.participantportal.business.entity.edc.contractagreement.ContractAgreement;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
-import eu.possiblex.participantportal.business.entity.exception.TransferFailedException;
 import eu.possiblex.participantportal.business.entity.fh.OfferingDetailsSparqlQueryResult;
 import eu.possiblex.participantportal.business.entity.fh.ParticipantDetailsSparqlQueryResult;
-import eu.possiblex.participantportal.utilities.PossibleXException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +25,8 @@ public class ContractServiceImpl implements ContractService {
 
     private final ConsumerService consumerService;
 
+    private final EnforcementPolicyParserService enforcementPolicyParserService;
+
     private final FhCatalogClient fhCatalogClient;
 
     private final OmejdnConnectorApiClient omejdnConnectorApiClient;
@@ -40,12 +35,14 @@ public class ContractServiceImpl implements ContractService {
 
     public ContractServiceImpl(@Autowired EdcClient edcClient, @Autowired FhCatalogClient fhCatalogClient,
         @Autowired OmejdnConnectorApiClient omejdnConnectorApiClient, @Autowired ConsumerService consumerService,
+        @Autowired EnforcementPolicyParserService enforcementPolicyParserService,
         @Value("${participant-id}") String participantId) {
 
         this.edcClient = edcClient;
         this.fhCatalogClient = fhCatalogClient;
         this.omejdnConnectorApiClient = omejdnConnectorApiClient;
         this.consumerService = consumerService;
+        this.enforcementPolicyParserService = enforcementPolicyParserService;
         this.participantId = participantId;
     }
 
@@ -95,8 +92,9 @@ public class ContractServiceImpl implements ContractService {
         contractAgreements.forEach(c -> contractAgreementBEs.add(ContractAgreementBE.builder().contractAgreement(c)
             .isProvider(participantId.equals(participantDidMap.getOrDefault(c.getProviderId(), "")))
             .isDataOffering(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getAggregationOf() != null)
-            .enforcementPolicies(getEnforcementPoliciesWithValidity(List.of(c.getPolicy()), c.getContractSigningDate(),
-                participantDidMap.getOrDefault(c.getProviderId(), ""))).offeringDetails(
+            .enforcementPolicies(
+                enforcementPolicyParserService.getEnforcementPoliciesWithValidity(List.of(c.getPolicy()),
+                    c.getContractSigningDate(), participantDidMap.getOrDefault(c.getProviderId(), ""))).offeringDetails(
                 OfferingDetailsBE.builder().assetId(c.getAssetId())
                     .offeringId(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getUri())
                     .name(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getName())
@@ -136,8 +134,8 @@ public class ContractServiceImpl implements ContractService {
 
         return ContractDetailsBE.builder().contractAgreement(contractAgreement)
             .isDataOffering(offerRetrievalResponseBE.getCatalogOffering().getAggregationOf() != null)
-            .enforcementPolicies(getEnforcementPoliciesWithValidity(List.of(contractAgreement.getPolicy()),
-                contractAgreement.getContractSigningDate(),
+            .enforcementPolicies(enforcementPolicyParserService.getEnforcementPoliciesWithValidity(
+                List.of(contractAgreement.getPolicy()), contractAgreement.getContractSigningDate(),
                 participantDidMap.getOrDefault(contractAgreement.getProviderId(), "")))
             .offeringDetails(offerRetrievalResponseBE).consumerDetails(
                 ParticipantWithDapsBE.builder().dapsId(contractAgreement.getConsumerId())
@@ -156,55 +154,6 @@ public class ContractServiceImpl implements ContractService {
 
         ContractAgreement contractAgreement = edcClient.getContractAgreementById(contractAgreementId);
         return getOfferRetrievalResponseBE(contractAgreement);
-    }
-
-    private List<EnforcementPolicy> getEnforcementPoliciesWithValidity(List<Policy> edcPolicies,
-        BigInteger contractSigningDate, String providerDid) {
-
-        List<EnforcementPolicy> enforcementPolicies = consumerService.getEnforcementPoliciesFromEdcPolicies(
-            edcPolicies);
-        computePolicyValidities(enforcementPolicies,
-            OffsetDateTime.ofInstant(Instant.ofEpochMilli(contractSigningDate.longValue()), ZoneId.systemDefault()),
-            providerDid);
-        return enforcementPolicies;
-    }
-
-    private void computePolicyValidities(List<EnforcementPolicy> policies, OffsetDateTime contractAgreementTime,
-        String providerDid) {
-
-        for (EnforcementPolicy policy : policies) {
-            boolean isValid = false;
-            OffsetDateTime now = OffsetDateTime.now();
-            if (policy instanceof ParticipantRestrictionPolicy participantRestrictionPolicy) {
-                isValid = providerDid.equals(participantId) || participantRestrictionPolicy.getAllowedParticipants()
-                    .contains(participantId);
-            } else if (policy instanceof StartDatePolicy startDatePolicy) {
-                isValid = startDatePolicy.getDate().isBefore(now);
-            } else if (policy instanceof EndDatePolicy endDatePolicy) {
-                isValid = endDatePolicy.getDate().isAfter(now);
-            } else if (policy instanceof StartAgreementOffsetPolicy startAgreementOffsetPolicy) {
-                Duration offset = getOffsetFromTimeAgreementOffsetPolicy(startAgreementOffsetPolicy);
-                isValid = contractAgreementTime.plus(offset).isBefore(now);
-            } else if (policy instanceof EndAgreementOffsetPolicy endAgreementOffsetPolicy) {
-                Duration offset = getOffsetFromTimeAgreementOffsetPolicy(endAgreementOffsetPolicy);
-                isValid = contractAgreementTime.plus(offset).isAfter(now);
-            } else if (policy instanceof EverythingAllowedPolicy) {
-                isValid = true;
-            } else {
-                log.error("Could not compute validity for unknown policy type: {}", policy.getClass().getName());
-            }
-            policy.setValid(isValid);
-        }
-    }
-
-    private Duration getOffsetFromTimeAgreementOffsetPolicy(TimeAgreementOffsetPolicy policy) {
-
-        return switch (policy.getOffsetUnit()) {
-            case DAYS -> Duration.ofDays(policy.getOffsetNumber());
-            case HOURS -> Duration.ofHours(policy.getOffsetNumber());
-            case MINUTES -> Duration.ofMinutes(policy.getOffsetNumber());
-            case SECONDS -> Duration.ofSeconds(policy.getOffsetNumber());
-        };
     }
 
     private OfferRetrievalResponseBE getOfferRetrievalResponseBE(ContractAgreement contractAgreement) {
@@ -257,9 +206,14 @@ public class ContractServiceImpl implements ContractService {
         return participantDids;
     }
 
+    /**
+     * Repeat the transfer for a given EDC contract.
+     *
+     * @param be request referencing existing EDC contract.
+     * @return transfer result.
+     */
     @Override
-    public TransferOfferResponseBE transferDataOfferAgain(TransferOfferRequestBE be)
-        throws OfferNotFoundException, TransferFailedException {
+    public TransferOfferResponseBE transferDataOfferAgain(TransferOfferRequestBE be) {
 
         Map<String, OfferingDetailsSparqlQueryResult> offeringDetailsMap = fhCatalogClient.getOfferingDetailsByAssetIds(
             List.of(be.getEdcOfferId()));
@@ -279,19 +233,6 @@ public class ContractServiceImpl implements ContractService {
                 "Provider URL not found in Sparql query result for assetId: " + be.getEdcOfferId());
         }
         be.setCounterPartyAddress(providerUrl);
-        TransferOfferResponseBE transferOfferResponseBE;
-        try {
-            transferOfferResponseBE = consumerService.transferDataOffer(be);
-        } catch (OfferNotFoundException e) {
-            throw new OfferNotFoundException(
-                "Failed to transfer offer again with offerId" + be.getEdcOfferId() + ". OfferNotFoundException: " + e);
-        } catch (TransferFailedException e) {
-            throw new TransferFailedException(
-                "Failed to transfer offer again with offerId" + be.getEdcOfferId() + ". TransferFailedException: " + e);
-        } catch (Exception e) {
-            throw new PossibleXException(
-                "Failed to transfer offer again with offerId" + be.getEdcOfferId() + ". Other Exception: " + e);
-        }
-        return transferOfferResponseBE;
+        return consumerService.transferDataOffer(be);
     }
 }

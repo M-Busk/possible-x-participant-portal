@@ -198,7 +198,7 @@ public class FhCatalogClientImpl implements FhCatalogClient {
     }
 
     @Override
-    public OfferRetrievalResponseBE getFhCatalogOffer(String offeringId) throws OfferNotFoundException {
+    public OfferRetrievalResponseBE getFhCatalogOffer(String offeringId) {
 
         try {
             String jsonContent;
@@ -238,8 +238,7 @@ public class FhCatalogClientImpl implements FhCatalogClient {
     }
 
     @Override
-    public PxExtendedLegalParticipantCredentialSubjectSubset getFhCatalogParticipant(String participantId)
-        throws ParticipantNotFoundException {
+    public PxExtendedLegalParticipantCredentialSubjectSubset getFhCatalogParticipant(String participantId) {
 
         try {
             String jsonContent = getFhCatalogContent(participantId,
