@@ -38,8 +38,18 @@ public class EdcTransferDeprovisionTask implements Runnable {
     public void run() {
 
         logger.info("Deprovisioning transfer with id {}", transferId);
-        this.edcClient.deprovisionTransfer(this.transferId);
-        this.edcClient.terminateTransfer(this.transferId,
-            TerminateTransferRequest.builder().reason("Transfer timed out.").build());
+        
+        try {
+            this.edcClient.terminateTransfer(this.transferId,
+                TerminateTransferRequest.builder().reason("Transfer timed out.").build());
+        } catch (Exception e) {
+            logger.error("Failed to terminate transfer with id {}", transferId, e);
+        }
+
+        try {
+            this.edcClient.deprovisionTransfer(this.transferId);
+        } catch (Exception e) {
+            logger.error("Failed to deprovision transfer with id {}", transferId, e);
+        }
     }
 }
