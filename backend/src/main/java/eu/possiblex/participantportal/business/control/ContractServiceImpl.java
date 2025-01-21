@@ -11,6 +11,8 @@ import eu.possiblex.participantportal.application.entity.policies.TimeAgreementO
 import eu.possiblex.participantportal.business.entity.*;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.daps.OmejdnConnectorDetailsBE;
+import eu.possiblex.participantportal.business.entity.edc.catalog.QuerySpec;
+import eu.possiblex.participantportal.business.entity.edc.catalog.SortOrder;
 import eu.possiblex.participantportal.business.entity.edc.contractagreement.ContractAgreement;
 import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
@@ -64,7 +66,7 @@ public class ContractServiceImpl implements ContractService {
     public List<ContractAgreementBE> getContractAgreements() {
 
         List<ContractAgreementBE> contractAgreementBEs = new ArrayList<>();
-        List<ContractAgreement> contractAgreements = edcClient.queryContractAgreements();
+        List<ContractAgreement> contractAgreements = edcClient.queryContractAgreements(QuerySpec.builder().limit(Integer.MAX_VALUE).build());
 
         // Get all referenced assetIds from the contracts
         Set<String> referencedAssetIds = contractAgreements.stream().map(ContractAgreement::getAssetId)
@@ -97,7 +99,7 @@ public class ContractServiceImpl implements ContractService {
             .isProvider(participantId.equals(participantDidMap.getOrDefault(c.getProviderId(), "")))
             .isDataOffering(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getAggregationOf() != null)
             .enforcementPolicies(getEnforcementPoliciesWithValidity(
-                List.of(c.getPolicy()), 
+                List.of(c.getPolicy()),
                 c.getContractSigningDate(),
                 participantDidMap.getOrDefault(c.getProviderId(), "")))
             .offeringDetails(OfferingDetailsBE.builder().assetId(c.getAssetId())
@@ -162,7 +164,7 @@ public class ContractServiceImpl implements ContractService {
     private List<EnforcementPolicy> getEnforcementPoliciesWithValidity(List<Policy> edcPolicies, BigInteger contractSigningDate, String providerDid) {
         List<EnforcementPolicy> enforcementPolicies = consumerService.getEnforcementPoliciesFromEdcPolicies(edcPolicies);
         computePolicyValidities(
-            enforcementPolicies, 
+            enforcementPolicies,
             OffsetDateTime.ofInstant(Instant.ofEpochMilli(contractSigningDate.longValue()), ZoneId.systemDefault()),
             providerDid);
         return enforcementPolicies;

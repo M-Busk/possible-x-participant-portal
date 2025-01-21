@@ -22,8 +22,8 @@ export interface IResourceShapeRestApi {
     gxSoftwareResourceShape: string;
     gxVirtualResourceShape: string;
     gxLegitimateInterestShape: string;
-    gxDataResourceShape: string;
     gxInstantiatedVirtualResourceShape: string;
+    gxDataResourceShape: string;
 }
 
 export interface IServiceOfferingShapeRestApi {
@@ -67,8 +67,8 @@ export interface IContractAgreementTO {
     contractSigningDate: Date;
     consumerDetails: IContractParticipantDetailsTO;
     providerDetails: IContractParticipantDetailsTO;
-    provider: boolean;
     dataOffering: boolean;
+    provider: boolean;
 }
 
 export interface IContractAgreementTOBuilder {

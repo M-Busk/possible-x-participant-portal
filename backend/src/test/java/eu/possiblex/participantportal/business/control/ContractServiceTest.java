@@ -87,7 +87,7 @@ class ContractServiceTest {
 
         verify(fhCatalogClient).getParticipantDetailsByIds(any());
         verify(fhCatalogClient).getOfferingDetailsByAssetIds(any());
-        verify(edcClient).queryContractAgreements();
+        verify(edcClient).queryContractAgreements(any());
 
         assertThat(actual).isNotEmpty();
         assertThat(actual.size()).isEqualTo(1).isEqualTo(expected.size());
@@ -115,7 +115,7 @@ class ContractServiceTest {
 
         verify(fhCatalogClient).getParticipantDetailsByIds(any());
         verify(fhCatalogClient).getOfferingDetailsByAssetIds(any());
-        verify(edcClient).queryContractAgreements();
+        verify(edcClient).queryContractAgreements(any());
 
         assertThat(actual).isNotEmpty();
         assertThat(actual.size()).isEqualTo(1).isEqualTo(expected.size());
@@ -144,7 +144,7 @@ class ContractServiceTest {
 
         verify(fhCatalogClient).getParticipantDetailsByIds(any());
         verify(fhCatalogClient).getOfferingDetailsByAssetIds(any());
-        verify(edcClient).queryContractAgreements();
+        verify(edcClient).queryContractAgreements(any());
 
         assertThat(actual).isNotEmpty();
         assertThat(actual.size()).isEqualTo(1).isEqualTo(expected.size());
