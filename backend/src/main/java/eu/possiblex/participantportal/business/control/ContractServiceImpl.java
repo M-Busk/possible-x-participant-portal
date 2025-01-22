@@ -174,7 +174,7 @@ public class ContractServiceImpl implements ContractService {
                 .catalogOffering(unknownCatalogOffering).build();
         } else {
             String serviceOfferingUriPrefix = fhCatalogUriResourceBase + "service-offering/";
-            String dataProductUriPrefix = fhCatalogUriResourceBase + "resource/data-product/";
+            String dataProductUriPrefix = fhCatalogUriResourceBase + "data-product/";
 
             String offeringIdWithoutPrefix = offeringDetails.get(contractAgreement.getAssetId()).getUri()
                 .replace(serviceOfferingUriPrefix, "").replace(dataProductUriPrefix, "");
