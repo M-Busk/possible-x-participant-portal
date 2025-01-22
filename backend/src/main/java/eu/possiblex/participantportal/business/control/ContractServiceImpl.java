@@ -33,6 +33,9 @@ public class ContractServiceImpl implements ContractService {
 
     private final String participantId;
 
+    @Value("${fh.catalog.uri-resource-base}")
+    private String fhCatalogUriResourceBase;
+
     public ContractServiceImpl(@Autowired EdcClient edcClient, @Autowired FhCatalogClient fhCatalogClient,
         @Autowired OmejdnConnectorApiClient omejdnConnectorApiClient, @Autowired ConsumerService consumerService,
         @Autowired EnforcementPolicyParserService enforcementPolicyParserService,
@@ -170,8 +173,8 @@ public class ContractServiceImpl implements ContractService {
             offerRetrievalResponseBE = OfferRetrievalResponseBE.builder().offerRetrievalDate(OffsetDateTime.now())
                 .catalogOffering(unknownCatalogOffering).build();
         } else {
-            String serviceOfferingUriPrefix = "https://piveau.io/set/resource/service-offering/";
-            String dataProductUriPrefix = "https://piveau.io/set/resource/data-product/";
+            String serviceOfferingUriPrefix = fhCatalogUriResourceBase + "service-offering/";
+            String dataProductUriPrefix = fhCatalogUriResourceBase + "resource/data-product/";
 
             String offeringIdWithoutPrefix = offeringDetails.get(contractAgreement.getAssetId()).getUri()
                 .replace(serviceOfferingUriPrefix, "").replace(dataProductUriPrefix, "");
