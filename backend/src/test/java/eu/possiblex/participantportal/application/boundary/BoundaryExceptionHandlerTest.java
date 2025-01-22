@@ -34,8 +34,8 @@ class BoundaryExceptionHandlerTest {
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
         assertTrue(details.contains("not in list"));
         assertFalse(details.contains("Unknown"));
-        assertFalse(details.contains("not allowed before"));
-        assertFalse(details.contains("not allowed after"));
+        assertEquals(1, StringUtils.countMatches(details, "not allowed before"));
+        assertEquals(1, StringUtils.countMatches(details, "not allowed after"));
     }
 
     @Test
