@@ -138,13 +138,9 @@ public class BoundaryExceptionHandler extends ResponseEntityExceptionHandler {
                     .append(String.join(", ", participantRestrictionPolicy.getAllowedParticipants())).append("]");
             } // check policies relevant to transfer as well
             else if (enforcementPolicy instanceof StartDatePolicy startDatePolicy) {
-                if (isTransfer) {
-                    policyDetails.append("Transfer is not allowed before: ").append(startDatePolicy.getDate());
-                }
+                policyDetails.append("Transfer is not allowed before: ").append(startDatePolicy.getDate());
             } else if (enforcementPolicy instanceof EndDatePolicy endDatePolicy) {
-                if (isTransfer) {
-                    policyDetails.append("Transfer is not allowed after: ").append(endDatePolicy.getDate());
-                }
+                policyDetails.append("Transfer is not allowed after: ").append(endDatePolicy.getDate());
             } else if (enforcementPolicy instanceof StartAgreementOffsetPolicy startAgreementOffsetPolicy) {
                 if (isTransfer) {
                     policyDetails.append("Transfer is not allowed before ")
