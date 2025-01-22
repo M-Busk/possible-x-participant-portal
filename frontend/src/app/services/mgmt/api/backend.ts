@@ -270,7 +270,7 @@ export interface INodeKindIRITypeId {
 
 export interface IGxDataResourceCredentialSubject extends IPojoCredentialSubject {
     "@type": "gx:DataResource";
-    "gx:copyrightOwnedBy": INodeKindIRITypeId;
+    "gx:copyrightOwnedBy": INodeKindIRITypeId[];
     "gx:producedBy": INodeKindIRITypeId;
     "gx:exposedThrough": INodeKindIRITypeId;
     "gx:policy": string[];
@@ -286,7 +286,7 @@ export interface IGxDataResourceCredentialSubjectBuilder<C, B> extends IPojoCred
 }
 
 export interface IGxDataResourceCredentialSubjectBuilderImpl extends IGxDataResourceCredentialSubjectBuilder<IGxDataResourceCredentialSubject, IGxDataResourceCredentialSubjectBuilderImpl> {
-    "gx:copyrightOwnedBy": INodeKindIRITypeId;
+    "gx:copyrightOwnedBy": INodeKindIRITypeId[];
     "gx:producedBy": INodeKindIRITypeId;
     "gx:exposedThrough": INodeKindIRITypeId;
     "gx:policy": string[];
@@ -463,7 +463,7 @@ export interface IPolicyTarget {
 
 export interface IPxExtendedDataResourceCredentialSubject {
     id: string;
-    "gx:copyrightOwnedBy": INodeKindIRITypeId;
+    "gx:copyrightOwnedBy": INodeKindIRITypeId[];
     "gx:producedBy": INodeKindIRITypeId;
     "gx:exposedThrough": INodeKindIRITypeId;
     "gx:policy": string[];
