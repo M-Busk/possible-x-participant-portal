@@ -64,7 +64,9 @@
       "vcard": "http://www.w3.org/2006/vcard/ns#"
     },
     "gx:copyrightOwnedBy": [
-      "did:web:example-organization.eu"
+      {
+      "@id": "did:web:example-organization.eu"
+      }
     ],
     "gx:producedBy": {
       "@id": "did:web:example-organization.eu"

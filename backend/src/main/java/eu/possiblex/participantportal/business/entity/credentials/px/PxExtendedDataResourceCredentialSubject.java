@@ -42,7 +42,7 @@ public class PxExtendedDataResourceCredentialSubject {
     @JsonProperty("gx:copyrightOwnedBy")
     @NotNull
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-    private List<String> copyrightOwnedBy;
+    private List<NodeKindIRITypeId> copyrightOwnedBy;
 
     @JsonProperty("gx:producedBy")
     @NotNull

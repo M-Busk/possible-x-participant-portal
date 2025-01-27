@@ -18,12 +18,12 @@ export interface IProviderRestApi {
 }
 
 export interface IResourceShapeRestApi {
+    gxInstantiatedVirtualResourceShape: string;
+    gxDataResourceShape: string;
     gxPhysicalResourceShape: string;
     gxSoftwareResourceShape: string;
     gxVirtualResourceShape: string;
     gxLegitimateInterestShape: string;
-    gxInstantiatedVirtualResourceShape: string;
-    gxDataResourceShape: string;
 }
 
 export interface IServiceOfferingShapeRestApi {
@@ -67,8 +67,8 @@ export interface IContractAgreementTO {
     contractSigningDate: Date;
     consumerDetails: IContractParticipantDetailsTO;
     providerDetails: IContractParticipantDetailsTO;
-    provider: boolean;
     dataOffering: boolean;
+    provider: boolean;
 }
 
 export interface IContractAgreementTOBuilder {
@@ -270,7 +270,7 @@ export interface INodeKindIRITypeId {
 
 export interface IGxDataResourceCredentialSubject extends IPojoCredentialSubject {
     "@type": "gx:DataResource";
-    "gx:copyrightOwnedBy": string[];
+    "gx:copyrightOwnedBy": INodeKindIRITypeId[];
     "gx:producedBy": INodeKindIRITypeId;
     "gx:exposedThrough": INodeKindIRITypeId;
     "gx:policy": string[];
@@ -286,7 +286,7 @@ export interface IGxDataResourceCredentialSubjectBuilder<C, B> extends IPojoCred
 }
 
 export interface IGxDataResourceCredentialSubjectBuilderImpl extends IGxDataResourceCredentialSubjectBuilder<IGxDataResourceCredentialSubject, IGxDataResourceCredentialSubjectBuilderImpl> {
-    "gx:copyrightOwnedBy": string[];
+    "gx:copyrightOwnedBy": INodeKindIRITypeId[];
     "gx:producedBy": INodeKindIRITypeId;
     "gx:exposedThrough": INodeKindIRITypeId;
     "gx:policy": string[];
@@ -463,7 +463,7 @@ export interface IPolicyTarget {
 
 export interface IPxExtendedDataResourceCredentialSubject {
     id: string;
-    "gx:copyrightOwnedBy": string[];
+    "gx:copyrightOwnedBy": INodeKindIRITypeId[];
     "gx:producedBy": INodeKindIRITypeId;
     "gx:exposedThrough": INodeKindIRITypeId;
     "gx:policy": string[];
