@@ -34,7 +34,7 @@ public class ContractServiceFake implements ContractService {
     public static OffsetDateTime getDateAsOffsetDateTime() {
 
         Instant instant = Instant.ofEpochSecond(DATE_IN_SECONDS.longValueExact());
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.of("CET"));
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
         return zonedDateTime.toOffsetDateTime();
     }
 
