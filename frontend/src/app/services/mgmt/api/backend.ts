@@ -660,7 +660,7 @@ export type IOdrlOperator = "odrl:eq" | "odrl:gteq" | "odrl:lteq" | "odrl:neq" |
 
 export type IPojoCredentialSubjectUnion = IGxDataResourceCredentialSubject | IGxServiceOfferingCredentialSubject;
 
-export type IEnforcementPolicyUnion = IEverythingAllowedPolicy | IParticipantRestrictionPolicy | IStartDatePolicy | IEndDatePolicy;
+export type IEnforcementPolicyUnion = IEverythingAllowedPolicy | IParticipantRestrictionPolicy | IStartDatePolicy | IEndDatePolicy | IEndAgreementOffsetPolicy;
 
 function uriEncoding(template: TemplateStringsArray, ...substitutions: any[]): string {
     let result = "";
