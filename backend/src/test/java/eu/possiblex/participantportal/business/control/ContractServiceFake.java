@@ -5,6 +5,9 @@ import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedS
 import eu.possiblex.participantportal.business.entity.edc.contractagreement.ContractAgreement;
 import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyTarget;
+import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcessState;
+import eu.possiblex.participantportal.business.entity.exception.ContractAgreementNotFoundException;
+import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
 
 import java.math.BigInteger;
 import java.time.Instant;
@@ -31,6 +34,10 @@ public class ContractServiceFake implements ContractService {
 
     public static final String DESCRIPTION = "DESCRIPTION";
 
+    public static final TransferProcessState TRANSFER_PROCESS_STATE = TransferProcessState.COMPLETED;
+
+    public static final String NOT_FOUND_ID = "notFound";
+
     public static OffsetDateTime getDateAsOffsetDateTime() {
 
         Instant instant = Instant.ofEpochSecond(DATE_IN_SECONDS.longValueExact());
@@ -52,11 +59,19 @@ public class ContractServiceFake implements ContractService {
     @Override
     public ContractDetailsBE getContractDetailsByContractAgreementId(String contractAgreementId) {
 
+        if (contractAgreementId.equals(NOT_FOUND_ID)) {
+            throw new ContractAgreementNotFoundException("not found");
+        }
+
         return getContractDetailsBE();
     }
 
     @Override
     public OfferRetrievalResponseBE getOfferDetailsByContractAgreementId(String contractAgreementId) {
+
+        if (contractAgreementId.equals(NOT_FOUND_ID)) {
+            throw new ContractAgreementNotFoundException("not found");
+        }
 
         return new OfferRetrievalResponseBE(
             PxExtendedServiceOfferingCredentialSubject.builder().name(NAME).description(DESCRIPTION)
@@ -95,6 +110,10 @@ public class ContractServiceFake implements ContractService {
     @Override
     public TransferOfferResponseBE transferDataOfferAgain(TransferOfferRequestBE request) {
 
-        return null;
+        if (request.getEdcOfferId().equals(NOT_FOUND_ID)) {
+            throw new OfferNotFoundException("not found");
+        }
+
+        return TransferOfferResponseBE.builder().transferProcessState(TRANSFER_PROCESS_STATE).build();
     }
 }
