@@ -6,9 +6,7 @@ import eu.possiblex.participantportal.business.entity.daps.OmejdnConnectorDetail
 import eu.possiblex.participantportal.business.entity.edc.contractagreement.ContractAgreement;
 import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyTarget;
-import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcessState;
 import eu.possiblex.participantportal.business.entity.exception.ContractAgreementNotFoundException;
-import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
 import eu.possiblex.participantportal.business.entity.fh.OfferingDetailsSparqlQueryResult;
 import eu.possiblex.participantportal.business.entity.fh.ParticipantDetailsSparqlQueryResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,9 +46,6 @@ class ContractServiceTest {
 
     @Autowired
     private ContractService sut;
-
-    @Autowired
-    private ConsumerService consumerService;
 
     @Value("${participant-id}")
     private String participantId;
@@ -360,87 +355,9 @@ class ContractServiceTest {
         assertThat(actual.getCatalogOffering().getAssetId()).isNull();
     }
 
-    @Test
-    void transferDataOfferAgain() {
-
-        reset(consumerService);
-
-        //GIVEN
-
-        TransferOfferRequestBE request = TransferOfferRequestBE.builder().edcOfferId(EdcClientFake.FAKE_ID)
-            .contractAgreementId(EdcClientFake.VALID_CONTRACT_AGREEMENT_ID).build();
-        TransferOfferResponseBE response = TransferOfferResponseBE.builder()
-            .transferProcessState(TransferProcessState.COMPLETED).build();
-
-        // set up mock to return offering details from the catalog
-        OfferingDetailsSparqlQueryResult queryResult = new OfferingDetailsSparqlQueryResult();
-        queryResult.setAssetId(EdcClientFake.FAKE_ID);
-        queryResult.setProviderUrl(EdcClientFake.VALID_COUNTER_PARTY_ADDRESS);
-        Mockito.when(fhCatalogClient.getOfferingDetailsByAssetIds(any()))
-            .thenReturn(Map.of(EdcClientFake.FAKE_ID, queryResult));
-
-        //WHEN
-        TransferOfferResponseBE actual = sut.transferDataOfferAgain(request);
-
-        //THEN
-        assertThat(actual.getTransferProcessState()).isEqualTo(response.getTransferProcessState());
-        verify(consumerService).transferDataOffer(any());
-        verify(fhCatalogClient).getOfferingDetailsByAssetIds(List.of(EdcClientFake.FAKE_ID));
-    }
-
-    @Test
-    void transferDataOfferAgainOfferingNotFound() {
-
-        reset(consumerService);
-
-        //GIVEN
-
-        TransferOfferRequestBE request = TransferOfferRequestBE.builder().edcOfferId(EdcClientFake.FAKE_ID)
-            .contractAgreementId(EdcClientFake.VALID_CONTRACT_AGREEMENT_ID).build();
-
-        // set up mock to return no offering details from the catalog
-        Mockito.when(fhCatalogClient.getOfferingDetailsByAssetIds(any())).thenReturn(Map.of());
-
-        //WHEN / THEN
-        assertThrows(OfferNotFoundException.class, () -> sut.transferDataOfferAgain(request));
-
-        verify(fhCatalogClient).getOfferingDetailsByAssetIds(List.of(EdcClientFake.FAKE_ID));
-        verifyNoInteractions(consumerService);
-    }
-
-    @Test
-    void transferDataOfferAgainProviderUrlMissing() {
-
-        reset(consumerService);
-
-        //GIVEN
-
-        TransferOfferRequestBE request = TransferOfferRequestBE.builder().edcOfferId(EdcClientFake.FAKE_ID)
-            .contractAgreementId(EdcClientFake.VALID_CONTRACT_AGREEMENT_ID).build();
-
-        // set up mock to return faulty offering details from the catalog
-        OfferingDetailsSparqlQueryResult queryResult = new OfferingDetailsSparqlQueryResult();
-        queryResult.setAssetId(EdcClientFake.FAKE_ID);
-        queryResult.setProviderUrl(null); // provider url missing
-        Mockito.when(fhCatalogClient.getOfferingDetailsByAssetIds(any()))
-            .thenReturn(Map.of(EdcClientFake.FAKE_ID, queryResult));
-
-        //WHEN / THEN
-        assertThrows(OfferNotFoundException.class, () -> sut.transferDataOfferAgain(request));
-
-        verify(fhCatalogClient).getOfferingDetailsByAssetIds(List.of(EdcClientFake.FAKE_ID));
-        verifyNoInteractions(consumerService);
-    }
-
     // Test-specific configuration to provide mocks
     @TestConfiguration
     static class TestConfig {
-        @Bean
-        public ConsumerService consumerService() {
-
-            return Mockito.spy(new ConsumerServiceFake());
-        }
-
         @Bean
         public EdcClient edcClient() {
 

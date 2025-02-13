@@ -29,8 +29,6 @@ public class ContractServiceImpl implements ContractService {
 
     private final EdcClient edcClient;
 
-    private final ConsumerService consumerService;
-
     private final EnforcementPolicyParserService enforcementPolicyParserService;
 
     private final FhCatalogClient fhCatalogClient;
@@ -43,14 +41,13 @@ public class ContractServiceImpl implements ContractService {
     private String fhCatalogUriResourceBase;
 
     public ContractServiceImpl(@Autowired EdcClient edcClient, @Autowired FhCatalogClient fhCatalogClient,
-        @Autowired OmejdnConnectorApiClient omejdnConnectorApiClient, @Autowired ConsumerService consumerService,
+        @Autowired OmejdnConnectorApiClient omejdnConnectorApiClient,
         @Autowired EnforcementPolicyParserService enforcementPolicyParserService,
         @Value("${participant-id}") String participantId) {
 
         this.edcClient = edcClient;
         this.fhCatalogClient = fhCatalogClient;
         this.omejdnConnectorApiClient = omejdnConnectorApiClient;
-        this.consumerService = consumerService;
         this.enforcementPolicyParserService = enforcementPolicyParserService;
         this.participantId = participantId;
     }
@@ -94,7 +91,7 @@ public class ContractServiceImpl implements ContractService {
         ParticipantDetailsSparqlQueryResult unknownParticipant = ParticipantDetailsSparqlQueryResult.builder()
             .name(UNKNOWN).build();
         OfferingDetailsSparqlQueryResult unknownOffering = OfferingDetailsSparqlQueryResult.builder().name(UNKNOWN)
-            .description(UNKNOWN).uri(UNKNOWN).build();
+            .description(UNKNOWN).uri(UNKNOWN).providerUrl(UNKNOWN).build();
 
         // convert contract agreements to contract agreement BEs
         contractAgreements.forEach(c -> contractAgreementBEs.add(ContractAgreementBE.builder().contractAgreement(c)
@@ -107,6 +104,7 @@ public class ContractServiceImpl implements ContractService {
                     .offeringId(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getUri())
                     .name(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getName())
                     .description(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getDescription())
+                    .providerUrl(offeringDetails.getOrDefault(c.getAssetId(), unknownOffering).getProviderUrl())
                     .build()).consumerDetails(ParticipantWithDapsBE.builder().dapsId(c.getConsumerId())
                 .did(participantDidMap.getOrDefault(c.getConsumerId(), "")).name(
                     participantNames.getOrDefault(participantDidMap.getOrDefault(c.getConsumerId(), ""),
@@ -227,32 +225,5 @@ public class ContractServiceImpl implements ContractService {
         }
 
         return participantDids;
-    }
-
-    /**
-     * Repeat the transfer for a given EDC contract.
-     *
-     * @param be request referencing existing EDC contract.
-     * @return transfer result.
-     */
-    @Override
-    public TransferOfferResponseBE transferDataOfferAgain(TransferOfferRequestBE be) {
-
-        Map<String, OfferingDetailsSparqlQueryResult> offeringDetailsMap = fhCatalogClient.getOfferingDetailsByAssetIds(
-            List.of(be.getEdcOfferId()));
-
-        String providerUrl;
-        OfferingDetailsSparqlQueryResult offeringDetails = offeringDetailsMap.get(be.getEdcOfferId());
-        if (offeringDetails == null) {
-            throw new OfferNotFoundException(
-                "No Data Offering found in Sparql query result for assetId: " + be.getEdcOfferId());
-        }
-        providerUrl = offeringDetails.getProviderUrl();
-        if (providerUrl == null) {
-            throw new OfferNotFoundException(
-                "Provider URL not found in Sparql query result for assetId: " + be.getEdcOfferId());
-        }
-        be.setCounterPartyAddress(providerUrl);
-        return consumerService.transferDataOffer(be);
     }
 }
