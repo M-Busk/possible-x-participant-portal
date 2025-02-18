@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -126,6 +127,7 @@ public class AppConfigurer {
 
         http.authorizeHttpRequests(
                 authorizeHttpRequests -> authorizeHttpRequests.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .requestMatchers("common/version").permitAll().anyRequest().authenticated())
             .httpBasic(basic -> basic.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
             .csrf(AbstractHttpConfigurer::disable);
@@ -152,7 +154,7 @@ public class AppConfigurer {
 
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
 
                 registry.addMapping("/**").allowedOriginPatterns("*")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS").allowedHeaders("*")
@@ -161,7 +163,7 @@ public class AppConfigurer {
         };
     }
 
-    private class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    private static class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
         @Override
         public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException {
