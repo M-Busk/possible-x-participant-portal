@@ -148,7 +148,7 @@ describe('OfferingWizardExtensionComponent', () => {
   });
 
   it('should call getPrefillFields on apiService when retrieveAndSetPrefillFields is called', async () => {
-    const mockResponse = Promise.resolve({participantId: "dummy", dataProductPrefillFields: { serviceOfferingName: "dummy", serviceOfferingDescription: "dummy" }});
+    const mockResponse = Promise.resolve({participantId: "dummy", dataServiceOfferingPrefillFields: { serviceOfferingName: "dummy", serviceOfferingDescription: "dummy" }});
     apiService.getPrefillFields.and.returnValue(mockResponse);
 
 
