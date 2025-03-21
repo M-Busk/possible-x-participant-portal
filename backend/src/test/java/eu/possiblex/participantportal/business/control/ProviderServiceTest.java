@@ -13,6 +13,7 @@ import eu.possiblex.participantportal.business.entity.CreateServiceOfferingReque
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedDataResourceCredentialSubject;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.asset.AssetCreateRequest;
+import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.AWSS3DataDestination;
 import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.AWSS3DataSource;
 import eu.possiblex.participantportal.business.entity.edc.asset.possible.PossibleAssetProperties;
 import eu.possiblex.participantportal.business.entity.edc.contractdefinition.ContractDefinitionCreateRequest;
@@ -102,7 +103,7 @@ class ProviderServiceTest {
         assertThat(properties.getDataPolicy()).isNull();
 
         //check if file name is set correctly
-        assertEquals("", assetCreateRequest.getDataAddress().getKeyName());
+        assertEquals("", ((AWSS3DataSource)assetCreateRequest.getDataAddress()).getKeyPrefix());
 
         ContractDefinitionCreateRequest contractDefinitionCreateRequest = contractDefinitionCreateRequestCaptor.getValue();
 
@@ -214,7 +215,7 @@ class ProviderServiceTest {
         validatePossibleAssetPropertiesDataOffering(resourceCs, properties);
 
         //check if file name is set correctly
-        assertEquals(FILE_NAME, assetCreateRequest.getDataAddress().getKeyName());
+        assertEquals(FILE_NAME, ((AWSS3DataSource)assetCreateRequest.getDataAddress()).getKeyPrefix());
 
         ContractDefinitionCreateRequest contractDefinitionCreateRequest = contractDefinitionCreateRequestCaptor.getValue();
 
