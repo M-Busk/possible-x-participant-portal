@@ -17,7 +17,8 @@
 package eu.possiblex.participantportal.business.entity.edc.asset.possible;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.possiblex.participantportal.business.entity.edc.asset.ionoss3extension.IonosS3DataAddress;
+
+import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.AWSS3DataAddress;
 import lombok.*;
 
 import java.util.Map;
@@ -39,5 +40,5 @@ public class PossibleAsset {
 
     private PossibleAssetProperties properties;
 
-    private IonosS3DataAddress dataAddress;
+    private AWSS3DataAddress dataAddress;
 }

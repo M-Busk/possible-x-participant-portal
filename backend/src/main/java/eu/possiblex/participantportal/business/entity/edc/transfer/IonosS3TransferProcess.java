@@ -21,7 +21,7 @@
 
 package eu.possiblex.participantportal.business.entity.edc.transfer;
 
-import eu.possiblex.participantportal.business.entity.edc.asset.ionoss3extension.IonosS3DataAddress;
+import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.AWSS3DataAddress;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -32,5 +32,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @ToString
 public class IonosS3TransferProcess extends TransferProcess {
-    private IonosS3DataAddress dataDestination;
+    private AWSS3DataAddress dataDestination;
 }

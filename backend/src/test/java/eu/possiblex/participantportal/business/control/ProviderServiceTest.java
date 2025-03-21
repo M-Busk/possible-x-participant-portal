@@ -13,7 +13,7 @@ import eu.possiblex.participantportal.business.entity.CreateServiceOfferingReque
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedDataResourceCredentialSubject;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.asset.AssetCreateRequest;
-import eu.possiblex.participantportal.business.entity.edc.asset.ionoss3extension.IonosS3DataSource;
+import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.AWSS3DataSource;
 import eu.possiblex.participantportal.business.entity.edc.asset.possible.PossibleAssetProperties;
 import eu.possiblex.participantportal.business.entity.edc.contractdefinition.ContractDefinitionCreateRequest;
 import eu.possiblex.participantportal.business.entity.edc.policy.OdrlPermission;
@@ -103,7 +103,7 @@ class ProviderServiceTest {
 
         //check if file name is set correctly
         assertEquals("", assetCreateRequest.getDataAddress().getKeyName());
-        assertEquals("", ((IonosS3DataSource) assetCreateRequest.getDataAddress()).getBlobName());
+        assertEquals("", ((AWSS3DataSource) assetCreateRequest.getDataAddress()).getKeyName());
 
         ContractDefinitionCreateRequest contractDefinitionCreateRequest = contractDefinitionCreateRequestCaptor.getValue();
 
@@ -216,7 +216,7 @@ class ProviderServiceTest {
 
         //check if file name is set correctly
         assertEquals(FILE_NAME, assetCreateRequest.getDataAddress().getKeyName());
-        assertEquals(FILE_NAME, ((IonosS3DataSource) assetCreateRequest.getDataAddress()).getBlobName());
+        assertEquals(FILE_NAME, ((AWSS3DataSource) assetCreateRequest.getDataAddress()).getKeyName());
 
         ContractDefinitionCreateRequest contractDefinitionCreateRequest = contractDefinitionCreateRequestCaptor.getValue();
 

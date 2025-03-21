@@ -22,8 +22,8 @@ package eu.possiblex.participantportal.business.control;
 
 import eu.possiblex.participantportal.application.entity.credentials.gx.datatypes.NodeKindIRITypeId;
 import eu.possiblex.participantportal.business.entity.edc.asset.AssetCreateRequest;
-import eu.possiblex.participantportal.business.entity.edc.asset.ionoss3extension.IonosS3DataDestination;
-import eu.possiblex.participantportal.business.entity.edc.asset.ionoss3extension.IonosS3DataSource;
+import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.AWSS3DataDestination;
+import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.AWSS3DataSource;
 import eu.possiblex.participantportal.business.entity.edc.asset.possible.PossibleAsset;
 import eu.possiblex.participantportal.business.entity.edc.asset.possible.PossibleAssetDataAccountExport;
 import eu.possiblex.participantportal.business.entity.edc.asset.possible.PossibleAssetProperties;
@@ -173,7 +173,7 @@ public class EdcClientFake implements EdcClient {
         } else {
             process.setState(TransferProcessState.COMPLETED);
         }
-        process.setDataDestination(new IonosS3DataDestination());
+        process.setDataDestination(new AWSS3DataDestination());
         return process;
     }
 
@@ -232,8 +232,7 @@ public class EdcClientFake implements EdcClient {
         Map<String, String> context = Map.of("edc", "https://w3id.org/edc/v0.0.1/ns/", "odrl",
             "http://www.w3.org/ns/odrl/2/", "@vocab", "https://w3id.org/edc/v0.0.1/ns/");
 
-        IonosS3DataSource dataAddress = IonosS3DataSource.builder().bucketName("bucket").blobName("name")
-            .keyName("name").region("storage").build();
+            AWSS3DataSource dataAddress = AWSS3DataSource.builder().bucketName("bucket").keyName("name").build();
 
         return List.of(PossibleAsset.builder().id(FAKE_ID).type("Asset").properties(properties).context(context)
             .dataAddress(dataAddress).build());
