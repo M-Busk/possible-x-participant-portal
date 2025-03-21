@@ -19,7 +19,7 @@ package eu.possiblex.participantportal.business.control;
 import eu.possiblex.participantportal.business.entity.edc.CreateEdcOfferBE;
 import eu.possiblex.participantportal.business.entity.edc.asset.AssetCreateRequest;
 import eu.possiblex.participantportal.business.entity.edc.asset.DataAddress;
-import eu.possiblex.participantportal.business.entity.edc.asset.ionoss3extension.IonosS3DataSource;
+import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.AWSS3DataSource;
 import eu.possiblex.participantportal.business.entity.edc.common.IdResponse;
 import eu.possiblex.participantportal.business.entity.edc.contractdefinition.ContractDefinitionCreateRequest;
 import eu.possiblex.participantportal.business.entity.edc.contractdefinition.Criterion;
@@ -52,11 +52,10 @@ public class ProviderRequestBuilder {
      *
      * @return the AssetCreateRequest
      */
-    public AssetCreateRequest buildAssetRequest(String bucketName, String bucketStorageRegion) {
+    public AssetCreateRequest buildAssetRequest(String bucketName) {
 
-        DataAddress dataAddress = IonosS3DataSource.builder().bucketName(bucketName)
-            .blobName(createEdcOfferBE.getFileName()).keyName(createEdcOfferBE.getFileName())
-            .region(bucketStorageRegion).build();
+        DataAddress dataAddress = AWSS3DataSource.builder().bucketName(bucketName)
+            .keyPrefix(createEdcOfferBE.getFileName()).build();
 
         return AssetCreateRequest.builder().id(createEdcOfferBE.getAssetId())
             .properties(createEdcOfferBE.getProperties()).dataAddress(dataAddress).build();

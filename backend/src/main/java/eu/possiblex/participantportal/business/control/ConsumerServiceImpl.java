@@ -23,7 +23,7 @@ import eu.possiblex.participantportal.business.entity.*;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.DataspaceErrorMessage;
 import eu.possiblex.participantportal.business.entity.edc.asset.DataAddress;
-import eu.possiblex.participantportal.business.entity.edc.asset.ionoss3extension.IonosS3DataDestination;
+import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.AWSS3DataDestination;
 import eu.possiblex.participantportal.business.entity.edc.catalog.*;
 import eu.possiblex.participantportal.business.entity.edc.common.IdResponse;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.ContractNegotiation;
@@ -70,8 +70,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     private final TaskScheduler taskScheduler;
 
-    private final String bucketStorageRegion;
-
     private final String bucketName;
 
     private final String bucketTopLevelFolder;
@@ -81,8 +79,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     private final EnforcementPolicyParserService enforcementPolicyParserService;
 
     public ConsumerServiceImpl(@Autowired ObjectMapper objectMapper, @Autowired EdcClient edcClient,
-        @Autowired FhCatalogClient fhCatalogClient, @Autowired TaskScheduler taskScheduler,
-        @Value("${s3.bucket-storage-region}") String bucketStorageRegion, @Value("${s3.bucket-name}") String bucketName,
+        @Autowired FhCatalogClient fhCatalogClient, @Autowired TaskScheduler taskScheduler, @Value("${s3.bucket-name}") String bucketName,
         @Value("${s3.bucket-top-level-folder}") String bucketTopLevelFolder,
         @Autowired ConsumerServiceMapper consumerServiceMapper,
         @Autowired EnforcementPolicyParserService enforcementPolicyParserService) {
@@ -91,7 +88,6 @@ public class ConsumerServiceImpl implements ConsumerService {
         this.edcClient = edcClient;
         this.fhCatalogClient = fhCatalogClient;
         this.taskScheduler = taskScheduler;
-        this.bucketStorageRegion = bucketStorageRegion;
         this.bucketName = bucketName;
         this.bucketTopLevelFolder = bucketTopLevelFolder;
         this.consumerServiceMapper = consumerServiceMapper;
@@ -176,8 +172,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         String timestamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String pathDelimiter = "/";
         String bucketTargetPath = bucketTopLevelFolder + pathDelimiter + timestamp + "_" + request.getContractAgreementId() + pathDelimiter;
-        DataAddress dataAddress = IonosS3DataDestination.builder().region(bucketStorageRegion).bucketName(bucketName)
-            .path(bucketTargetPath).keyName("myKey").build();
+        DataAddress dataAddress = AWSS3DataDestination.builder().bucketName(bucketName).keyName(bucketTargetPath).build();
         TransferRequest transferRequest = TransferRequest.builder().connectorId(edcOffer.getParticipantId())
             .counterPartyAddress(request.getCounterPartyAddress()).assetId(dataset.getAssetId())
             .contractId(request.getContractAgreementId()).dataDestination(dataAddress).build();

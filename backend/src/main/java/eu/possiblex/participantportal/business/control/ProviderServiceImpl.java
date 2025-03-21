@@ -65,8 +65,6 @@ public class ProviderServiceImpl implements ProviderService {
 
     private final EnforcementPolicyParserService enforcementPolicyParserService;
 
-    private final String bucketStorageRegion;
-
     private final String bucketName;
 
     private final String edcProtocolUrl;
@@ -87,8 +85,7 @@ public class ProviderServiceImpl implements ProviderService {
     public ProviderServiceImpl(@Autowired EdcClient edcClient, @Autowired FhCatalogClient fhCatalogClient,
         @Autowired ProviderServiceMapper providerServiceMapper,
         @Autowired EnforcementPolicyParserService enforcementPolicyParserService,
-        @Value("${edc.protocol-base-url}") String edcProtocolUrl, @Value("${participant-id}") String participantId,
-        @Value("${s3.bucket-storage-region}") String bucketStorageRegion, @Value("${s3.bucket-name}") String bucketName,
+        @Value("${edc.protocol-base-url}") String edcProtocolUrl, @Value("${participant-id}") String participantId, @Value("${s3.bucket-name}") String bucketName,
         @Value("${prefill-fields.data-service-offering.json-file-path}") String prefillFieldsDataServiceOfferingJsonFilePath,
         @Autowired ObjectMapper objectMapper) {
 
@@ -97,7 +94,6 @@ public class ProviderServiceImpl implements ProviderService {
         this.providerServiceMapper = providerServiceMapper;
         this.enforcementPolicyParserService = enforcementPolicyParserService;
         this.edcProtocolUrl = edcProtocolUrl;
-        this.bucketStorageRegion = bucketStorageRegion;
         this.bucketName = bucketName;
         this.participantId = participantId;
         this.objectMapper = objectMapper;
@@ -202,7 +198,7 @@ public class ProviderServiceImpl implements ProviderService {
         ProviderRequestBuilder requestBuilder = new ProviderRequestBuilder(createEdcOfferBE);
 
         try {
-            AssetCreateRequest assetCreateRequest = requestBuilder.buildAssetRequest(bucketName, bucketStorageRegion);
+            AssetCreateRequest assetCreateRequest = requestBuilder.buildAssetRequest(bucketName);
             log.info("Creating Asset {}", assetCreateRequest);
             IdResponse assetIdResponse = edcClient.createAsset(assetCreateRequest);
 
