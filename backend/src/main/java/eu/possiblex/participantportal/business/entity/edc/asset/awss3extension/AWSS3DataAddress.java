@@ -39,6 +39,8 @@ public class AWSS3DataAddress extends DataAddress {
 
     private String bucketName;
 
+    private String region;
+
     @JsonProperty("type")
     public String getDataType() {
 

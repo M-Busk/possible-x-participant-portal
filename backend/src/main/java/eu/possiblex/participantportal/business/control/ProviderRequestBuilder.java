@@ -52,10 +52,10 @@ public class ProviderRequestBuilder {
      *
      * @return the AssetCreateRequest
      */
-    public AssetCreateRequest buildAssetRequest(String bucketName) {
+    public AssetCreateRequest buildAssetRequest(String bucketName, String bucketStorageRegion) {
 
         DataAddress dataAddress = AWSS3DataSource.builder().bucketName(bucketName)
-            .keyPrefix(createEdcOfferBE.getFileName()).build();
+            .keyPrefix(createEdcOfferBE.getFileName()).region(bucketStorageRegion).build();
 
         return AssetCreateRequest.builder().id(createEdcOfferBE.getAssetId())
             .properties(createEdcOfferBE.getProperties()).dataAddress(dataAddress).build();

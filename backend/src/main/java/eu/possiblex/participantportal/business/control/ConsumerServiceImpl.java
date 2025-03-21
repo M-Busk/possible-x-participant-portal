@@ -70,6 +70,8 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     private final TaskScheduler taskScheduler;
 
+    private final String bucketStorageRegion;
+
     private final String bucketName;
 
     private final String bucketTopLevelFolder;
@@ -79,7 +81,8 @@ public class ConsumerServiceImpl implements ConsumerService {
     private final EnforcementPolicyParserService enforcementPolicyParserService;
 
     public ConsumerServiceImpl(@Autowired ObjectMapper objectMapper, @Autowired EdcClient edcClient,
-        @Autowired FhCatalogClient fhCatalogClient, @Autowired TaskScheduler taskScheduler, @Value("${s3.bucket-name}") String bucketName,
+        @Autowired FhCatalogClient fhCatalogClient, @Autowired TaskScheduler taskScheduler,
+        @Value("${s3.bucket-storage-region}") String bucketStorageRegion, @Value("${s3.bucket-name}") String bucketName,
         @Value("${s3.bucket-top-level-folder}") String bucketTopLevelFolder,
         @Autowired ConsumerServiceMapper consumerServiceMapper,
         @Autowired EnforcementPolicyParserService enforcementPolicyParserService) {
@@ -88,6 +91,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         this.edcClient = edcClient;
         this.fhCatalogClient = fhCatalogClient;
         this.taskScheduler = taskScheduler;
+        this.bucketStorageRegion = bucketStorageRegion;
         this.bucketName = bucketName;
         this.bucketTopLevelFolder = bucketTopLevelFolder;
         this.consumerServiceMapper = consumerServiceMapper;
@@ -172,7 +176,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         String timestamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String pathDelimiter = "/";
         String bucketTargetPath = bucketTopLevelFolder + pathDelimiter + timestamp + "_" + request.getContractAgreementId() + pathDelimiter;
-        DataAddress dataAddress = AWSS3DataDestination.builder().bucketName(bucketName).keyName(bucketTargetPath).build();
+        DataAddress dataAddress = AWSS3DataDestination.builder().bucketName(bucketName).keyName(bucketTargetPath).region(bucketStorageRegion).build();
         TransferRequest transferRequest = TransferRequest.builder().connectorId(edcOffer.getParticipantId())
             .counterPartyAddress(request.getCounterPartyAddress()).assetId(dataset.getAssetId())
             .contractId(request.getContractAgreementId()).dataDestination(dataAddress).build();
