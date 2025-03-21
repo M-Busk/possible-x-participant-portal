@@ -103,7 +103,6 @@ class ProviderServiceTest {
 
         //check if file name is set correctly
         assertEquals("", assetCreateRequest.getDataAddress().getKeyName());
-        assertEquals("", ((AWSS3DataSource) assetCreateRequest.getDataAddress()).getKeyName());
 
         ContractDefinitionCreateRequest contractDefinitionCreateRequest = contractDefinitionCreateRequestCaptor.getValue();
 
@@ -216,7 +215,6 @@ class ProviderServiceTest {
 
         //check if file name is set correctly
         assertEquals(FILE_NAME, assetCreateRequest.getDataAddress().getKeyName());
-        assertEquals(FILE_NAME, ((AWSS3DataSource) assetCreateRequest.getDataAddress()).getKeyName());
 
         ContractDefinitionCreateRequest contractDefinitionCreateRequest = contractDefinitionCreateRequestCaptor.getValue();
 

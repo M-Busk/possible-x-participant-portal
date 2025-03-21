@@ -37,8 +37,6 @@ public class AWSS3DataAddress extends DataAddress {
 
     private static final String TYPE = "AmazonS3";
 
-    private String keyName;
-
     private String bucketName;
 
     @JsonProperty("type")
