@@ -27,10 +27,11 @@ import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.A
 import eu.possiblex.participantportal.business.entity.edc.catalog.*;
 import eu.possiblex.participantportal.business.entity.edc.common.IdResponse;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.ContractNegotiation;
-import eu.possiblex.participantportal.business.entity.edc.negotiation.ContractOffer;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.NegotiationInitiateRequest;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.NegotiationState;
-import eu.possiblex.participantportal.business.entity.edc.transfer.IonosS3TransferProcess;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyBlueprint;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
+import eu.possiblex.participantportal.business.entity.edc.transfer.AWSS3TransferProcess;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcess;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcessState;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferRequest;
@@ -114,7 +115,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         DcatDataset edcCatalogOffer = getDatasetById(edcCatalog, fhCatalogOffer.getAssetId());
 
         List<EnforcementPolicy> enforcementPolicies = enforcementPolicyParserService.getEnforcementPoliciesFromEdcPolicies(
-            edcCatalogOffer.getHasPolicy());
+            edcCatalogOffer.getHasPolicy().stream().map(p -> ((PolicyBlueprint) p)).toList());
 
         Map<String, ParticipantDetailsSparqlQueryResult> participantDetailsMap = fhCatalogClient.getParticipantDetailsByIds(
             List.of(fhCatalogOffer.getProvidedBy().getId()));
@@ -147,13 +148,14 @@ public class ConsumerServiceImpl implements ConsumerService {
 
         // fetch corresponding enforcement policies to check if negotiation fails
         List<EnforcementPolicy> enforcementPolicies = enforcementPolicyParserService.getEnforcementPoliciesWithValidity(
-            dataset.getHasPolicy(), null, edcOffer.getParticipantId());
+            dataset.getHasPolicy().stream().map(p -> ((PolicyBlueprint) p)).toList(), null, edcOffer.getParticipantId());
 
+        PolicyOffer policy = dataset.getHasPolicy().get(0);
+        policy.setAssigner(edcOffer.getParticipantId());
+        policy.setTarget(dataset.getAssetId());
         // initiate negotiation
         NegotiationInitiateRequest negotiationInitiateRequest = NegotiationInitiateRequest.builder()
-            .counterPartyAddress(request.getCounterPartyAddress()).providerId(edcOffer.getParticipantId()).offer(
-                ContractOffer.builder().offerId(dataset.getHasPolicy().get(0).getId()).assetId(dataset.getAssetId())
-                    .policy(dataset.getHasPolicy().get(0)).build()).build();
+            .counterPartyAddress(request.getCounterPartyAddress()).consumerId("20:1D:9C:04:0A:71:B9:E7:8C:28:9D:70:A6:84:43:59:2D:BA:E8:B3:keyid:20:1D:9C:04:0A:71:B9:E7:8C:28:9D:70:A6:84:43:59:2D:BA:E8:B3").providerId(edcOffer.getParticipantId()).policy(policy).build();
 
         ContractNegotiation contractNegotiation = negotiateOffer(negotiationInitiateRequest, enforcementPolicies);
 
@@ -170,16 +172,16 @@ public class ConsumerServiceImpl implements ConsumerService {
 
         // fetch corresponding enforcement policies to check if negotiation fails
         List<EnforcementPolicy> enforcementPolicies = enforcementPolicyParserService.getEnforcementPoliciesWithValidity(
-            dataset.getHasPolicy(), null, edcOffer.getParticipantId());
+            dataset.getHasPolicy().stream().map(p -> ((PolicyBlueprint) p)).toList(), null, edcOffer.getParticipantId());
 
         // initiate transfer
         String timestamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String pathDelimiter = "/";
         String bucketTargetPath = bucketTopLevelFolder + pathDelimiter + timestamp + "_" + request.getContractAgreementId() + pathDelimiter;
-        DataAddress dataAddress = AWSS3DataDestination.builder().bucketName(bucketName).keyName(bucketTargetPath).region(bucketStorageRegion).build();
+        DataAddress dataAddress = AWSS3DataDestination.builder().bucketName(bucketName).folderName(bucketTargetPath).region(bucketStorageRegion).build();
         TransferRequest transferRequest = TransferRequest.builder().connectorId(edcOffer.getParticipantId())
             .counterPartyAddress(request.getCounterPartyAddress()).assetId(dataset.getAssetId())
-            .contractId(request.getContractAgreementId()).dataDestination(dataAddress).build();
+            .contractId(request.getContractAgreementId()).dataDestination(dataAddress).transferType("AmazonS3-PUSH").build();
         TransferProcessState transferProcessState = performTransfer(transferRequest, enforcementPolicies).getState();
         return new TransferOfferResponseBE(transferProcessState);
     }
@@ -249,7 +251,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         IdResponse transfer = edcClient.initiateTransfer(transferRequest);
 
         // wait until COMPLETED
-        IonosS3TransferProcess transferProcess;
+        AWSS3TransferProcess transferProcess;
         int transferCheckAttempts = 0;
         do {
             delayOneSecond();

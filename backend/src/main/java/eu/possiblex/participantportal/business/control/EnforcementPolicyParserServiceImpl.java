@@ -52,10 +52,10 @@ public class EnforcementPolicyParserServiceImpl implements EnforcementPolicyPars
      * @return enforcement policies
      */
     @Override
-    public List<EnforcementPolicy> getEnforcementPoliciesFromEdcPolicies(List<Policy> policies) {
+    public List<EnforcementPolicy> getEnforcementPoliciesFromEdcPolicies(List<PolicyBlueprint> policies) {
 
         List<OdrlConstraint> constraints = new ArrayList<>();
-        for (Policy policy : policies) {
+        for (PolicyBlueprint policy : policies) {
             for (OdrlPermission permission : policy.getPermission()) {
                 constraints.addAll(permission.getConstraint());
             }
@@ -146,7 +146,7 @@ public class EnforcementPolicyParserServiceImpl implements EnforcementPolicyPars
      * @return list of enforcement policies with validity
      */
     @Override
-    public List<EnforcementPolicy> getEnforcementPoliciesWithValidity(List<Policy> edcPolicies,
+    public List<EnforcementPolicy> getEnforcementPoliciesWithValidity(List<PolicyBlueprint> edcPolicies,
         BigInteger contractSigningDate, String providerDid) {
 
         List<EnforcementPolicy> enforcementPolicies = getEnforcementPoliciesFromEdcPolicies(edcPolicies);
@@ -204,7 +204,7 @@ public class EnforcementPolicyParserServiceImpl implements EnforcementPolicyPars
      * @return edc policy
      */
     @Override
-    public Policy getEdcPolicyFromEnforcementPolicies(List<EnforcementPolicy> enforcementPolicies) {
+    public PolicyBlueprint getEdcPolicyFromEnforcementPolicies(List<EnforcementPolicy> enforcementPolicies) {
 
         List<OdrlConstraint> constraints = new ArrayList<>();
 
@@ -241,7 +241,7 @@ public class EnforcementPolicyParserServiceImpl implements EnforcementPolicyPars
         }
 
         // apply constraints to both use and transfer permission
-        Policy policy = getEverythingAllowedPolicy();
+        PolicyBlueprint policy = getEverythingAllowedPolicy();
 
         policy.getPermission().forEach(permission -> permission.setConstraint(constraints));
 
@@ -254,13 +254,13 @@ public class EnforcementPolicyParserServiceImpl implements EnforcementPolicyPars
      * @return everything allowed policy
      */
     @Override
-    public Policy getEverythingAllowedPolicy() {
+    public PolicyBlueprint getEverythingAllowedPolicy() {
 
         OdrlPermission usePermission = OdrlPermission.builder().action(OdrlAction.USE).build();
         OdrlPermission transferPermission = OdrlPermission.builder().action(OdrlAction.TRANSFER).build();
 
         // add permissions to ODRL policy
-        Policy policy = new Policy();
+        PolicyBlueprint policy = new PolicyBlueprint();
         policy.getPermission().add(usePermission);
         policy.getPermission().add(transferPermission);
         return policy;

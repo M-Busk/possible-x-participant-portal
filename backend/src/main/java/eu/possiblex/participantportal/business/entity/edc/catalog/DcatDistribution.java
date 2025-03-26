@@ -25,7 +25,6 @@ import eu.possiblex.participantportal.business.entity.common.JsonLdConstants;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
 
 @Getter
 @Setter
@@ -34,8 +33,8 @@ public class DcatDistribution {
     private String type;
 
     @JsonProperty(JsonLdConstants.DCT_PREFIX + "format")
-    private Map<String, String> format;
+    private DcatDistributionFormat format;
 
     @JsonProperty(JsonLdConstants.DCAT_PREFIX + "accessService")
-    private String accessService;
+    private DcatService accessService;
 }

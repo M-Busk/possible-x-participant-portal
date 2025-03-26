@@ -103,7 +103,7 @@ class ProviderServiceTest {
         assertThat(properties.getDataPolicy()).isNull();
 
         //check if file name is set correctly
-        assertEquals("", ((AWSS3DataSource)assetCreateRequest.getDataAddress()).getKeyPrefix());
+        assertEquals("dummy", ((AWSS3DataSource)assetCreateRequest.getDataAddress()).getObjectPrefix());
 
         ContractDefinitionCreateRequest contractDefinitionCreateRequest = contractDefinitionCreateRequestCaptor.getValue();
 
@@ -215,7 +215,7 @@ class ProviderServiceTest {
         validatePossibleAssetPropertiesDataOffering(resourceCs, properties);
 
         //check if file name is set correctly
-        assertEquals(FILE_NAME, ((AWSS3DataSource)assetCreateRequest.getDataAddress()).getKeyPrefix());
+        assertEquals(FILE_NAME, ((AWSS3DataSource)assetCreateRequest.getDataAddress()).getObjectPrefix());
 
         ContractDefinitionCreateRequest contractDefinitionCreateRequest = contractDefinitionCreateRequestCaptor.getValue();
 

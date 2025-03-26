@@ -17,7 +17,7 @@
 package eu.possiblex.participantportal.business.entity.edc;
 
 import eu.possiblex.participantportal.business.entity.edc.asset.possible.PossibleAssetProperties;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyBlueprint;
 import lombok.*;
 
 @NoArgsConstructor
@@ -33,6 +33,6 @@ public class CreateEdcOfferBE {
 
     private String fileName;
 
-    private Policy policy;
+    private PolicyBlueprint policy;
 
 }

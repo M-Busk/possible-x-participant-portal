@@ -39,7 +39,7 @@ public class PolicyCreateRequest {
     @JsonProperty("@id")
     private String id;
 
-    private Policy policy;
+    private PolicyBlueprint policy;
 
     @JsonProperty("@context")
     public Map<String, String> getContext() {

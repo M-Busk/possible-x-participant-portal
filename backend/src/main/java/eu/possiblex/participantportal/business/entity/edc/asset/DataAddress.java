@@ -35,7 +35,7 @@ import lombok.experimental.SuperBuilder;
 public abstract class DataAddress {
     private static final String TYPE = "DataAddress";
 
-    private String keyName;
+    private String objectName;
 
     @JsonProperty("@type")
     public String getType() {

@@ -39,8 +39,6 @@ public class TransferRequest {
 
     private static final String TYPE = "TransferRequestDto";
 
-    private static final boolean MANAGED_RESOURCES = true;
-
     private static final String PROTOCOL = "dataspace-protocol-http";
 
     private String connectorId;
@@ -50,6 +48,8 @@ public class TransferRequest {
     private String contractId;
 
     private String assetId;
+
+    private String transferType;
 
     private DataAddress dataDestination;
 
@@ -71,9 +71,4 @@ public class TransferRequest {
         return CONTEXT;
     }
 
-    @JsonProperty("managedResources")
-    public boolean isManagedResources() {
-
-        return MANAGED_RESOURCES;
-    }
 }

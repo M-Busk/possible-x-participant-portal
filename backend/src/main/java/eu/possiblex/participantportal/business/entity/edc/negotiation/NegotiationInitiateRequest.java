@@ -22,6 +22,7 @@ package eu.possiblex.participantportal.business.entity.edc.negotiation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.possiblex.participantportal.business.entity.common.JsonLdConstants;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,11 +37,9 @@ import java.util.Map;
 public class NegotiationInitiateRequest {
     private static final Map<String, String> CONTEXT = JsonLdConstants.EDC_CONTEXT;
 
-    private static final String TYPE = "NegotiationInitiateRequestDto";
+    private static final String TYPE = "ContractRequest";
 
     private static final String PROTOCOL = "dataspace-protocol-http";
-
-    private String connectorId;
 
     private String consumerId;
 
@@ -48,7 +47,7 @@ public class NegotiationInitiateRequest {
 
     private String counterPartyAddress;
 
-    private ContractOffer offer; // deprecated for policy?
+    private PolicyOffer policy;
 
     @JsonProperty("@context")
     public Map<String, String> getContext() {

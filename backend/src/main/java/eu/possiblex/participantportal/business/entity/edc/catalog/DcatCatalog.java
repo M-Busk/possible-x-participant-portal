@@ -40,14 +40,19 @@ public class DcatCatalog {
     @JsonProperty("@type")
     private String type;
 
-    private String participantId;
-
     @JsonProperty("@context")
     private Map<String, String> context;
+
+    @JsonProperty(JsonLdConstants.DSPACE_PREFIX + "participantId")
+    private String participantId;
 
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     @JsonProperty(JsonLdConstants.DCAT_PREFIX + "dataset")
     private List<DcatDataset> dataset;
+
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+    @JsonProperty(JsonLdConstants.DCAT_PREFIX + "distribution")
+    private List<DcatDistribution> distribution;
 
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     @JsonProperty(JsonLdConstants.DCAT_PREFIX + "service")

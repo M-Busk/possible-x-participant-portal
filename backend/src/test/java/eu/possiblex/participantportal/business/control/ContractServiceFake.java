@@ -19,7 +19,7 @@ package eu.possiblex.participantportal.business.control;
 import eu.possiblex.participantportal.business.entity.*;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.contractagreement.ContractAgreement;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyTarget;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcessState;
 import eu.possiblex.participantportal.business.entity.exception.ContractAgreementNotFoundException;
@@ -100,7 +100,7 @@ public class ContractServiceFake implements ContractService {
         ContractAgreement contractAgreement = ContractAgreement.builder().contractSigningDate(DATE_IN_SECONDS)
             .id(FAKE_ID_CONTRACT_AGREEMENT).assetId(FAKE_ID_ASSET).consumerId(FAKE_ID_CONSUMER)
             .providerId(FAKE_ID_PROVIDER)
-            .policy(Policy.builder().target(PolicyTarget.builder().id(FAKE_ID_ASSET).build()).build()).build();
+            .policy(PolicyOffer.builder().target(FAKE_ID_ASSET).build()).build();
 
         ContractAgreementBE contractAgreementBE = ContractAgreementBE.builder().contractAgreement(contractAgreement)
             .isProvider(false).isDataOffering(false)
@@ -115,7 +115,7 @@ public class ContractServiceFake implements ContractService {
         ContractAgreement contractAgreement = ContractAgreement.builder().contractSigningDate(DATE_IN_SECONDS)
             .id(FAKE_ID_CONTRACT_AGREEMENT).assetId(FAKE_ID_ASSET).consumerId(FAKE_ID_CONSUMER)
             .providerId(FAKE_ID_PROVIDER)
-            .policy(Policy.builder().target(PolicyTarget.builder().id(FAKE_ID_ASSET).build()).build()).build();
+            .policy(PolicyOffer.builder().target(FAKE_ID_ASSET).build()).build();
 
         return ContractDetailsBE.builder().contractAgreement(contractAgreement).offeringDetails(
                 new OfferRetrievalResponseBE(

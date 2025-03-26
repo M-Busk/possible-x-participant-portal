@@ -16,12 +16,16 @@
 
 package eu.possiblex.participantportal.business.entity.edc.policy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import eu.possiblex.participantportal.business.entity.common.JsonLdConstants;
 import eu.possiblex.participantportal.business.entity.serialization.OdrlActionDeserializer;
 import eu.possiblex.participantportal.business.entity.serialization.OdrlActionSerializer;
@@ -31,8 +35,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Builder
@@ -41,10 +43,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OdrlPermission {
-
-    @Schema(description = "Target of the ODRL permission", example = "bec206d7-090c-4192-be49-dadd71fcc881")
-    @JsonProperty(JsonLdConstants.ODRL_PREFIX + "target")
-    private String target;
 
     @Schema(description = "ODRL action", example = "http://www.w3.org/ns/odrl/2/use")
     @JsonProperty(JsonLdConstants.ODRL_PREFIX + "action")

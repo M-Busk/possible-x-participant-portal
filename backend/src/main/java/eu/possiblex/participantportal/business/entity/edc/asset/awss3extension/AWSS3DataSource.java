@@ -33,5 +33,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class AWSS3DataSource extends AWSS3DataAddress {
     
-    private String keyPrefix;
+    private String objectPrefix;
 }

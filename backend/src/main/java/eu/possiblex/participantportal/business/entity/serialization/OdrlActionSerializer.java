@@ -41,7 +41,7 @@ public class OdrlActionSerializer extends StdSerializer<OdrlAction> {
 
         jsonGenerator.writeStartObject();
         // access JsonProperty of enum field and write as string
-        jsonGenerator.writeStringField("odrl:type", s.toValue());
+        jsonGenerator.writeStringField("@id", s.toValue());
         jsonGenerator.writeEndObject();
     }
 }

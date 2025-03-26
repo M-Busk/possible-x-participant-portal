@@ -38,7 +38,7 @@ import eu.possiblex.participantportal.business.entity.edc.contractdefinition.Con
 import eu.possiblex.participantportal.business.entity.edc.negotiation.ContractNegotiation;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.NegotiationInitiateRequest;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.NegotiationState;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyCreateRequest;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyTarget;
 import eu.possiblex.participantportal.business.entity.edc.transfer.*;
@@ -112,7 +112,7 @@ public class EdcClientFake implements EdcClient {
         for (String id : List.of(FAKE_ID, BAD_NEGOTIATION_ID, BAD_TRANSFER_ID)) {
             DcatDataset dataset = new DcatDataset();
             dataset.setAssetId(id);
-            dataset.setHasPolicy(List.of(Policy.builder().id(id).build()));
+            dataset.setHasPolicy(List.of(PolicyOffer.builder().id(id).build()));
             datasets.add(dataset);
         }
 
@@ -130,7 +130,7 @@ public class EdcClientFake implements EdcClient {
     @Override
     public IdResponse negotiateOffer(NegotiationInitiateRequest negotiationInitiateRequest) {
 
-        return generateFakeIdResponse(negotiationInitiateRequest.getOffer().getAssetId());
+        return generateFakeIdResponse(negotiationInitiateRequest.getPolicy().getTarget());
     }
 
     @Override
@@ -157,12 +157,12 @@ public class EdcClientFake implements EdcClient {
     }
 
     @Override
-    public IonosS3TransferProcess checkTransferStatus(String transferId) {
+    public AWSS3TransferProcess checkTransferStatus(String transferId) {
 
         DataRequest request = new DataRequest();
         request.setAssetId(FAKE_ID);
         request.setType("edc:DataRequestDto");
-        IonosS3TransferProcess process = new IonosS3TransferProcess();
+        AWSS3TransferProcess process = new AWSS3TransferProcess();
         process.setId(FAKE_ID);
         process.setType("edc:TransferProcessDto");
         process.setDataRequest(request);
@@ -195,7 +195,7 @@ public class EdcClientFake implements EdcClient {
     @Override
     public List<ContractAgreement> queryContractAgreements(QuerySpec querySpec) {
 
-        Policy policy = Policy.builder().target(PolicyTarget.builder().id(FAKE_ID).build()).build();
+        PolicyOffer policy = PolicyOffer.builder().target(FAKE_ID).build();
 
         ContractAgreement contractAgreement = ContractAgreement.builder()
             .contractSigningDate(BigInteger.valueOf(1728549145)).id(FAKE_ID).assetId(FAKE_ID)
@@ -232,7 +232,7 @@ public class EdcClientFake implements EdcClient {
         Map<String, String> context = Map.of("edc", "https://w3id.org/edc/v0.0.1/ns/", "odrl",
             "http://www.w3.org/ns/odrl/2/", "@vocab", "https://w3id.org/edc/v0.0.1/ns/");
 
-            AWSS3DataSource dataAddress = AWSS3DataSource.builder().bucketName("bucket").keyName("name").build();
+            AWSS3DataSource dataAddress = AWSS3DataSource.builder().bucketName("bucket").objectPrefix("name").build();
 
         return List.of(PossibleAsset.builder().id(FAKE_ID).type("Asset").properties(properties).context(context)
             .dataAddress(dataAddress).build());

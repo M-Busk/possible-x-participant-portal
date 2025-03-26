@@ -44,6 +44,9 @@ public class OdrlActionDeserializer extends StdDeserializer<OdrlAction> {
         if (node.get("odrl:type") != null) {
             return OdrlAction.forValue(node.get("odrl:type").textValue());
         }
+        if (node.get("@id") != null) {
+            return OdrlAction.forValue(node.get("@id").textValue());
+        }
         return null;
     }
 }

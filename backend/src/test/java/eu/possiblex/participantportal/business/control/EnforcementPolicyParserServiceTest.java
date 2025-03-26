@@ -42,7 +42,7 @@ class EnforcementPolicyParserServiceTest {
     @Test
     void getEnforcementPolicyValid() {
         // when
-        Policy enforcementPolicy = sut.getEverythingAllowedPolicy();
+        PolicyBlueprint enforcementPolicy = sut.getEverythingAllowedPolicy();
 
         // then
         assertNotNull(enforcementPolicy);
@@ -60,8 +60,8 @@ class EnforcementPolicyParserServiceTest {
     void testParseEdcPoliciesToEnforcementPolicies() {
         // given
 
-        List<Policy> edcPolicies = List.of(Policy.builder().permission(List.of(
-            OdrlPermission.builder().action(OdrlAction.USE).target("http://example.com").constraint(List.of(
+        List<PolicyBlueprint> edcPolicies = List.of(PolicyBlueprint.builder().permission(List.of(
+            OdrlPermission.builder().action(OdrlAction.USE).constraint(List.of(
                 OdrlConstraint.builder().leftOperand(ParticipantRestrictionPolicy.EDC_OPERAND).operator(OdrlOperator.IN)
                     .rightOperand("did:web:123,did:web:456").build(),
                 OdrlConstraint.builder().leftOperand(TimeDatePolicy.EDC_OPERAND).operator(OdrlOperator.LEQ)
@@ -120,7 +120,7 @@ class EnforcementPolicyParserServiceTest {
         List<EnforcementPolicy> policies = List.of(participantRestrictionPolicy, startAgreementOffsetPolicy,
             endAgreementOffsetPolicy, startDatePolicy, endDatePolicy);
 
-        List<Policy> edcPolicies = List.of(sut.getEdcPolicyFromEnforcementPolicies(policies));
+        List<PolicyBlueprint> edcPolicies = List.of(sut.getEdcPolicyFromEnforcementPolicies(policies));
 
         // when
 
@@ -153,7 +153,7 @@ class EnforcementPolicyParserServiceTest {
         List<EnforcementPolicy> policies = List.of(participantRestrictionPolicy, startAgreementOffsetPolicy,
             endAgreementOffsetPolicy, startDatePolicy, endDatePolicy);
 
-        List<Policy> edcPolicies = List.of(sut.getEdcPolicyFromEnforcementPolicies(policies));
+        List<PolicyBlueprint> edcPolicies = List.of(sut.getEdcPolicyFromEnforcementPolicies(policies));
 
         // when
 
@@ -185,7 +185,7 @@ class EnforcementPolicyParserServiceTest {
             endAgreementOffsetPolicy, startDatePolicy, endDatePolicy);
 
         // when
-        Policy edcPolicy = sut.getEdcPolicyFromEnforcementPolicies(policies);
+        PolicyBlueprint edcPolicy = sut.getEdcPolicyFromEnforcementPolicies(policies);
 
         // then
         int constraintCount = 0;

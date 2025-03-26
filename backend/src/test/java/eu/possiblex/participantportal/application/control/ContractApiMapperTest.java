@@ -23,7 +23,7 @@ import eu.possiblex.participantportal.application.entity.policies.EverythingAllo
 import eu.possiblex.participantportal.business.entity.*;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.contractagreement.ContractAgreement;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ class ContractApiMapperTest {
         ContractAgreementBE be = ContractAgreementBE.builder().contractAgreement(
                 ContractAgreement.builder().id("contractAgreementId").assetId("assetId")
                     .contractSigningDate(BigInteger.valueOf(Instant.now().toEpochMilli() / 1000)).consumerId("consumerId")
-                    .providerId("providerId").policy(Policy.builder().build()).build()).offeringDetails(
+                    .providerId("providerId").policy(PolicyOffer.builder().build()).build()).offeringDetails(
                 OfferingDetailsBE.builder().name("offeringName").description("offeringDescription").offeringId("offeringId")
                     .assetId("assetId").build())
             .providerDetails(ParticipantWithDapsBE.builder().name("providerName").dapsId("dapsId").did("did").build())
@@ -95,7 +95,7 @@ class ContractApiMapperTest {
         ContractDetailsBE be = ContractDetailsBE.builder().contractAgreement(
                 ContractAgreement.builder().id("contractAgreementId").assetId("assetId")
                     .contractSigningDate(BigInteger.valueOf(Instant.now().toEpochMilli() / 1000)).consumerId("consumerId")
-                    .providerId("providerId").policy(Policy.builder().build()).build()).offeringDetails(
+                    .providerId("providerId").policy(PolicyOffer.builder().build()).build()).offeringDetails(
                 OfferRetrievalResponseBE.builder().offerRetrievalDate(OffsetDateTime.now())
                     .catalogOffering(PxExtendedServiceOfferingCredentialSubject.builder().id("id").name("name").build())
                     .build())
