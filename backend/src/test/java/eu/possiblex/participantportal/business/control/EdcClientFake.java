@@ -130,7 +130,7 @@ public class EdcClientFake implements EdcClient {
     @Override
     public IdResponse negotiateOffer(NegotiationInitiateRequest negotiationInitiateRequest) {
 
-        return generateFakeIdResponse(negotiationInitiateRequest.getOffer().getAssetId());
+        return generateFakeIdResponse(negotiationInitiateRequest.getPolicy().getTarget());
     }
 
     @Override
@@ -195,7 +195,7 @@ public class EdcClientFake implements EdcClient {
     @Override
     public List<ContractAgreement> queryContractAgreements(QuerySpec querySpec) {
 
-        PolicyOffer policy = PolicyOffer.builder().target(PolicyTarget.builder().id(FAKE_ID).build()).build();
+        PolicyOffer policy = PolicyOffer.builder().target(FAKE_ID).build();
 
         ContractAgreement contractAgreement = ContractAgreement.builder()
             .contractSigningDate(BigInteger.valueOf(1728549145)).id(FAKE_ID).assetId(FAKE_ID)
@@ -232,7 +232,7 @@ public class EdcClientFake implements EdcClient {
         Map<String, String> context = Map.of("edc", "https://w3id.org/edc/v0.0.1/ns/", "odrl",
             "http://www.w3.org/ns/odrl/2/", "@vocab", "https://w3id.org/edc/v0.0.1/ns/");
 
-            AWSS3DataSource dataAddress = AWSS3DataSource.builder().bucketName("bucket").keyName("name").build();
+            AWSS3DataSource dataAddress = AWSS3DataSource.builder().bucketName("bucket").objectPrefix("name").build();
 
         return List.of(PossibleAsset.builder().id(FAKE_ID).type("Asset").properties(properties).context(context)
             .dataAddress(dataAddress).build());

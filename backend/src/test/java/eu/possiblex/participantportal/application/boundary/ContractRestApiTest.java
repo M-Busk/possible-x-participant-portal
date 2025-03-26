@@ -69,7 +69,6 @@ class ContractRestApiTest {
             .andExpect(jsonPath("$[0].assetId").value(ContractServiceFake.FAKE_ID_ASSET))
             .andExpect(jsonPath("$[0].assetDetails.name").value(ContractServiceFake.NAME))
             .andExpect(jsonPath("$[0].assetDetails.description").value(ContractServiceFake.DESCRIPTION))
-            .andExpect(jsonPath("$[0].policy['odrl:target']['@id']").value(ContractServiceFake.FAKE_ID_ASSET))
             .andExpect(jsonPath("$[0].policy['odrl:prohibition']").isEmpty())
             .andExpect(jsonPath("$[0].policy['odrl:obligation']").isEmpty())
             .andExpect(jsonPath("$[0].policy['odrl:permission']").isEmpty());
@@ -87,7 +86,6 @@ class ContractRestApiTest {
             .andExpect(jsonPath("$.catalogOffering['schema:name']").value(ContractServiceFake.NAME))
             .andExpect(jsonPath("$.catalogOffering['schema:description']").value(ContractServiceFake.DESCRIPTION))
             .andExpect(jsonPath("$.offerRetrievalDate").exists())
-            .andExpect(jsonPath("$.policy['odrl:target']['@id']").value(ContractServiceFake.FAKE_ID_ASSET))
             .andExpect(jsonPath("$.policy['odrl:prohibition']").isEmpty())
             .andExpect(jsonPath("$.policy['odrl:obligation']").isEmpty())
             .andExpect(jsonPath("$.policy['odrl:permission']").isEmpty());

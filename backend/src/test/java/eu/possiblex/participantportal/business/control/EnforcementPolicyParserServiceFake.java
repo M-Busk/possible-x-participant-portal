@@ -20,7 +20,7 @@ import eu.possiblex.participantportal.application.entity.policies.EnforcementPol
 import eu.possiblex.participantportal.application.entity.policies.EverythingAllowedPolicy;
 import eu.possiblex.participantportal.business.entity.edc.policy.OdrlAction;
 import eu.possiblex.participantportal.business.entity.edc.policy.OdrlPermission;
-import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyBlueprint;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -28,28 +28,28 @@ import java.util.List;
 public class EnforcementPolicyParserServiceFake implements EnforcementPolicyParserService {
 
     @Override
-    public List<EnforcementPolicy> getEnforcementPoliciesFromEdcPolicies(List<PolicyOffer> policies) {
+    public List<EnforcementPolicy> getEnforcementPoliciesFromEdcPolicies(List<PolicyBlueprint> policies) {
 
         return List.of(new EverythingAllowedPolicy());
     }
 
     @Override
-    public List<EnforcementPolicy> getEnforcementPoliciesWithValidity(List<PolicyOffer> edcPolicies,
+    public List<EnforcementPolicy> getEnforcementPoliciesWithValidity(List<PolicyBlueprint> edcPolicies,
         BigInteger contractSigningDate, String providerDid) {
 
         return List.of(new EverythingAllowedPolicy());
     }
 
     @Override
-    public PolicyOffer getEdcPolicyFromEnforcementPolicies(List<EnforcementPolicy> enforcementPolicies) {
+    public PolicyBlueprint getEdcPolicyFromEnforcementPolicies(List<EnforcementPolicy> enforcementPolicies) {
 
         return getEverythingAllowedPolicy();
     }
 
     @Override
-    public PolicyOffer getEverythingAllowedPolicy() {
+    public PolicyBlueprint getEverythingAllowedPolicy() {
 
-        return PolicyOffer.builder().permission(List.of(OdrlPermission.builder().action(OdrlAction.USE).build(),
+        return PolicyBlueprint.builder().permission(List.of(OdrlPermission.builder().action(OdrlAction.USE).build(),
             OdrlPermission.builder().action(OdrlAction.TRANSFER).build())).build();
     }
 }

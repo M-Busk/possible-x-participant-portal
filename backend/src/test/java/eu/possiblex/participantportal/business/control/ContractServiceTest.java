@@ -132,7 +132,7 @@ class ContractServiceTest {
                     .attributes(Map.of("did", OmejdnConnectorApiClientFake.OTHER_PARTICIPANT_ID)).build()));
 
         // set up mock making the participant the consumer
-        PolicyOffer policy = PolicyOffer.builder().target(PolicyTarget.builder().id(EdcClientFake.FAKE_ID).build()).build();
+        PolicyOffer policy = PolicyOffer.builder().target(EdcClientFake.FAKE_ID).build();
         ContractAgreement contractAgreement = ContractAgreement.builder()
             .contractSigningDate(BigInteger.valueOf(1728549145)).id(EdcClientFake.FAKE_ID)
             .assetId(EdcClientFake.FAKE_ID)
