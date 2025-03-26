@@ -32,4 +32,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public class AWSS3DataDestination extends AWSS3DataAddress {
+    private String folderName;
 }

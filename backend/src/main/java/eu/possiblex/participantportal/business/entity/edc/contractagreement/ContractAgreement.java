@@ -17,7 +17,7 @@
 package eu.possiblex.participantportal.business.entity.edc.contractagreement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 import lombok.*;
 
 import java.math.BigInteger;
@@ -38,7 +38,7 @@ public class ContractAgreement {
 
     private String assetId;
 
-    private Policy policy;
+    private PolicyOffer policy;
 
     private BigInteger contractSigningDate;
 

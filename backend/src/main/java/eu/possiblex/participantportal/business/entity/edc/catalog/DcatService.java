@@ -30,9 +30,9 @@ public class DcatService {
     @JsonProperty("@type")
     private String type;
 
-    @JsonProperty(JsonLdConstants.DCT_PREFIX + "terms")
-    private String terms;
+    @JsonProperty(JsonLdConstants.DCAT_PREFIX + "endpointDescription")
+    private String endpointDescription;
 
-    @JsonProperty(JsonLdConstants.DCT_PREFIX + "endpointUrl")
+    @JsonProperty(JsonLdConstants.DCAT_PREFIX + "endpointUrl")
     private String endpointUrl;
 }

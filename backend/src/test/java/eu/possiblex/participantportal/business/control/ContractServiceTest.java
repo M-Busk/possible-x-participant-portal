@@ -20,7 +20,7 @@ import eu.possiblex.participantportal.business.entity.*;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.daps.OmejdnConnectorDetailsBE;
 import eu.possiblex.participantportal.business.entity.edc.contractagreement.ContractAgreement;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyTarget;
 import eu.possiblex.participantportal.business.entity.exception.ContractAgreementNotFoundException;
 import eu.possiblex.participantportal.business.entity.fh.OfferingDetailsSparqlQueryResult;
@@ -132,7 +132,7 @@ class ContractServiceTest {
                     .attributes(Map.of("did", OmejdnConnectorApiClientFake.OTHER_PARTICIPANT_ID)).build()));
 
         // set up mock making the participant the consumer
-        Policy policy = Policy.builder().target(PolicyTarget.builder().id(EdcClientFake.FAKE_ID).build()).build();
+        PolicyOffer policy = PolicyOffer.builder().target(PolicyTarget.builder().id(EdcClientFake.FAKE_ID).build()).build();
         ContractAgreement contractAgreement = ContractAgreement.builder()
             .contractSigningDate(BigInteger.valueOf(1728549145)).id(EdcClientFake.FAKE_ID)
             .assetId(EdcClientFake.FAKE_ID)

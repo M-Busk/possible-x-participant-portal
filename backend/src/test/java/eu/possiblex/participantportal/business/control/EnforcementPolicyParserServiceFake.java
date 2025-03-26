@@ -20,7 +20,7 @@ import eu.possiblex.participantportal.application.entity.policies.EnforcementPol
 import eu.possiblex.participantportal.application.entity.policies.EverythingAllowedPolicy;
 import eu.possiblex.participantportal.business.entity.edc.policy.OdrlAction;
 import eu.possiblex.participantportal.business.entity.edc.policy.OdrlPermission;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -28,28 +28,28 @@ import java.util.List;
 public class EnforcementPolicyParserServiceFake implements EnforcementPolicyParserService {
 
     @Override
-    public List<EnforcementPolicy> getEnforcementPoliciesFromEdcPolicies(List<Policy> policies) {
+    public List<EnforcementPolicy> getEnforcementPoliciesFromEdcPolicies(List<PolicyOffer> policies) {
 
         return List.of(new EverythingAllowedPolicy());
     }
 
     @Override
-    public List<EnforcementPolicy> getEnforcementPoliciesWithValidity(List<Policy> edcPolicies,
+    public List<EnforcementPolicy> getEnforcementPoliciesWithValidity(List<PolicyOffer> edcPolicies,
         BigInteger contractSigningDate, String providerDid) {
 
         return List.of(new EverythingAllowedPolicy());
     }
 
     @Override
-    public Policy getEdcPolicyFromEnforcementPolicies(List<EnforcementPolicy> enforcementPolicies) {
+    public PolicyOffer getEdcPolicyFromEnforcementPolicies(List<EnforcementPolicy> enforcementPolicies) {
 
         return getEverythingAllowedPolicy();
     }
 
     @Override
-    public Policy getEverythingAllowedPolicy() {
+    public PolicyOffer getEverythingAllowedPolicy() {
 
-        return Policy.builder().permission(List.of(OdrlPermission.builder().action(OdrlAction.USE).build(),
+        return PolicyOffer.builder().permission(List.of(OdrlPermission.builder().action(OdrlAction.USE).build(),
             OdrlPermission.builder().action(OdrlAction.TRANSFER).build())).build();
     }
 }

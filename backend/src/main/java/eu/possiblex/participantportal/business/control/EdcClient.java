@@ -31,7 +31,7 @@ import eu.possiblex.participantportal.business.entity.edc.contractdefinition.Con
 import eu.possiblex.participantportal.business.entity.edc.negotiation.ContractNegotiation;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.NegotiationInitiateRequest;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyCreateRequest;
-import eu.possiblex.participantportal.business.entity.edc.transfer.IonosS3TransferProcess;
+import eu.possiblex.participantportal.business.entity.edc.transfer.AWSS3TransferProcess;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TerminateTransferRequest;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferRequest;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,40 +46,40 @@ public interface EdcClient {
     @PostExchange("/v3/assets")
     IdResponse createAsset(@RequestBody AssetCreateRequest assetCreateRequest);
 
-    @PostExchange("/v2/policydefinitions")
+    @PostExchange("/v3/policydefinitions")
     IdResponse createPolicy(@RequestBody PolicyCreateRequest policyCreateRequest);
 
-    @PostExchange("/v2/contractdefinitions")
+    @PostExchange("/v3/contractdefinitions")
     IdResponse createContractDefinition(@RequestBody ContractDefinitionCreateRequest contractDefinitionCreateRequest);
 
-    @PostExchange("/v2/catalog/request")
+    @PostExchange("/v3/catalog/request")
     DcatCatalog queryCatalog(@RequestBody CatalogRequest catalogRequest);
 
-    @PostExchange("/v2/contractnegotiations")
+    @PostExchange("/v3/contractnegotiations")
     IdResponse negotiateOffer(@RequestBody NegotiationInitiateRequest negotiationInitiateRequest);
 
-    @GetExchange("/v2/contractnegotiations/{negotiationId}")
+    @GetExchange("/v3/contractnegotiations/{negotiationId}")
     ContractNegotiation checkOfferStatus(@PathVariable String negotiationId);
 
     @PostExchange("/v2/transferprocesses")
     IdResponse initiateTransfer(@RequestBody TransferRequest transferRequest);
 
-    @GetExchange("/v2/transferprocesses/{transferId}")
-    IonosS3TransferProcess checkTransferStatus(@PathVariable String transferId);
+    @GetExchange("/v3/transferprocesses/{transferId}")
+    AWSS3TransferProcess checkTransferStatus(@PathVariable String transferId);
 
-    @PostExchange("/v2/transferprocesses/{transferId}/deprovision")
+    @PostExchange("/v3/transferprocesses/{transferId}/deprovision")
     void deprovisionTransfer(@PathVariable String transferId);
 
-    @PostExchange("/v2/transferprocesses/{transferId}/terminate")
+    @PostExchange("/v3/transferprocesses/{transferId}/terminate")
     void terminateTransfer(@PathVariable String transferId, @RequestBody TerminateTransferRequest request);
 
-    @DeleteExchange("/v2/contractdefinitions/{contractDefinitionId}")
+    @DeleteExchange("/v3/contractdefinitions/{contractDefinitionId}")
     void revokeContractDefinition(@PathVariable String contractDefinitionId);
 
-    @PostExchange("/v2/contractagreements/request")
+    @PostExchange("/v3/contractagreements/request")
     List<ContractAgreement> queryContractAgreements(@RequestBody QuerySpec querySpec);
 
-    @GetExchange("/v2/contractagreements/{contractAgreementId}")
+    @GetExchange("/v3/contractagreements/{contractAgreementId}")
     ContractAgreement getContractAgreementById(@PathVariable String contractAgreementId);
 
     @PostExchange("/v3/assets/request")

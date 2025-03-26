@@ -23,7 +23,7 @@ import eu.possiblex.participantportal.business.entity.edc.asset.awss3extension.A
 import eu.possiblex.participantportal.business.entity.edc.common.IdResponse;
 import eu.possiblex.participantportal.business.entity.edc.contractdefinition.ContractDefinitionCreateRequest;
 import eu.possiblex.participantportal.business.entity.edc.contractdefinition.Criterion;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyBlueprint;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyCreateRequest;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class ProviderRequestBuilder {
     public AssetCreateRequest buildAssetRequest(String bucketName, String bucketStorageRegion) {
 
         DataAddress dataAddress = AWSS3DataSource.builder().bucketName(bucketName)
-            .keyPrefix(createEdcOfferBE.getFileName()).region(bucketStorageRegion).build();
+            .objectPrefix(createEdcOfferBE.getFileName()).region(bucketStorageRegion).build();
 
         return AssetCreateRequest.builder().id(createEdcOfferBE.getAssetId())
             .properties(createEdcOfferBE.getProperties()).dataAddress(dataAddress).build();
@@ -77,7 +77,7 @@ public class ProviderRequestBuilder {
      * @param policy the policy
      * @return the PolicyCreateRequest
      */
-    public PolicyCreateRequest buildPolicyRequest(Policy policy) {
+    public PolicyCreateRequest buildPolicyRequest(PolicyBlueprint policy) {
 
         return PolicyCreateRequest.builder().id(UUID.randomUUID().toString()).policy(policy).build();
     }

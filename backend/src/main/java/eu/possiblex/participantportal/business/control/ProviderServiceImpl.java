@@ -29,7 +29,7 @@ import eu.possiblex.participantportal.business.entity.edc.CreateEdcOfferBE;
 import eu.possiblex.participantportal.business.entity.edc.asset.AssetCreateRequest;
 import eu.possiblex.participantportal.business.entity.edc.common.IdResponse;
 import eu.possiblex.participantportal.business.entity.edc.contractdefinition.ContractDefinitionCreateRequest;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyBlueprint;
 import eu.possiblex.participantportal.business.entity.edc.policy.PolicyCreateRequest;
 import eu.possiblex.participantportal.business.entity.exception.EdcOfferCreationException;
 import eu.possiblex.participantportal.business.entity.exception.FhOfferCreationException;
@@ -113,7 +113,7 @@ public class ProviderServiceImpl implements ProviderService {
     @Override
     public CreateOfferResponseTO createOffering(CreateServiceOfferingRequestBE request) {
 
-        Policy policy = enforcementPolicyParserService.getEdcPolicyFromEnforcementPolicies(
+        PolicyBlueprint policy = enforcementPolicyParserService.getEdcPolicyFromEnforcementPolicies(
             request.getEnforcementPolicies());
 
         PxExtendedServiceOfferingCredentialSubject pxExtendedServiceOfferingCs = createCombinedCsFromRequest(request,
@@ -275,7 +275,7 @@ public class ProviderServiceImpl implements ProviderService {
      * @return the combined credential subject
      */
     private PxExtendedServiceOfferingCredentialSubject createCombinedCsFromRequest(
-        CreateServiceOfferingRequestBE request, Policy policy) {
+        CreateServiceOfferingRequestBE request, PolicyBlueprint policy) {
 
         String assetId = UUID.randomUUID().toString();
         String serviceOfferingId = "urn:uuid:" + UUID.randomUUID();
@@ -304,7 +304,7 @@ public class ProviderServiceImpl implements ProviderService {
      * @return the EDC offer business entity
      */
     private CreateEdcOfferBE createEdcBEFromRequest(CreateServiceOfferingRequestBE request, String offerId,
-        String assetId, Policy policy) {
+        String assetId, PolicyBlueprint policy) {
 
         CreateEdcOfferBE createEdcOfferBE = null;
         if (request instanceof CreateDataOfferingRequestBE dataOfferingRequest) { // data offering

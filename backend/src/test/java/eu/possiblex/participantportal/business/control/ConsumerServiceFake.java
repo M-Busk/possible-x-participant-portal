@@ -20,7 +20,7 @@ import eu.possiblex.participantportal.business.entity.*;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.catalog.DcatDataset;
 import eu.possiblex.participantportal.business.entity.edc.negotiation.NegotiationState;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 import eu.possiblex.participantportal.business.entity.edc.transfer.TransferProcessState;
 import eu.possiblex.participantportal.business.entity.exception.NegotiationFailedException;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
@@ -66,7 +66,7 @@ public class ConsumerServiceFake implements ConsumerService {
 
         DcatDataset edcCatalogOfferMock = DcatDataset.builder().assetId(VALID_ASSET_ID).name("some name")
             .description("some description").version("v1.2.3").contenttype("application/json").hasPolicy(List.of(
-                Policy.builder().permission(Collections.emptyList()).prohibition(Collections.emptyList())
+                PolicyOffer.builder().permission(Collections.emptyList()).prohibition(Collections.emptyList())
                     .obligation(Collections.emptyList()).build())).build();
 
         SelectOfferResponseBE response = new SelectOfferResponseBE();

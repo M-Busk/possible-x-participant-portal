@@ -18,7 +18,7 @@ package eu.possiblex.participantportal.application.entity;
 
 import eu.possiblex.participantportal.application.entity.policies.EnforcementPolicy;
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +47,7 @@ public class ContractDetailsTO {
     private OffsetDateTime offerRetrievalDate;
 
     @Schema(description = "Policy of the contract agreement as retrieved from the EDC")
-    private Policy policy;
+    private PolicyOffer policy;
 
     @Schema(description = "List of enforcement policies deduced from the contract agreement policies")
     private List<EnforcementPolicy> enforcementPolicies;

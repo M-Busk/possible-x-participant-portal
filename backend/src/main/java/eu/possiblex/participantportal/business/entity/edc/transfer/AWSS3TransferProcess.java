@@ -31,6 +31,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class IonosS3TransferProcess extends TransferProcess {
+public class AWSS3TransferProcess extends TransferProcess {
     private AWSS3DataAddress dataDestination;
 }

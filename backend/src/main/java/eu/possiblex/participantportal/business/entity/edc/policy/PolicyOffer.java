@@ -16,32 +16,42 @@
  *
  * Modifications:
  * - Dataport (part of the POSSIBLE project) - 14 August, 2024 - Adjust package names and imports
+ * - Dataport (part of the POSSIBLE project) - 26 August, 2024 - Add CONTEXT attribute, replace String with JsonNode
  */
 
-package eu.possiblex.participantportal.business.entity.edc.negotiation;
+package eu.possiblex.participantportal.business.entity.edc.policy;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
-@Builder
-public class ContractOffer {
-    private static final String TYPE = "ContractOfferDescription";
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PolicyOffer extends PolicyBlueprint {
 
-    private String offerId;
+    private static final String TYPE = "Offer";
 
-    private String assetId;
+    private String assignee;
 
-    private Policy policy;
+    private String assigner;
 
+    private String target;
+
+    @Schema(description = "JSON-LD type", example = "Set")
     @JsonProperty("@type")
+    @Override
     public String getType() {
 
         return TYPE;
     }
+
 }

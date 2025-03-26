@@ -8,7 +8,7 @@ import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedL
 import eu.possiblex.participantportal.business.entity.credentials.px.PxExtendedServiceOfferingCredentialSubject;
 import eu.possiblex.participantportal.business.entity.edc.catalog.DcatCatalog;
 import eu.possiblex.participantportal.business.entity.edc.catalog.DcatDataset;
-import eu.possiblex.participantportal.business.entity.edc.policy.Policy;
+import eu.possiblex.participantportal.business.entity.edc.policy.PolicyOffer;
 import eu.possiblex.participantportal.business.entity.exception.NegotiationFailedException;
 import eu.possiblex.participantportal.business.entity.exception.OfferNotFoundException;
 import eu.possiblex.participantportal.business.entity.exception.ParticipantNotFoundException;
@@ -198,7 +198,7 @@ class ConsumerServiceTest {
         dataset.setName("correctName");
         dataset.setContenttype("correctContentType");
         dataset.setDescription("correctDescription");
-        dataset.setHasPolicy(List.of(new Policy()));
+        dataset.setHasPolicy(List.of(new PolicyOffer()));
         catalog.setDataset(List.of(dataset));
         Mockito.when(edcClient.queryCatalog(any())).thenReturn(catalog);
 
@@ -232,7 +232,7 @@ class ConsumerServiceTest {
         dataset.setName("correctName");
         dataset.setContenttype("correctContentType");
         dataset.setDescription("correctDescription");
-        dataset.setHasPolicy(List.of(new Policy()));
+        dataset.setHasPolicy(List.of(new PolicyOffer()));
         catalog.setDataset(List.of(dataset));
         Mockito.when(edcClient.queryCatalog(any())).thenReturn(catalog);
 
@@ -270,7 +270,7 @@ class ConsumerServiceTest {
         dataset.setName("correctName");
         dataset.setContenttype("correctContentType");
         dataset.setDescription("correctDescription");
-        dataset.setHasPolicy(List.of(new Policy()));
+        dataset.setHasPolicy(List.of(new PolicyOffer()));
         catalog.setDataset(List.of(dataset));
         Mockito.when(edcClient.queryCatalog(any())).thenReturn(catalog);
 
@@ -294,7 +294,7 @@ class ConsumerServiceTest {
         dataset.setName("correctName");
         dataset.setContenttype("correctContentType");
         dataset.setDescription("correctDescription");
-        dataset.setHasPolicy(List.of(new Policy()));
+        dataset.setHasPolicy(List.of(new PolicyOffer()));
         catalog.setDataset(List.of(dataset));
         Mockito.when(edcClient.queryCatalog(any())).thenReturn(catalog);
 

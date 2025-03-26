@@ -42,6 +42,8 @@ public class JsonLdConstants {
 
     public static final String DCT_PREFIX = "dct:";
 
+    public static final String DSPACE_PREFIX = "dspace:";
+
     public static final String EDC_PREFIX = "edc:";
 
     private JsonLdConstants() {
