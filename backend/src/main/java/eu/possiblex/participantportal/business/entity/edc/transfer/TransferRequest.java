@@ -47,8 +47,6 @@ public class TransferRequest {
 
     private String contractId;
 
-    private String assetId;
-
     private String transferType;
 
     private DataAddress dataDestination;

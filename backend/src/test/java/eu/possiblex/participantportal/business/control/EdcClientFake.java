@@ -153,7 +153,7 @@ public class EdcClientFake implements EdcClient {
     @Override
     public IdResponse initiateTransfer(TransferRequest transferRequest) {
 
-        return generateFakeIdResponse(transferRequest.getAssetId());
+        return generateFakeIdResponse(transferRequest.getContractId());
     }
 
     @Override

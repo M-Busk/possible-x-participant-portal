@@ -323,7 +323,7 @@ class ConsumerServiceTest {
         Mockito.when(edcClient.queryCatalog(any())).thenReturn(catalog);
 
         TransferOfferRequestBE request = TransferOfferRequestBE.builder().counterPartyAddress("http://example.com")
-            .edcOfferId(EdcClientFake.BAD_TRANSFER_ID).contractAgreementId(EdcClientFake.VALID_AGREEMENT_ID).build();
+            .edcOfferId(EdcClientFake.BAD_TRANSFER_ID).contractAgreementId(EdcClientFake.BAD_TRANSFER_ID).build();
 
         // WHEN / THEN
 
@@ -347,7 +347,7 @@ class ConsumerServiceTest {
         Mockito.when(edcClient.queryCatalog(any())).thenReturn(catalog);
 
         TransferOfferRequestBE request = TransferOfferRequestBE.builder().counterPartyAddress("http://example.com")
-            .edcOfferId(EdcClientFake.TIMED_OUT_TRANSFER_ID).contractAgreementId(EdcClientFake.VALID_AGREEMENT_ID).build();
+            .edcOfferId(EdcClientFake.TIMED_OUT_TRANSFER_ID).contractAgreementId(EdcClientFake.TIMED_OUT_TRANSFER_ID).build();
 
         // WHEN / THEN
 

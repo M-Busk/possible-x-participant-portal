@@ -180,7 +180,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         String bucketTargetPath = bucketTopLevelFolder + pathDelimiter + timestamp + "_" + request.getContractAgreementId() + pathDelimiter;
         DataAddress dataAddress = AWSS3DataDestination.builder().bucketName(bucketName).folderName(bucketTargetPath).region(bucketStorageRegion).build();
         TransferRequest transferRequest = TransferRequest.builder().connectorId(edcOffer.getParticipantId())
-            .counterPartyAddress(request.getCounterPartyAddress()).assetId(dataset.getAssetId())
+            .counterPartyAddress(request.getCounterPartyAddress())
             .contractId(request.getContractAgreementId()).dataDestination(dataAddress).transferType("AmazonS3-PUSH").build();
         TransferProcessState transferProcessState = performTransfer(transferRequest, enforcementPolicies).getState();
         return new TransferOfferResponseBE(transferProcessState);

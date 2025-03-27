@@ -61,7 +61,7 @@ public interface EdcClient {
     @GetExchange("/v3/contractnegotiations/{negotiationId}")
     ContractNegotiation checkOfferStatus(@PathVariable String negotiationId);
 
-    @PostExchange("/v2/transferprocesses")
+    @PostExchange("/v3/transferprocesses")
     IdResponse initiateTransfer(@RequestBody TransferRequest transferRequest);
 
     @GetExchange("/v3/transferprocesses/{transferId}")
