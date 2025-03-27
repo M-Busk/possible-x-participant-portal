@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.possiblex.participantportal.business.entity.common.JsonLdConstants;
+import eu.possiblex.participantportal.business.entity.serialization.OdrlLeftOperandDeserializer;
+import eu.possiblex.participantportal.business.entity.serialization.OdrlLeftOperandSerializer;
 import eu.possiblex.participantportal.business.entity.serialization.OdrlOperatorDeserializer;
 import eu.possiblex.participantportal.business.entity.serialization.OdrlOperatorSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,6 +43,8 @@ public class OdrlConstraint {
     private static final String TYPE = "AtomicConstraint";
 
     @Schema(description = "Left operand of the ODRL constraint", example = "https://w3id.org/edc/v0.0.1/ns/inForceDate")
+    @JsonSerialize(using = OdrlLeftOperandSerializer.class)
+    @JsonDeserialize(using = OdrlLeftOperandDeserializer.class)
     @JsonProperty(JsonLdConstants.ODRL_PREFIX + "leftOperand")
     private String leftOperand;
 
