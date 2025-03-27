@@ -77,6 +77,10 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     private final String bucketTopLevelFolder;
 
+    private final String accessKeyId;
+
+    private final String secretAccessKey;
+
     private final ConsumerServiceMapper consumerServiceMapper;
 
     private final EnforcementPolicyParserService enforcementPolicyParserService;
@@ -85,6 +89,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         @Autowired FhCatalogClient fhCatalogClient, @Autowired TaskScheduler taskScheduler,
         @Value("${s3.bucket-storage-region}") String bucketStorageRegion, @Value("${s3.bucket-name}") String bucketName,
         @Value("${s3.bucket-top-level-folder}") String bucketTopLevelFolder,
+        @Value("${s3.access-key-id}") String accessKeyId, @Value("${s3.secret-access-key}") String secretAccessKey,
         @Autowired ConsumerServiceMapper consumerServiceMapper,
         @Autowired EnforcementPolicyParserService enforcementPolicyParserService) {
 
@@ -95,6 +100,8 @@ public class ConsumerServiceImpl implements ConsumerService {
         this.bucketStorageRegion = bucketStorageRegion;
         this.bucketName = bucketName;
         this.bucketTopLevelFolder = bucketTopLevelFolder;
+        this.accessKeyId = accessKeyId;
+        this.secretAccessKey = secretAccessKey;
         this.consumerServiceMapper = consumerServiceMapper;
         this.enforcementPolicyParserService = enforcementPolicyParserService;
     }
@@ -178,7 +185,8 @@ public class ConsumerServiceImpl implements ConsumerService {
         String timestamp = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String pathDelimiter = "/";
         String bucketTargetPath = bucketTopLevelFolder + pathDelimiter + timestamp + "_" + request.getContractAgreementId() + pathDelimiter;
-        DataAddress dataAddress = AWSS3DataDestination.builder().bucketName(bucketName).folderName(bucketTargetPath).region(bucketStorageRegion).build();
+        DataAddress dataAddress = AWSS3DataDestination.builder().bucketName(bucketName).folderName(bucketTargetPath).region(bucketStorageRegion)
+            .accessKeyId(accessKeyId).secretAccessKey(secretAccessKey).build();
         TransferRequest transferRequest = TransferRequest.builder().connectorId(edcOffer.getParticipantId())
             .counterPartyAddress(request.getCounterPartyAddress())
             .contractId(request.getContractAgreementId()).dataDestination(dataAddress).transferType("AmazonS3-PUSH").build();

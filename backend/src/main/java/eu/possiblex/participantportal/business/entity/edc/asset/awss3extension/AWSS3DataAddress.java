@@ -41,6 +41,10 @@ public class AWSS3DataAddress extends DataAddress {
 
     private String region;
 
+    private String accessKeyId;
+    
+    private String secretAccessKey;
+
     @JsonProperty("type")
     public String getDataType() {
 

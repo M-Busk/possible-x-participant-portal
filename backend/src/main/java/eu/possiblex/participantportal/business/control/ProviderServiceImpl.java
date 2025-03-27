@@ -69,6 +69,10 @@ public class ProviderServiceImpl implements ProviderService {
 
     private final String bucketName;
 
+    private final String accessKeyId;
+
+    private final String secretAccessKey;
+
     private final String edcProtocolUrl;
 
     private final String participantId;
@@ -89,6 +93,7 @@ public class ProviderServiceImpl implements ProviderService {
         @Autowired EnforcementPolicyParserService enforcementPolicyParserService,
         @Value("${edc.protocol-base-url}") String edcProtocolUrl, @Value("${participant-id}") String participantId,
         @Value("${s3.bucket-storage-region}") String bucketStorageRegion, @Value("${s3.bucket-name}") String bucketName,
+        @Value("${s3.access-key-id}") String accessKeyId, @Value("${s3.secret-access-key}") String secretAccessKey,
         @Value("${prefill-fields.data-service-offering.json-file-path}") String prefillFieldsDataServiceOfferingJsonFilePath,
         @Autowired ObjectMapper objectMapper) {
 
@@ -99,6 +104,8 @@ public class ProviderServiceImpl implements ProviderService {
         this.edcProtocolUrl = edcProtocolUrl;
         this.bucketStorageRegion = bucketStorageRegion;
         this.bucketName = bucketName;
+        this.accessKeyId = accessKeyId;
+        this.secretAccessKey = secretAccessKey;
         this.participantId = participantId;
         this.objectMapper = objectMapper;
         this.prefillFields = getPrefillFields(participantId, prefillFieldsDataServiceOfferingJsonFilePath);
@@ -202,7 +209,7 @@ public class ProviderServiceImpl implements ProviderService {
         ProviderRequestBuilder requestBuilder = new ProviderRequestBuilder(createEdcOfferBE);
 
         try {
-            AssetCreateRequest assetCreateRequest = requestBuilder.buildAssetRequest(bucketName, bucketStorageRegion);
+            AssetCreateRequest assetCreateRequest = requestBuilder.buildAssetRequest(bucketName, bucketStorageRegion, accessKeyId, secretAccessKey);
             log.info("Creating Asset {}", assetCreateRequest);
             IdResponse assetIdResponse = edcClient.createAsset(assetCreateRequest);
 
