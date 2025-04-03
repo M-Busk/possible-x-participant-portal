@@ -162,7 +162,7 @@ public class ConsumerServiceImpl implements ConsumerService {
         policy.setTarget(dataset.getAssetId());
         // initiate negotiation
         NegotiationInitiateRequest negotiationInitiateRequest = NegotiationInitiateRequest.builder()
-            .counterPartyAddress(request.getCounterPartyAddress()).consumerId("20:1D:9C:04:0A:71:B9:E7:8C:28:9D:70:A6:84:43:59:2D:BA:E8:B3:keyid:20:1D:9C:04:0A:71:B9:E7:8C:28:9D:70:A6:84:43:59:2D:BA:E8:B3").providerId(edcOffer.getParticipantId()).policy(policy).build();
+            .counterPartyAddress(request.getCounterPartyAddress()).providerId(edcOffer.getParticipantId()).policy(policy).build();
 
         ContractNegotiation contractNegotiation = negotiateOffer(negotiationInitiateRequest, enforcementPolicies);
 
