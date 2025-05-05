@@ -59,7 +59,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     private static final int MAX_NEGOTIATION_CHECK_ATTEMPTS = 15;
 
-    private static final int MAX_TRANSFER_CHECK_ATTEMPTS = 30;
+    private static final int MAX_TRANSFER_CHECK_ATTEMPTS = 60;
 
     private static final String UNKNOWN_ERROR = "Unknown Error.";
 
