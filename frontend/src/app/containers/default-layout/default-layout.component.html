@@ -19,7 +19,7 @@
     <c-navbar class="header border-0" expand="lg">
       <c-container fluid>
         <a [routerLink]="['/']" cNavbarBrand class="logo">
-          <img alt="POSSIBLE-X Logo" width="142" src="assets/images/brand/possible_blue.svg"/>
+          <img alt="Capgemini Logo" width="142" src="assets/images/brand/capgemini_blue.png"/>
         </a>
         <c-navbar-nav class="navbar-nav">
           <c-nav-item *ngIf="!this.auth.isLoggedIn()">
@@ -42,22 +42,18 @@
     <c-container class="content">
       <router-outlet></router-outlet>
     </c-container>
-    <img alt="" src="assets/images/brand/bottom-blue.svg" style="margin-left: auto;" width="500"/>
+    <img alt="" src="assets/images/brand/bottom-blue.png" style="margin-left: auto;" width="423" height="238"/>
   </div>
   <div class="footerWrapper">
     <c-footer class="footer border-0">
       <div class="logo">
-        <div class="circleVisual"></div>
-        <img alt="POSSIBLE-X Logo" height="49" src="assets/images/brand/possible_white.svg" width="190"/>
+        <img alt="Capgemini Logo" height="49" src="assets/images/brand/capgemini_white.png" width="190"/>
       </div>
       <div>
-        <div class="mb-8">
-          <div class="mb-2 text-2xl">POSSIBLE-X</div>
-        </div>
         <div class="mb-2">
           <a [routerLink]="['/licenses']">License Information</a>
         </div>
-        <div class="text-sm">© 2024 POSSIBLE Consortium</div>
+        <div class="text-sm">© 2025 Capgemini</div>
       </div>
       <div class="flex justify-end">
         Release: {{ versionNumber }} ({{ versionDate | date:'yyyy-MM-dd' }})
